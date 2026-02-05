@@ -2,6 +2,5 @@
 darwin
 AURA ESTEFANIA QUIÑONES
 samary
-darwin 2
 
 Jorge Rivera
