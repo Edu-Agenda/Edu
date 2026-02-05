@@ -1,5 +1,5 @@
 # Edu
 darwin
-AURA ESTEFANIA QUIÑONES
+AURA
 samary
 
