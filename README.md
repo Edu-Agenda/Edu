@@ -1,8 +1,7 @@
-# Edu
+# EduAgenda
 darwin
 AURA
 samary
-#aura
-##aura
+
 
 Jorge Rivera
