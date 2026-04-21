@@ -1,50 +1,121 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduAgenda - Registro</title>
-  <link rel="stylesheet" href="colors.css" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/colors.css" />
+
+  <!-- ICONOS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 
 <body>
 
   <!-- NAVBAR -->
   <nav class="navbar">
-    <div class="logo">EduAgenda</div>
-    <div class="nav-links">
-      <a href="main.html#tabla" class="nav-item" id="btnInicio">Inicio</a>
-      <a href="sesion.html" class="nav-item">Iniciar Sesión</a>
-      <a href="registrate.html" class="btn-register">Regístrate</a>
+    <div class="logo">
+      <img src="icono_grado.jpg" width="40" />
+      <span>EduAgenda</span>
+    </div>
+
+    <div class="menu">
+      <a href="main.html">Inicio</a>
+      <a href="sesion.html">Iniciar sesión</a>
+      <a href="registrate.html" class="activo">Registrarse</a>
     </div>
   </nav>
 
-  <!-- REGISTRO -->
+  <!-- FORMULARIO -->
   <div class="container">
     <div class="card">
-      <h2>Regístrate</h2>
 
-      <label for="nombre">Nombre completo</label>
-      <input type="text" id="nombre" placeholder="Ingresa tu nombre completo" />
+      <h2><i class="fas fa-user-plus"></i> Regístrate</h2>
+      <p class="subtitle">¿Eres nuevo aquí? Crea una cuenta.</p>
 
-      <label for="documento">Documento</label>
-      <input type="text" id="documento" placeholder="Ingresa tu documento" />
+      <!-- Tipo de usuario -->
+      <div class="tipo-usuario">
+        <label>Soy:</label>
 
-      <label for="correo">Correo electrónico</label>
-      <input type="email" id="correo" placeholder="Ingresa tu correo" />
+        <div class="opciones">
+          <label class="opcion">
+            <input type="radio" name="tipo" />
+            <i class="fas fa-chalkboard-teacher"></i> Profesor
+          </label>
 
-      <label for="telefono">Teléfono</label>
-      <input type="text" id="telefono" placeholder="Ingresa tu número" />
+          <label class="opcion">
+            <input type="radio" name="tipo" />
+            <i class="fas fa-user-graduate"></i> Estudiante
+          </label>
+        </div>
+      </div>
 
-      <label for="password">Contraseña</label>
-      <input type="password" id="password" placeholder="Crea una contraseña" />
+      <!-- Inputs -->
+      <div class="input-group">
+        <i class="fas fa-user"></i>
+        <input type="text" placeholder="Nombre completo" />
+      </div>
 
-      <button id="btnRegistro" type="button">Registrarse</button>
+      <div class="input-group">
+        <i class="fas fa-id-card"></i>
+        <input type="text" placeholder="Documento" />
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-envelope"></i>
+        <input type="email" placeholder="Correo electrónico" />
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-phone"></i>
+        <input type="text" placeholder="Teléfono" />
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="Contraseña" />
+      </div>
+
+      <div class="input-group">
+        <i class="fas fa-lock"></i>
+        <input type="password" placeholder="Confirmar contraseña" />
+      </div>
+
+      <!-- BOTÓN -->
+      <button class="btn">
+        <i class="fas fa-user-plus"></i> Registrarse
+      </button>
+
     </div>
   </div>
 
-  <!-- JS -->
-  <script src="js/inicio.js"></script>
-  <script src="js/registrarte.js"></script>
+  <!-- 🔥 FOOTER (LO QUE TE FALTABA) -->
+  <footer class="footer-contact">
+    <div class="contact-horizontal">
+
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <p><strong>Email:</strong> soporte@eduagenda.com</p>
+      </div>
+
+      <div class="contact-item">
+        <i class="fas fa-phone"></i>
+        <p><strong>Teléfono:</strong> +57 300 000 0000</p>
+      </div>
+
+      <div class="contact-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <p><strong>Ubicación:</strong> Tumaco, Colombia</p>
+      </div>
+
+    </div>
+
+    <p class="copyright">© 2026 EduAgenda - Todos los derechos reservados</p>
+  </footer>
+
 </body>
+
 </html>

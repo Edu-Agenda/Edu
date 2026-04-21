@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -8,11 +9,8 @@
   <!-- CSS -->
   <link rel="stylesheet" href="css/colors.css" />
 
-  <!-- Font Awesome para íconos (CORRECTO) -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-  />
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
 </head>
 
 <body>
@@ -24,10 +22,10 @@
       <span>EduAgenda</span>
     </div>
 
-    <div class="nav-links">
-      <a href="#tabla" class="nav-item" id="btnInicio">Inicio</a>
-      <a href="sesion.html" class="nav-item">Iniciar sesión</a>
-      <a href="registrate.html" class="btn-register">Registrarse</a>
+    <div class="menu">
+      <a href="main.html" class="activo">Inicio</a>
+      <a href="sesion.html">Iniciar sesión</a>
+      <a href="registrate.html">Registrarse</a>
     </div>
   </nav>
 
@@ -38,8 +36,8 @@
       <p class="description">
         EduAgenda es la solución integral diseñada para transformar la interacción académica entre estudiantes y
         profesores. Nuestra plataforma facilita la gestión inteligente de clases particulares, permitiendo una
-        organización impecable de horarios, un seguimiento detallado del progreso educativo y un sistema de
-        pagos seguro y transparente.
+        organización impecable de horarios, un seguimiento detallado del progreso educativo y un sistema de pagos seguro
+        y transparente.
       </p>
     </div>
 
@@ -48,11 +46,12 @@
     </div>
   </header>
 
-  <!-- SECCIÓN OBJETIVO DEL BOTÓN INICIO -->
+  <!-- SECCIÓN PASOS -->
   <section class="steps-section" id="tabla">
     <h2 class="section-title">¿Cómo funciona?</h2>
 
     <div class="grid-steps">
+
       <div class="step-card">
         <div class="icon-circle icon-blue">
           <i class="fas fa-user-plus"></i>
@@ -84,32 +83,29 @@
         <h3>Aprende</h3>
         <p>Conéctate y mejora tu rendimiento académico.</p>
       </div>
+
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer class="footer-contact">
-    <div class="footer-container">
-      <div class="contact-section">
-        <h2 class="contact-title">Contáctanos</h2>
+    <div class="contact-horizontal">
 
-        <div class="contact-horizontal">
-          <div class="contact-item">
-            <i class="fas fa-envelope"></i>
-            <p><strong>Email:</strong> <a href="mailto:soporte@eduagenda.com">soporte@eduagenda.com</a></p>
-          </div>
-
-          <div class="contact-item">
-            <i class="fas fa-phone-alt"></i>
-            <p><strong>Teléfono:</strong> +57 300 000 0000</p>
-          </div>
-
-          <div class="contact-item">
-            <i class="fas fa-map-marker-alt"></i>
-            <p><strong>Ubicación:</strong> Colombia - Tumaco, Nariño</p>
-          </div>
-        </div>
+      <div class="contact-item">
+        <i class="fas fa-envelope"></i>
+        <p><strong>Email:</strong> soporte@eduagenda.com</p>
       </div>
+
+      <div class="contact-item">
+        <i class="fas fa-phone-alt"></i>
+        <p><strong>Teléfono:</strong> +57 300 000 0000</p>
+      </div>
+
+      <div class="contact-item">
+        <i class="fas fa-map-marker-alt"></i>
+        <p><strong>Ubicación:</strong> Colombia - Tumaco, Nariño</p>
+      </div>
+
     </div>
 
     <p class="copyright">© 2026 EduAgenda - Todos los derechos reservados</p>
@@ -117,8 +113,8 @@
 
   <!-- JS -->
   <script src="js/inicio.js"></script>
-
-  <!-- Sesión (si quieres que main lea la sesión; si no lo necesitas, puedes quitarlo) -->
   <script src="js/sesion.js"></script>
+
 </body>
+
 </html>
