@@ -1,31 +1,22 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const btnInicio = document.getElementById("btnInicio");
-  if (!btnInicio) return;
+document.addEventListener('DOMContentLoaded', () => {
+    const token = localStorage.getItem('token');
+    const nombre = localStorage.getItem('nombre');
+    const navLinks = document.getElementById('nav-links');
+    const saludo = document.getElementById('saludo');
 
-  btnInicio.addEventListener("click", function (e) {
-    const href = btnInicio.getAttribute("href") || "";
-
-    // Caso 1: estamos en main.html y el link es #tabla
-    if (href.startsWith("#")) {
-      e.preventDefault();
-      const target = document.querySelector(href);
-      if (target) {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
-      return;
+    if (token && nombre) {
+        if (saludo) saludo.textContent = `¡Hola de nuevo, ${nombre}!`;
+        
+        if (navLinks) {
+            navLinks.innerHTML = `
+                <a href="main.html" class="nav-item">Inicio</a>
+                <button onclick="logout()" class="btn-register">Cerrar Sesión</button>
+            `;
+        }
     }
-
-    // Caso 2: href es main.html#tabla (desde registrate.html)
-    // No hacemos preventDefault, dejamos navegar normal.
-  });
-
-  // Scroll suave al cargar si la URL ya viene con #tabla
-  if (window.location.hash) {
-    const target = document.querySelector(window.location.hash);
-    if (target) {
-      setTimeout(() => {
-        target.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 50);
-    }
-  }
 });
+
+function logout() {
+    localStorage.clear();
+    window.location.href = 'main.html';
+}

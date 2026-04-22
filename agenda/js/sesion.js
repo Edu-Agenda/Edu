@@ -1,45 +1,28 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const btnLogin = document.getElementById("btnLogin");
-  if (!btnLogin) return; // si no estamos en la página de login, no hace nada
+document.addEventListener('DOMContentLoaded', () => {
+    const btn = document.getElementById('btnLogin');
 
-  btnLogin.addEventListener("click", function (e) {
-    e.preventDefault();
+    btn.addEventListener('click', async () => {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
 
-    const correo = (document.getElementById("loginCorreo")?.value || "")
-      .trim()
-      .toLowerCase();
-    const password = (document.getElementById("loginPassword")?.value || "")
-      .trim();
+        try {
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
 
-    if (!correo || !password) {
-      alert("⚠️ Ingresa tu correo y tu contraseña");
-      return;
-    }
+            const data = await res.json();
 
-    // Usuarios guardados por registrarte.js
-    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-    const usuario = usuarios.find(
-      (u) => (u.correo || "").toLowerCase() === correo && u.password === password
-    );
-
-    if (!usuario) {
-      alert("❌ Correo o contraseña incorrectos");
-      return;
-    }
-
-    // Guardar sesión (usuario logueado)
-    localStorage.setItem(
-      "usuarioActivo",
-      JSON.stringify({
-        nombre: usuario.nombre,
-        correo: usuario.correo,
-      })
-    );
-
-    alert("✅ Sesión iniciada. Bienvenido " + usuario.nombre);
-
-    // Redirigir al inicio
-    window.location.href = "main.html";
-  });
+            if (res.ok) {
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('nombre', data.nombre);
+                window.location.href = 'main.html';
+            } else {
+                alert(data.error);
+            }
+        } catch (err) {
+            alert("Error al conectar con el servidor");
+        }
+    });
 });
