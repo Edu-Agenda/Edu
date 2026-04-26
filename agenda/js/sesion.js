@@ -1,7 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.getElementById('btnLogin');
+    // Usamos el ID del formulario para capturar el evento "Enter" también
+    const form = document.getElementById('formSesion');
 
-    btn.addEventListener('click', async () => {
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Evita que la página se recargue
+
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
 
@@ -15,14 +18,19 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await res.json();
 
             if (res.ok) {
+                // Guardamos los datos de sesión
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('nombre', data.nombre);
-                window.location.href = 'main.html';
+                
+                // ¡REDIRECCIÓN AL DASHBOARD!
+                window.location.href = 'usuarios.html'; 
             } else {
-                alert(data.error);
+                // Si el servidor envía un error (ej: contraseña incorrecta)
+                alert(data.error || "Credenciales incorrectas");
             }
         } catch (err) {
-            alert("Error al conectar con el servidor");
+            console.error("Error de conexión:", err);
+            alert("No se pudo conectar con el servidor de EduAgenda. Revisa la terminal.");
         }
     });
 });
