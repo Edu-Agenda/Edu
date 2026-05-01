@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>EduAgenda - Administrador</title>
+
+  <link rel="stylesheet" href="css/colors.css" />
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f9fafb;
+    }
+
+    .step-card {
+      transition: 0.3s;
+      cursor: pointer;
+    }
+
+    .step-card:hover {
+      transform: translateY(-5px);
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <!-- NAVBAR -->
+
+  <nav class="navbar">
+
+    <div class="logo">
+
+      <img src="img/icono_grado.jpg" alt="Logo EduAgenda" width="45" />
+
+      <span>EduAgenda</span>
+
+    </div>
+
+    <div class="menu">
+
+      <a href="admin.html" class="activo">
+
+        <i class="fas fa-crown"></i>
+
+        Administrador
+
+      </a>
+
+      <button onclick="logout()" class="btn-register" style="background-color:#ef4444;">
+
+        <i class="fas fa-sign-out-alt"></i>
+
+        Cerrar Sesión
+
+      </button>
+
+    </div>
+
+  </nav>
+
+  <!-- HEADER -->
+
+  <header class="hero-section">
+
+    <div class="hero-content">
+
+      <h1>
+
+        <i class="fas fa-crown"></i>
+
+        Administrador
+
+      </h1>
+
+      <p class="description">
+
+        Bienvenido,
+
+        <strong id="nombreAdmin">
+
+          Administrador
+
+        </strong>
+
+      </p>
+
+    </div>
+
+  </header>
+
+  <!-- PANEL -->
+
+  <section class="steps-section">
+
+    <h2 class="section-title">
+
+      Gestión del Sistema
+
+    </h2>
+
+    <div class="grid-steps">
+
+      <!-- USUARIOS -->
+
+      <div class="step-card" onclick="window.location.href='usuarios.html'">
+
+        <div class="icon-circle icon-blue">
+
+          <i class="fas fa-users"></i>
+
+        </div>
+
+        <h3>Usuarios</h3>
+
+        <p>
+
+          Ver y administrar usuarios
+          del sistema.
+
+        </p>
+
+      </div>
+
+      <!-- REPORTES -->
+
+      <div class="step-card" onclick="window.location.href='reportes.html'">
+
+        <div class="icon-circle icon-green">
+
+          <i class="fas fa-chart-bar"></i>
+
+        </div>
+
+        <h3>Reportes</h3>
+
+        <p>
+
+          Visualiza reportes e ingresos
+          de la plataforma.
+
+        </p>
+
+      </div>
+
+      <!-- CONFIGURACIÓN -->
+
+      <div class="step-card" onclick="window.location.href='configuracion.html'">
+
+        <div class="icon-circle icon-purple">
+
+          <i class="fas fa-cog"></i>
+
+        </div>
+
+        <h3>Configuración</h3>
+
+        <p>
+
+          Configura parámetros generales
+          del sistema.
+
+        </p>
+
+      </div>
+
+      <!-- SEGURIDAD -->
+
+      <div class="step-card" onclick="window.location.href='seguridad.html'">
+
+        <div class="icon-circle icon-check">
+
+          <i class="fas fa-shield-alt"></i>
+
+        </div>
+
+        <h3>Seguridad</h3>
+
+        <p>
+
+          Gestiona permisos y accesos
+          de usuarios.
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- FOOTER -->
+
+  <footer class="footer-contact">
+
+    <div class="contact-horizontal">
+
+      <div class="contact-item">
+
+        <i class="fas fa-envelope"></i>
+
+        <p><strong>Email:</strong> soporte@eduagenda.com</p>
+
+      </div>
+
+      <div class="contact-item">
+
+        <i class="fas fa-phone-alt"></i>
+
+        <p><strong>Teléfono:</strong> +57 300 000 0000</p>
+
+      </div>
+
+      <div class="contact-item">
+
+        <i class="fas fa-map-marker-alt"></i>
+
+        <p><strong>Ubicación:</strong> Colombia - Tumaco, Nariño</p>
+
+      </div>
+
+    </div>
+
+    <p class="copyright">
+
+      © 2026 EduAgenda - Todos los derechos reservados
+
+    </p>
+
+  </footer>
+
+  <!-- SCRIPT -->
+
+  <script>
+
+    document.addEventListener('DOMContentLoaded', async function () {
+
+      const token = localStorage.getItem('token');
+
+      const tipo = localStorage.getItem('tipo');
+
+      const nombre = localStorage.getItem('nombre');
+
+      if (!token || tipo !== 'admin') {
+
+        window.location.href = 'sesion.html';
+
+        return;
+
+      }
+
+      try {
+
+        const respuesta = await fetch('http://localhost:3000/verificar', {
+
+          headers: {
+
+            'Authorization': `Bearer ${token}`
+
+          }
+
+        });
+
+        if (!respuesta.ok) {
+
+          localStorage.clear();
+
+          window.location.href = 'sesion.html';
+
+          return;
+
+        }
+
+        document.getElementById('nombreAdmin').textContent =
+          nombre || 'Administrador';
+
+      } catch (error) {
+
+        localStorage.clear();
+
+        window.location.href = 'sesion.html';
+
+      }
+
+    });
+
+    function logout() {
+
+      localStorage.clear();
+
+      window.location.href = 'main.html';
+
+    }
+
+  </script>
+
+</body>
+
+</html>
