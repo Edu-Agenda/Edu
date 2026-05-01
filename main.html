@@ -1,0 +1,206 @@
+<!-- ========================= -->
+<!-- main.html CORREGIDO -->
+<!-- ========================= -->
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduAgenda - Gestión Educativa</title>
+
+    <link rel="stylesheet" href="css/colors.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body id="top">
+
+    <nav class="navbar">
+        <div class="logo">
+            <img src="img/icono_grado.jpg" alt="Logo EduAgenda" width="45" />
+            <span>EduAgenda</span>
+        </div>
+
+        <div class="menu" id="nav-links">
+            <a href="main.html" class="activo">Inicio</a>
+            <a href="sesion.html">Iniciar sesión</a>
+            <a href="registrate.html" class="btn-register">Registrarse</a>
+        </div>
+    </nav>
+
+    <header class="hero-section">
+        <div class="hero-content">
+            <h1 id="saludo">Reserva clases con profesores fácilmente</h1>
+
+            <p class="description">
+                EduAgenda es la plataforma líder en <strong>Tumaco</strong> diseñada para transformar la interacción
+                académica.
+                Facilitamos la gestión inteligente de clases particulares, permitiendo una organización impecable de
+                horarios
+                y un seguimiento detallado del progreso educativo.
+            </p>
+        </div>
+
+        <div class="hero-visual">
+            <img src="img/compu.jpeg" alt="EduAgenda Interfaz" />
+        </div>
+    </header>
+
+    <section class="steps-section" id="tabla">
+
+        <h2 class="section-title">¿Cómo funciona?</h2>
+
+        <div class="grid-steps">
+
+            <div class="step-card">
+                <div class="icon-circle icon-blue">
+                    <i class="fas fa-user-plus"></i>
+                </div>
+
+                <h3>Regístrate</h3>
+
+                <p>Crea tu cuenta como estudiante o profesor en pocos pasos.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="icon-circle icon-green">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <h3>Busca profesores</h3>
+
+                <p>Encuentra el profesor ideal según la materia que necesites.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="icon-circle icon-purple">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+
+                <h3>Reserva tu clase</h3>
+
+                <p>Selecciona el horario disponible y agenda tu clase fácilmente.</p>
+            </div>
+
+            <div class="step-card">
+                <div class="icon-circle icon-check">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+
+                <h3>Aprende</h3>
+
+                <p>Conéctate y mejora tu rendimiento académico.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="footer-contact">
+
+        <div class="contact-horizontal">
+
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <p><strong>Email:</strong> soporte@eduagenda.com</p>
+            </div>
+
+            <div class="contact-item">
+                <i class="fas fa-phone-alt"></i>
+                <p><strong>Teléfono:</strong> +57 300 000 0000</p>
+            </div>
+
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <p><strong>Ubicación:</strong> Colombia - Tumaco, Nariño</p>
+            </div>
+
+        </div>
+
+        <p class="copyright">
+            © 2026 EduAgenda - Todos los derechos reservados
+        </p>
+
+    </footer>
+
+    <!-- ==================== SCRIPT CORREGIDO ==================== -->
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            const token = localStorage.getItem('token');
+            const nombre = localStorage.getItem('nombre');
+            const tipo = localStorage.getItem('tipo');
+
+            const navLinks = document.getElementById('nav-links');
+            const saludo = document.getElementById('saludo');
+
+            // ✅ SI HAY SESIÓN
+            if (token && nombre) {
+
+                try {
+
+                    // ✅ VERIFICAR TOKEN
+                    const respuesta = await fetch('/verificar', {
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+
+                    // ❌ TOKEN INVÁLIDO
+                    if (!respuesta.ok) {
+
+                        localStorage.clear();
+
+                        window.location.href = 'sesion.html';
+
+                        return;
+                    }
+
+                    // ✅ SI ES ADMIN → REDIRIGIR
+                    if (tipo === 'admin') {
+
+                        window.location.href = 'admin.html';
+
+                        return;
+                    }
+
+                    // ✅ SALUDO
+                    saludo.textContent = `¡Hola de nuevo, ${nombre}!`;
+
+                    // ✅ CAMBIAR MENÚ
+                    navLinks.innerHTML = `
+                        <a href="main.html" class="activo">Inicio</a>
+                        <a href="usuarios.html">Mi Cuenta</a>
+
+                        <button onclick="logout()" class="btn-register" style="background-color:#ef4444;">
+                            Cerrar Sesión
+                        </button>
+                    `;
+
+                } catch (error) {
+
+                    console.error(error);
+
+                    localStorage.clear();
+
+                    window.location.href = 'sesion.html';
+                }
+            }
+        });
+
+        // ✅ CERRAR SESIÓN
+        function logout() {
+
+            localStorage.clear();
+
+            window.location.href = 'main.html';
+        }
+
+    </script>
+
+</body>
+
+</html>
