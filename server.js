@@ -51,9 +51,82 @@ function crearTablas() {
             tipo TEXT DEFAULT 'estudiante',
             creado_en TEXT DEFAULT (datetime('now','localtime'))
         )
-    `);
+    `, () => {
 
-    console.log("✅ Tabla users lista");
+        console.log("✅ Tabla users lista");
+
+        // ✅ AGREGADO
+        crearAdmin();
+
+    });
+}
+
+// ======================
+// ADMIN AUTOMÁTICO
+// ======================
+async function crearAdmin() {
+
+    const email = 'admin@edu.com';
+    const password = '123456';
+
+    db.get(
+        "SELECT * FROM users WHERE email = ?",
+        [email],
+        async (err, admin) => {
+
+            if (err) {
+                console.log("❌ Error buscando admin");
+                return;
+            }
+
+            // Si no existe → crearlo
+            if (!admin) {
+
+                const hash = await bcrypt.hash(password, 10);
+
+                db.run(
+                    `
+                    INSERT INTO users
+                    (nombre,email,password,documento,telefono,tipo)
+                    VALUES (?,?,?,?,?,?)
+                    `,
+                    [
+                        'Administrador',
+                        email,
+                        hash,
+                        '00000000',
+                        '3000000000',
+                        'admin'
+                    ]
+                );
+
+                console.log("✅ Admin creado");
+
+            } else {
+
+                // Si existe pero está vacío → actualizarlo
+                if (!admin.documento || !admin.telefono) {
+
+                    db.run(
+                        `
+                        UPDATE users
+                        SET documento = ?,
+                            telefono = ?
+                        WHERE email = ?
+                        `,
+                        [
+                            '00000000',
+                            '3000000000',
+                            email
+                        ]
+                    );
+
+                    console.log("✅ Admin actualizado");
+                }
+            }
+
+        }
+    );
 }
 
 // ======================

@@ -19,8 +19,6 @@
             background:#f3f4f6;
         }
 
-        /* NAVBAR */
-
         .navbar{
             background:white;
             padding:12px 25px;
@@ -43,8 +41,6 @@
             align-items:center;
             gap:15px;
         }
-
-        /* BOTONES */
 
         .btn-volver{
             background:#2563eb;
@@ -71,8 +67,6 @@
             gap:8px;
         }
 
-        /* CONTENEDOR */
-
         .contenedor{
             width:85%;
             margin:30px auto;
@@ -83,8 +77,6 @@
             margin-bottom:25px;
             color:#111827;
         }
-
-        /* CARDS */
 
         .cards{
             display:grid;
@@ -124,8 +116,6 @@
             color:#111827;
         }
 
-        /* FOOTER */
-
         .footer{
             margin-top:50px;
             background:white;
@@ -155,8 +145,6 @@
 
         <div class="menu">
 
-            <!-- VOLVER -->
-
             <a href="admin.html" class="btn-volver">
 
                 <i class="fas fa-arrow-left"></i>
@@ -164,8 +152,6 @@
                 Volver
 
             </a>
-
-            <!-- SALIR -->
 
             <button
             onclick="logout()"
@@ -195,8 +181,6 @@
 
         <div class="cards">
 
-            <!-- TOTAL -->
-
             <div class="card">
 
                 <i class="fas fa-users"></i>
@@ -206,8 +190,6 @@
                 <div class="valor" id="usuarios">0</div>
 
             </div>
-
-            <!-- ESTUDIANTES -->
 
             <div class="card">
 
@@ -219,8 +201,6 @@
 
             </div>
 
-            <!-- PROFESORES -->
-
             <div class="card">
 
                 <i class="fas fa-chalkboard-teacher"></i>
@@ -230,8 +210,6 @@
                 <div class="valor" id="profesores">0</div>
 
             </div>
-
-            <!-- ADMINS -->
 
             <div class="card">
 
@@ -255,26 +233,36 @@
 
     </footer>
 
-    <!-- SCRIPT -->
-
     <script>
 
         async function cargarReportes() {
 
+            const token = localStorage.getItem('token');
+            const tipo = localStorage.getItem('tipo');
+
+            if(!token || tipo !== 'admin'){
+
+                window.location.href = 'sesion.html';
+                return;
+
+            }
+
             try {
 
-                const respuesta =
-                    await fetch('http://localhost:3000/usuarios');
+                const respuesta = await fetch('/usuarios', {
 
-                const usuarios =
-                    await respuesta.json();
+                    headers:{
 
-                // TOTAL
+                        'Authorization': `Bearer ${token}`
+
+                    }
+
+                });
+
+                const usuarios = await respuesta.json();
 
                 document.getElementById('usuarios').textContent =
                     usuarios.length;
-
-                // ESTUDIANTES
 
                 const estudiantes =
                     usuarios.filter(u => u.tipo === 'estudiante');
@@ -282,15 +270,11 @@
                 document.getElementById('estudiantes').textContent =
                     estudiantes.length;
 
-                // PROFESORES
-
                 const profesores =
                     usuarios.filter(u => u.tipo === 'profesor');
 
                 document.getElementById('profesores').textContent =
                     profesores.length;
-
-                // ADMINS
 
                 const admins =
                     usuarios.filter(u => u.tipo === 'admin');
@@ -309,10 +293,6 @@
         }
 
         cargarReportes();
-
-        // ==========================
-        // CERRAR SESIÓN
-        // ==========================
 
         function logout(){
 
