@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduAgenda - Registro</title>
+
+    <link rel="stylesheet" href="css/colors.css" />
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <div class="logo">
+            <!-- ✅ CAMBIO: Agregué img/ -->
+            <img src="img/icono_grado.jpg" alt="Logo" width="40" />
+            <span>EduAgenda</span>
+        </div>
+
+        <div class="menu">
+            <a href="main.html">Inicio</a>
+            <a href="sesion.html">Iniciar sesión</a>
+            <a href="registrate.html" class="activo">Registrarse</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+
+            <h2><i class="fas fa-user-plus"></i> Regístrate</h2>
+            <p class="subtitle">¿Eres nuevo aquí? Crea una cuenta en la plataforma de Tumaco.</p>
+
+            <form id="formRegistro">
+                <div class="tipo-usuario">
+                    <label>Soy:</label>
+                    <div class="opciones">
+                        <label class="opcion">
+                            <input type="radio" name="tipo" value="profesor" required />
+                            <i class="fas fa-chalkboard-teacher"></i> Profesor
+                        </label>
+                        <label class="opcion">
+                            <input type="radio" name="tipo" value="estudiante" checked />
+                            <i class="fas fa-user-graduate"></i> Estudiante
+                        </label>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" name="nombre" placeholder="Nombre completo" required />
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-id-card"></i>
+                    <input type="text" name="documento" placeholder="Documento de identidad" required />
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Correo electrónico" required />
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="text" name="telefono" placeholder="Teléfono" />
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Contraseña" required />
+                </div>
+
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required />
+                </div>
+
+                <button type="submit" class="btn-register" style="width: 100%;">
+                    <i class="fas fa-check-circle"></i> Crear Cuenta
+                </button>
+            </form>
+
+            <p style="margin-top: 15px; text-align: center;">
+                <a href="sesion.html">Ya tengo cuenta, iniciar sesión</a>
+            </p>
+
+        </div>
+    </div>
+
+    <footer class="footer-contact">
+        <div class="contact-horizontal">
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <p><strong>Email:</strong> soporte@eduagenda.com</p>
+            </div>
+
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <p><strong>Teléfono:</strong> +57 300 000 0000</p>
+            </div>
+
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <p><strong>Ubicación:</strong> Colombia - Tumaco, Nariño</p>
+            </div>
+        </div>
+        <p class="copyright">© 2026 EduAgenda - Todos los derechos reservados</p>
+    </footer>
+
+    <script src="js/registrarte.js"></script>
+
+</body>
+
+</html>

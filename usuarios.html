@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduAgenda - Gestión de Usuarios</title>
+
+    <link rel="stylesheet" href="css/colors.css">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+
+        body{
+            margin:0;
+            font-family:Arial;
+            background:#f9fafb;
+        }
+
+        .navbar{
+            background:white;
+            color:#111827;
+            padding:12px 30px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 2px 10px rgba(0,0,0,.05);
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:22px;
+            font-weight:bold;
+            color:#111827;
+        }
+
+        .menu{
+            display:flex;
+            gap:15px;
+            align-items:center;
+        }
+
+        /* BOTÓN VOLVER AZUL */
+
+        .menu a{
+            background:#2563eb;
+            color:white;
+            text-decoration:none;
+            font-weight:bold;
+            font-size:13px;
+            padding:10px 14px;
+            border-radius:8px;
+            transition:0.3s;
+            display:flex;
+            align-items:center;
+            gap:6px;
+        }
+        .menu a:hover{
+            background:#1d4ed8;
+        }
+
+        .btn{
+            background:#dc2626;
+            border:none;
+            padding:10px 16px;
+            border-radius:8px;
+            color:white;
+            cursor:pointer;
+            font-weight:bold;
+            font-size:13px;
+        }
+
+        .btn:hover{
+            background:#b91c1c;
+        }
+
+        .contenedor{
+            width:90%;
+            margin:30px auto;
+        }
+
+        .titulo{
+            color:#111827;
+            margin-bottom:25px;
+            font-size:32px;
+        }
+
+        .cards{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+            gap:15px;
+            margin-bottom:30px;
+        }
+
+        .card{
+            background:white;
+            padding:20px;
+            border-radius:15px;
+            box-shadow:0 2px 10px rgba(0,0,0,.05);
+        }
+
+        .card i{
+            font-size:28px;
+            color:#2563eb;
+            margin-bottom:10px;
+        }
+
+        .card h3{
+            margin-bottom:8px;
+            font-size:20px;
+            color:#111827;
+        }
+
+        .card p{
+            font-size:14px;
+            color:#6b7280;
+        }
+
+        .tabla{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            border-radius:12px;
+            overflow:hidden;
+            box-shadow:0 2px 10px rgba(0,0,0,.05);
+        }
+
+        .tabla th{
+            background:#f3f4f6;
+            color:#111827;
+            padding:14px;
+            text-align:left;
+            font-size:14px;
+        }
+
+        .tabla td{
+            padding:14px;
+            border-bottom:1px solid #e5e7eb;
+            font-size:14px;
+            color:#374151;
+        }
+
+        .estado{
+            background:#dcfce7;
+            color:#166534;
+            padding:5px 10px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+        }
+
+        .rol-admin{
+            background:#fee2e2;
+            color:#991b1b;
+            padding:5px 10px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+        }
+
+        .rol-profesor{
+            background:#dbeafe;
+            color:#1e40af;
+            padding:5px 10px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+        }
+
+        .rol-estudiante{
+            background:#dcfce7;
+            color:#166534;
+            padding:5px 10px;
+            border-radius:20px;
+            font-size:12px;
+            font-weight:bold;
+        }
+
+        .footer{
+            margin-top:40px;
+            background:white;
+            color:#6b7280;
+            text-align:center;
+            padding:20px;
+            font-size:13px;
+            border-top:1px solid #e5e7eb;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <img src="img/icono_grado.jpg" width="40">
+
+            <span>EduAgenda</span>
+
+        </div>
+
+        <div class="menu">
+
+            <a href="admin.html">
+
+                <i class="fas fa-arrow-left"></i>
+
+                Volver
+
+            </a>
+
+            <button onclick="logout()" class="btn">
+
+                <i class="fas fa-sign-out-alt"></i>
+
+                Salir
+
+            </button>
+
+        </div>
+
+    </nav>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenedor">
+
+        <h1 class="titulo">
+
+            <i class="fas fa-users"></i>
+
+            Gestión de Usuarios
+
+        </h1>
+
+        <!-- TARJETAS -->
+
+        <div class="cards">
+
+            <div class="card">
+
+                <i class="fas fa-user"></i>
+
+                <h3>Total Usuarios</h3>
+
+                <p id="totalUsuarios">0 usuarios registrados</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fas fa-user-graduate"></i>
+
+                <h3>Estudiantes</h3>
+
+                <p>Usuarios matriculados</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fas fa-chalkboard-teacher"></i>
+
+                <h3>Profesores</h3>
+
+                <p>Profesores registrados</p>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fas fa-money-bill-wave"></i>
+
+                <h3>Pagos</h3>
+
+                <p>Pagos realizados</p>
+
+            </div>
+
+        </div>
+
+        <!-- TABLA -->
+
+        <table class="tabla">
+
+            <thead>
+
+                <tr>
+
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Documento</th>
+                    <th>Teléfono</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tablaUsuarios">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        © 2026 EduAgenda - Gestión de Usuarios
+
+    </footer>
+
+    <script>
+
+        document.addEventListener('DOMContentLoaded', async () => {
+
+            const token = localStorage.getItem('token');
+            const tipo = localStorage.getItem('tipo');
+
+            if(!token || tipo !== 'admin'){
+
+                window.location.href = 'sesion.html';
+                return;
+            }
+
+            try{
+
+                const respuesta = await fetch('/usuarios',{
+
+                    headers:{
+                        'Authorization': `Bearer ${token}`
+                    }
+
+                });
+
+                const usuarios = await respuesta.json();
+
+                document.getElementById('totalUsuarios').textContent =
+                `${usuarios.length} usuarios registrados`;
+
+                const tabla = document.getElementById('tablaUsuarios');
+
+                tabla.innerHTML = '';
+
+                usuarios.forEach(usuario => {
+
+                    let rolClase = 'rol-estudiante';
+
+                    if(usuario.tipo === 'admin'){
+                        rolClase = 'rol-admin';
+                    }
+
+                    if(usuario.tipo === 'profesor'){
+                        rolClase = 'rol-profesor';
+                    }
+
+                    tabla.innerHTML += `
+
+                        <tr>
+
+                            <td>${usuario.nombre}</td>
+
+                            <td>${usuario.email}</td>
+
+                            <td>${usuario.documento || 'No registrado'}</td>
+
+                            <td>${usuario.telefono || 'No registrado'}</td>
+
+                            <td>
+
+                                <span class="${rolClase}">
+                                    ${usuario.tipo}
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <span class="estado">
+                                    Activo
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                });
+
+            }catch(error){
+
+                console.log(error);
+
+                alert('Error al cargar usuarios');
+
+            }
+
+        });
+
+        function logout(){
+
+            localStorage.clear();
+
+            window.location.href='main.html';
+
+        }
+
+    </script>
+
+</body>
+
+</html>
