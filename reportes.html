@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>EduAgenda - Reportes</title>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+
+        body{
+            margin:0;
+            font-family:Arial;
+            background:#f3f4f6;
+        }
+
+        .navbar{
+            background:white;
+            padding:12px 25px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            box-shadow:0 2px 8px rgba(0,0,0,.05);
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            font-size:20px;
+            font-weight:bold;
+        }
+
+        .menu{
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
+
+        .btn-volver{
+            background:#2563eb;
+            color:white;
+            text-decoration:none;
+            padding:10px 15px;
+            border-radius:10px;
+            font-weight:bold;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .btn-salir{
+            background:#ef4444;
+            color:white;
+            border:none;
+            padding:10px 15px;
+            border-radius:10px;
+            font-weight:bold;
+            cursor:pointer;
+            display:flex;
+            align-items:center;
+            gap:8px;
+        }
+
+        .contenedor{
+            width:85%;
+            margin:30px auto;
+        }
+
+        .titulo{
+            font-size:34px;
+            margin-bottom:25px;
+            color:#111827;
+        }
+
+        .cards{
+            display:grid;
+            grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+            gap:20px;
+        }
+
+        .card{
+            background:white;
+            padding:30px;
+            border-radius:16px;
+            box-shadow:0 3px 10px rgba(0,0,0,.08);
+            text-align:center;
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-5px);
+        }
+
+        .card i{
+            font-size:40px;
+            color:#2563eb;
+            margin-bottom:12px;
+        }
+
+        .card h3{
+            margin:10px 0;
+            font-size:20px;
+            color:#111827;
+        }
+
+        .valor{
+            font-size:34px;
+            font-weight:bold;
+            margin-top:10px;
+            color:#111827;
+        }
+
+        .footer{
+            margin-top:50px;
+            background:white;
+            text-align:center;
+            padding:18px;
+            font-size:14px;
+            color:#6b7280;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+
+    <nav class="navbar">
+
+        <div class="logo">
+
+            <img src="img/icono_grado.jpg" width="35">
+
+            <span>EduAgenda</span>
+
+        </div>
+
+        <div class="menu">
+
+            <a href="admin.html" class="btn-volver">
+
+                <i class="fas fa-arrow-left"></i>
+
+                Volver
+
+            </a>
+
+            <button
+            onclick="logout()"
+            class="btn-salir">
+
+                <i class="fas fa-sign-out-alt"></i>
+
+                Salir
+
+            </button>
+
+        </div>
+
+    </nav>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenedor">
+
+        <h1 class="titulo">
+
+            <i class="fas fa-chart-bar"></i>
+
+            Reportes del Sistema
+
+        </h1>
+
+        <div class="cards">
+
+            <div class="card">
+
+                <i class="fas fa-users"></i>
+
+                <h3>Total Usuarios</h3>
+
+                <div class="valor" id="usuarios">0</div>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fas fa-user-graduate"></i>
+
+                <h3>Estudiantes</h3>
+
+                <div class="valor" id="estudiantes">0</div>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fas fa-chalkboard-teacher"></i>
+
+                <h3>Profesores</h3>
+
+                <div class="valor" id="profesores">0</div>
+
+            </div>
+
+            <div class="card">
+
+                <i class="fas fa-user-shield"></i>
+
+                <h3>Administradores</h3>
+
+                <div class="valor" id="admins">0</div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FOOTER -->
+
+    <footer class="footer">
+
+        © 2026 EduAgenda - Reportes
+
+    </footer>
+
+    <script>
+
+        async function cargarReportes() {
+
+            const token = localStorage.getItem('token');
+            const tipo = localStorage.getItem('tipo');
+
+            if(!token || tipo !== 'admin'){
+
+                window.location.href = 'sesion.html';
+                return;
+
+            }
+
+            try {
+
+                const respuesta = await fetch('/usuarios', {
+
+                    headers:{
+
+                        'Authorization': `Bearer ${token}`
+
+                    }
+
+                });
+
+                const usuarios = await respuesta.json();
+
+                document.getElementById('usuarios').textContent =
+                    usuarios.length;
+
+                const estudiantes =
+                    usuarios.filter(u => u.tipo === 'estudiante');
+
+                document.getElementById('estudiantes').textContent =
+                    estudiantes.length;
+
+                const profesores =
+                    usuarios.filter(u => u.tipo === 'profesor');
+
+                document.getElementById('profesores').textContent =
+                    profesores.length;
+
+                const admins =
+                    usuarios.filter(u => u.tipo === 'admin');
+
+                document.getElementById('admins').textContent =
+                    admins.length;
+
+            } catch (error) {
+
+                console.log(error);
+
+                alert('Error cargando reportes');
+
+            }
+
+        }
+
+        cargarReportes();
+
+        function logout(){
+
+            localStorage.clear();
+
+            window.location.href = 'main.html';
+
+        }
+
+    </script>
+
+</body>
+
+</html>

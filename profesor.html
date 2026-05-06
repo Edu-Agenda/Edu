@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel de Profesor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+
+    /* Barra superior */
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 15px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    header h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    /* Contenedor principal */
+    .container {
+      padding: 20px;
+    }
+
+    /* Tarjetas */
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #2c3e50;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 10px 15px;
+      background: #3498db;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #2980b9;
+    }
+
+    /* Botón cerrar sesión */
+    .logout {
+      background: #e74c3c;
+      padding: 8px 12px;
+      border-radius: 5px;
+      color: white;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h1>👨‍🏫 Bienvenido Profesor</h1>
+  <a href="#" class="logout">Cerrar sesión</a>
+</header>
+
+<div class="container">
+
+  <h2>Panel de Control</h2>
+
+  <div class="cards">
+
+    <div class="card">
+      <h3>📚 Mis cursos</h3>
+      <p>Gestiona tus materias</p>
+      <a href="#" class="btn">Ver</a>
+    </div>
+
+    <div class="card">
+      <h3>📝 Notas</h3>
+      <p>Registrar calificaciones</p>
+      <a href="#" class="btn">Entrar</a>
+    </div>
+
+    <div class="card">
+      <h3>👨‍🎓 Estudiantes</h3>
+      <p>Lista de alumnos</p>
+      <a href="#" class="btn">Ver</a>
+    </div>
+
+    <div class="card">
+      <h3>📊 Reportes</h3>
+      <p>Estadísticas generales</p>
+      <a href="#" class="btn">Abrir</a>
+    </div>
+
+  </div>
+
+</div>
+
+</body>
+</html>
