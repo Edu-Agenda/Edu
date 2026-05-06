@@ -1,3 +1,8 @@
 node_modules/
 edu.db
+<<<<<<< HEAD
 .env
+=======
+.env
+
+>>>>>>> backend
