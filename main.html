@@ -1,10 +1,3 @@
-<<<<<<< HEAD
-=======
-<!-- ========================= -->
-<!-- main.html CORREGIDO -->
-<!-- ========================= -->
-
->>>>>>> develop
 <!DOCTYPE html>
 <html lang="es">
 
@@ -22,11 +15,7 @@
 
     <nav class="navbar">
         <div class="logo">
-<<<<<<< HEAD
             <img src="icono_grado.jpg" alt="Logo EduAgenda" width="45" />
-=======
-            <img src="img/icono_grado.jpg" alt="Logo EduAgenda" width="45" />
->>>>>>> develop
             <span>EduAgenda</span>
         </div>
 
@@ -40,36 +29,19 @@
     <header class="hero-section">
         <div class="hero-content">
             <h1 id="saludo">Reserva clases con profesores fácilmente</h1>
-<<<<<<< HEAD
             <p class="description">
                 EduAgenda es la plataforma líder en <strong>Tumaco</strong> diseñada para transformar la interacción académica. 
                 Facilitamos la gestión inteligente de clases particulares, permitiendo una organización impecable de horarios 
-=======
-
-            <p class="description">
-                EduAgenda es la plataforma líder en <strong>Tumaco</strong> diseñada para transformar la interacción
-                académica.
-                Facilitamos la gestión inteligente de clases particulares, permitiendo una organización impecable de
-                horarios
->>>>>>> develop
                 y un seguimiento detallado del progreso educativo.
             </p>
         </div>
 
         <div class="hero-visual">
-<<<<<<< HEAD
             <img src="compu.jpeg" alt="EduAgenda Interfaz" />
-=======
-            <img src="img/compu.jpeg" alt="EduAgenda Interfaz" />
->>>>>>> develop
         </div>
     </header>
 
     <section class="steps-section" id="tabla">
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
         <h2 class="section-title">¿Cómo funciona?</h2>
 
         <div class="grid-steps">
@@ -78,13 +50,7 @@
                 <div class="icon-circle icon-blue">
                     <i class="fas fa-user-plus"></i>
                 </div>
-<<<<<<< HEAD
                 <h3>Regístrate</h3>
-=======
-
-                <h3>Regístrate</h3>
-
->>>>>>> develop
                 <p>Crea tu cuenta como estudiante o profesor en pocos pasos.</p>
             </div>
 
@@ -92,13 +58,7 @@
                 <div class="icon-circle icon-green">
                     <i class="fas fa-search"></i>
                 </div>
-<<<<<<< HEAD
                 <h3>Busca profesores</h3>
-=======
-
-                <h3>Busca profesores</h3>
-
->>>>>>> develop
                 <p>Encuentra el profesor ideal según la materia que necesites.</p>
             </div>
 
@@ -106,13 +66,7 @@
                 <div class="icon-circle icon-purple">
                     <i class="fas fa-calendar-check"></i>
                 </div>
-<<<<<<< HEAD
                 <h3>Reserva tu clase</h3>
-=======
-
-                <h3>Reserva tu clase</h3>
-
->>>>>>> develop
                 <p>Selecciona el horario disponible y agenda tu clase fácilmente.</p>
             </div>
 
@@ -120,13 +74,7 @@
                 <div class="icon-circle icon-check">
                     <i class="fas fa-check-circle"></i>
                 </div>
-<<<<<<< HEAD
                 <h3>Aprende</h3>
-=======
-
-                <h3>Aprende</h3>
-
->>>>>>> develop
                 <p>Conéctate y mejora tu rendimiento académico.</p>
             </div>
 
@@ -134,10 +82,6 @@
     </section>
 
     <footer class="footer-contact">
-<<<<<<< HEAD
-=======
-
->>>>>>> develop
         <div class="contact-horizontal">
 
             <div class="contact-item">
@@ -157,7 +101,6 @@
 
         </div>
 
-<<<<<<< HEAD
         <p class="copyright">© 2026 EduAgenda - Todos los derechos reservados</p>
     </footer>
 
@@ -167,91 +110,3 @@
 </body>
 
 </html>
-=======
-        <p class="copyright">
-            © 2026 EduAgenda - Todos los derechos reservados
-        </p>
-
-    </footer>
-
-    <!-- ==================== SCRIPT CORREGIDO ==================== -->
-
-    <script>
-
-        document.addEventListener('DOMContentLoaded', async () => {
-
-            const token = localStorage.getItem('token');
-            const nombre = localStorage.getItem('nombre');
-            const tipo = localStorage.getItem('tipo');
-
-            const navLinks = document.getElementById('nav-links');
-            const saludo = document.getElementById('saludo');
-
-            // ✅ SI HAY SESIÓN
-            if (token && nombre) {
-
-                try {
-
-                    // ✅ VERIFICAR TOKEN
-                    const respuesta = await fetch('/verificar', {
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    });
-
-                    // ❌ TOKEN INVÁLIDO
-                    if (!respuesta.ok) {
-
-                        localStorage.clear();
-
-                        window.location.href = 'sesion.html';
-
-                        return;
-                    }
-
-                    // ✅ SI ES ADMIN → REDIRIGIR
-                    if (tipo === 'admin') {
-
-                        window.location.href = 'admin.html';
-
-                        return;
-                    }
-
-                    // ✅ SALUDO
-                    saludo.textContent = `¡Hola de nuevo, ${nombre}!`;
-
-                    // ✅ CAMBIAR MENÚ
-                    navLinks.innerHTML = `
-                        <a href="main.html" class="activo">Inicio</a>
-                        <a href="usuarios.html">Mi Cuenta</a>
-
-                        <button onclick="logout()" class="btn-register" style="background-color:#ef4444;">
-                            Cerrar Sesión
-                        </button>
-                    `;
-
-                } catch (error) {
-
-                    console.error(error);
-
-                    localStorage.clear();
-
-                    window.location.href = 'sesion.html';
-                }
-            }
-        });
-
-        // ✅ CERRAR SESIÓN
-        function logout() {
-
-            localStorage.clear();
-
-            window.location.href = 'main.html';
-        }
-
-    </script>
-
-</body>
-
-</html>
->>>>>>> develop
