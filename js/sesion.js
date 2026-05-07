@@ -1,91 +1,52 @@
-document.addEventListener('DOMContentLoaded', () => {
-<<<<<<< HEAD
-    // Usamos el ID del formulario para capturar el evento "Enter" también
-    const form = document.getElementById('formSesion');
-
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Evita que la página se recargue
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        try {
-            const res = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await res.json();
-
-            if (res.ok) {
-                // Guardamos los datos de sesión
-                localStorage.setItem('token', data.token);
-                localStorage.setItem('nombre', data.nombre);
-                
-                // ¡REDIRECCIÓN AL DASHBOARD!
-                window.location.href = 'usuarios.html'; 
-            } else {
-                // Si el servidor envía un error (ej: contraseña incorrecta)
-                alert(data.error || "Credenciales incorrectas");
-            }
-        } catch (err) {
-            console.error("Error de conexión:", err);
-            alert("No se pudo conectar con el servidor de EduAgenda. Revisa la terminal.");
-        }
-    });
-});
-=======
-  const form = document.getElementById('formSesion');
-
-  if (!form) return;
-
-  form.addEventListener('submit', async (e) => {
+document.getElementById('formSesion').addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById('email').value;
+    const email = document.getElementById('email').value.trim().toLowerCase();
     const password = document.getElementById('password').value;
 
     try {
-      const respuesta = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email, password })
-      });
+        const res = await fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
 
-      const data = await respuesta.json();
+        const data = await res.json();
+        
+        // 🔍 Verifica esto en la consola (F12)
+        console.log('DATOS RECIBIDOS:', data);
 
-      if (!respuesta.ok) {
-        alert(data.error || 'Error al iniciar sesión');
-        return;
-      }
+        if (!res.ok) {
+            alert(data.error || 'Credenciales incorrectas');
+            return;
+        }
 
-      // ✅ GUARDAR DATOS EN LOCALSTORAGE
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('tipo', data.tipo);
-      localStorage.setItem('nombre', data.nombre);
-      localStorage.setItem('email', data.email);
-      localStorage.setItem('id', data.id);
+        // GUARDAR DATOS
+        localStorage.clear();
+        localStorage.setItem('token', data.token);
+        localStorage.setItem('tipo', data.tipo);
+        localStorage.setItem('nombre', data.nombre);
 
-      console.log('✅ Sesión guardada:', data.tipo);
-      console.log('✅ Token:', data.token.substring(0, 20) + '...');
-      console.log('✅ Redirigiendo a:', data.tipo === 'admin' ? 'admin.html' : 'main.html');
+        // Aseguramos que el tipo esté en minúsculas y sin espacios
+        const tipoUsuario = String(data.tipo).toLowerCase().trim();
 
-      // ✅ REDIRECCIÓN SEGÚN TIPO DE USUARIO
-      if (data.tipo === 'admin') {
-        window.location.href = 'admin.html';
-      } else if (data.tipo === 'profesor') {
-        window.location.href = 'profesor.html';
-      } else {
-        window.location.href = 'main.html';
-      }
+        // REDIRECCIÓN USANDO RUTAS ABSOLUTAS (El '/' al principio es clave)
+        const rutas = {
+            'admin': '/admin.html',
+            'profesor': '/profesor.html',
+            'estudiante': '/estudiante.html'
+        };
+
+        if (rutas[tipoUsuario]) {
+            console.log(`Redirigiendo a: ${rutas[tipoUsuario]}`);
+            window.location.assign(rutas[tipoUsuario]);
+        } else {
+            alert('Tipo de usuario no reconocido: ' + data.tipo);
+            localStorage.clear();
+        }
 
     } catch (error) {
-      console.error('❌ Error:', error);
-      alert('Error de conexión con el servidor');
+        console.error('ERROR EN LOGIN:', error);
+        alert('No se pudo conectar con el servidor. ¿Está encendido?');
     }
-  });
 });
->>>>>>> develop
