@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAgenda - Realizar Pago</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0061ff;
+            --bg-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+        }
+        body {
+            margin: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-main);
+        }
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+
+        .steps-bar {
+            display: flex;
+            justify-content: space-between;
+            background: white;
+            padding: 20px 60px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+        .step {
+            display: flex; flex-direction: column; align-items: center;
+            gap: 8px; color: #94a3b8; font-size: 12px; flex: 1;
+        }
+        .step.active { color: var(--primary-blue); font-weight: 600; }
+        .step-num {
+            width: 30px; height: 30px; border-radius: 50%;
+            background: #e2e8f0; display: flex; align-items: center;
+            justify-content: center; color: white; font-weight: bold;
+        }
+        .step.active .step-num { background: var(--primary-blue); }
+
+        .payment-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; }
+        .card {
+            background: white; border-radius: 15px;
+            border: 1px solid var(--border-color); padding: 30px;
+        }
+
+        .method-option {
+            border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 20px;
+            margin-bottom: 15px; cursor: pointer; transition: 0.3s;
+        }
+        .method-option.selected { border-color: var(--primary-blue); background: #f0f7ff; }
+        .method-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+
+        input {
+            width: 100%; padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px; box-sizing: border-box; outline: none;
+        }
+
+        .resumen-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .avatar-circle {
+            width: 45px; height: 45px; background: #7c3aed;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; font-weight: bold;
+        }
+        .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
+        .total-row {
+            border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;
+            font-size: 18px; font-weight: bold; color: var(--primary-blue);
+            display: flex; justify-content: space-between;
+        }
+
+        .btn-pay {
+            background: var(--primary-blue); color: white; width: 100%;
+            border: none; padding: 15px; border-radius: 8px;
+            font-weight: bold; font-size: 16px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            gap: 10px; margin-top: 20px; transition: 0.2s;
+        }
+        .btn-pay:hover:not(:disabled) { background: #0052d4; }
+        .btn-pay:disabled { opacity: 0.7; cursor: not-allowed; }
+
+        .alert-timer {
+            background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;
+            padding: 12px; border-radius: 8px; font-size: 13px;
+            margin-top: 15px; display: flex; align-items: center; gap: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- BARRA DE PASOS -->
+    <div class="steps-bar">
+        <div class="step"><div class="step-num">1</div>Seleccionar horario</div>
+        <div class="step"><div class="step-num">2</div>Confirmar reserva</div>
+        <div class="step active"><div class="step-num">3</div>Realizar pago</div>
+        <div class="step"><div class="step-num">4</div>Reserva confirmada</div>
+    </div>
+
+    <div class="payment-grid">
+
+        <!-- MÉTODOS DE PAGO -->
+        <div class="card">
+            <h2>Selecciona un método de pago</h2>
+
+            <div class="method-option selected" id="metodoTarjeta">
+                <div class="method-header">
+                    <input type="radio" name="metodo" checked>
+                    <i class="fas fa-credit-card"></i>
+                    <strong>Tarjeta de crédito o débito</strong>
+                    <div style="margin-left:auto;">
+                        <i class="fab fa-cc-visa" style="color:#1a1f71; font-size:20px;"></i>
+                        <i class="fab fa-cc-mastercard" style="color:#eb001b; font-size:20px;"></i>
+                    </div>
+                </div>
+                <input type="text" placeholder="Número de tarjeta" value="1234 5678 9012 3456">
+                <div class="form-row">
+                    <input type="text" placeholder="Nombre en la tarjeta" id="cardName">
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" placeholder="MM/AA" value="12/28">
+                        <input type="text" placeholder="CVV" value="123">
+                    </div>
+                </div>
+            </div>
+
+            <div class="method-option" id="metodoPSE">
+                <div class="method-header">
+                    <input type="radio" name="metodo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PSE_Logo.png" width="30" alt="PSE">
+                    <strong>PSE (Débito bancario)</strong>
+                </div>
+            </div>
+
+            <button class="btn-pay" id="confirmPay">
+                <i class="fas fa-lock"></i> Pagar ahora
+                <span id="btnTotal">$50.000 COP</span>
+            </button>
+        </div>
+
+        <!-- RESUMEN -->
+        <div class="card">
+            <h3>Resumen de la reserva</h3>
+            <div class="resumen-header">
+                <div class="avatar-circle" id="avatarLetras">DR</div>
+                <div>
+                    <strong id="profName">Darwin Rosero</strong><br>
+                    <small style="color:#64748b" id="profMateria">Profesor de Matemáticas</small>
+                </div>
+            </div>
+
+            <div style="font-size:14px; color:#64748b; line-height:2;">
+                <div class="price-row"><span>Materia:</span> <strong id="resMateria">Matemáticas</strong></div>
+                <div class="price-row"><span>Fecha:</span>   <strong id="resFecha">—</strong></div>
+                <div class="price-row"><span>Hora:</span>    <strong id="resHora">—</strong></div>
+                <div class="price-row"><span>Modalidad:</span> <strong>Virtual (Google Meet)</strong></div>
+            </div>
+
+            <div class="total-row">
+                <span>Total a pagar</span>
+                <span id="resTotal">$50.000 COP</span>
+            </div>
+
+            <div class="alert-timer">
+                <i class="fas fa-check-circle"></i>
+                <span>Reserva válida por 15 minutos. Completa tu pago antes de que expire.</span>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+    // ── Verificar sesión y reserva ───────────────────────────────
+    const token  = localStorage.getItem('token');
+    const reservaStr = localStorage.getItem('reserva_pendiente');
+
+    if (!token) {
+        alert('Debes iniciar sesión primero.');
+        window.location.href = 'sesion.html';
+        return;
+    }
+
+    if (!reservaStr) {
+        alert('No hay reserva pendiente. Selecciona un horario primero.');
+        window.location.href = 'estudiante.html';
+        return;
+    }
+
+    const reserva = JSON.parse(reservaStr);
+
+    // ── Poblar interfaz ──────────────────────────────────────────
+    document.getElementById('profName').innerText    = reserva.profesor  || 'Profesor';
+    document.getElementById('resMateria').innerText  = reserva.materia   || '—';
+    document.getElementById('resFecha').innerText    = reserva.fecha     || '—';
+    document.getElementById('resHora').innerText     = reserva.hora      || '—';
+    document.getElementById('profMateria').innerText = `Profesor de ${reserva.materia || 'la materia'}`;
+    document.getElementById('cardName').value        = reserva.estudiante || '';
+
+    // Letras del avatar
+    const iniciales = (reserva.profesor || 'PR').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+    document.getElementById('avatarLetras').innerText = iniciales;
+
+    const precio = new Intl.NumberFormat('es-CO', {
+        style: 'currency', currency: 'COP', maximumFractionDigits: 0
+    }).format(reserva.precio || 50000);
+
+    document.getElementById('resTotal').innerText = precio;
+    document.getElementById('btnTotal').innerText = precio;
+
+    // ── Confirmar pago ───────────────────────────────────────────
+    document.getElementById('confirmPay').addEventListener('click', async () => {
+        const btn = document.getElementById('confirmPay');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+
+        try {
+            const response = await fetch('/confirmar-pago', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(reserva)
+            });
+
+            // Verificar que la respuesta sea JSON
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error(`El servidor devolvió una respuesta inesperada (${response.status})`);
+            }
+
+            const result = await response.json();
+
+            if (response.ok) {
+                alert('✅ ¡Pago exitoso! Tu tutoría ha sido agendada.');
+                localStorage.removeItem('reserva_pendiente');
+                window.location.href = 'estudiante.html';
+            } else {
+                throw new Error(result.error || 'Error en el pago');
+            }
+
+        } catch (error) {
+            console.error('Error en pago:', error);
+            alert('❌ ' + error.message);
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fas fa-lock"></i> Pagar ahora ${precio}`;
+        }
+    });
+
+    // ── Selección de método ──────────────────────────────────────
+    document.getElementById('metodoTarjeta').addEventListener('click', () => {
+        document.getElementById('metodoTarjeta').classList.add('selected');
+        document.getElementById('metodoPSE').classList.remove('selected');
+    });
+    document.getElementById('metodoPSE').addEventListener('click', () => {
+        document.getElementById('metodoPSE').classList.add('selected');
+        document.getElementById('metodoTarjeta').classList.remove('selected');
+    });
+});
+</script>
+
+</body>
+</html>

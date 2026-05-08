@@ -1,52 +1,61 @@
-document.getElementById('formSesion').addEventListener('submit', async (e) => {
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('formSesion');
+  if (!form) return;
+
+  form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const email = document.getElementById('email').value.trim().toLowerCase();
+    const email    = document.getElementById('email').value.trim();
     const password = document.getElementById('password').value;
+    const btnLogin = document.getElementById('btnLogin');
+
+    btnLogin.disabled = true;
+    btnLogin.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Entrando...';
 
     try {
-        const res = await fetch('/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
-        });
+      const respuesta = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
 
-        const data = await res.json();
-        
-        // 🔍 Verifica esto en la consola (F12)
-        console.log('DATOS RECIBIDOS:', data);
+      const data = await respuesta.json();
 
-        if (!res.ok) {
-            alert(data.error || 'Credenciales incorrectas');
-            return;
-        }
+      if (!respuesta.ok) {
+        alert(data.error || 'Credenciales incorrectas');
+        btnLogin.disabled = false;
+        btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
+        return;
+      }
 
-        // GUARDAR DATOS
-        localStorage.clear();
-        localStorage.setItem('token', data.token);
-        localStorage.setItem('tipo', data.tipo);
-        localStorage.setItem('nombre', data.nombre);
+      // Limpiar localStorage antes de guardar nueva sesión
+      localStorage.clear();
 
-        // Aseguramos que el tipo esté en minúsculas y sin espacios
-        const tipoUsuario = String(data.tipo).toLowerCase().trim();
+      // Guardar sesión
+      localStorage.setItem('token',  data.token);
+      localStorage.setItem('tipo',   data.tipo);
+      localStorage.setItem('nombre', data.nombre);
+      localStorage.setItem('email',  data.email  || email);
+      localStorage.setItem('id',     data.id !== undefined ? String(data.id) : '0');
 
-        // REDIRECCIÓN USANDO RUTAS ABSOLUTAS (El '/' al principio es clave)
-        const rutas = {
-            'admin': '/admin.html',
-            'profesor': '/profesor.html',
-            'estudiante': '/estudiante.html'
-        };
+      console.log('✅ Sesión iniciada como:', data.tipo);
 
-        if (rutas[tipoUsuario]) {
-            console.log(`Redirigiendo a: ${rutas[tipoUsuario]}`);
-            window.location.assign(rutas[tipoUsuario]);
-        } else {
-            alert('Tipo de usuario no reconocido: ' + data.tipo);
-            localStorage.clear();
-        }
+      // Redirigir según tipo
+      if (data.tipo === 'admin') {
+        window.location.href = 'admin.html';
+      } else if (data.tipo === 'profesor') {
+        window.location.href = 'profesor.html';
+      } else if (data.tipo === 'estudiante') {
+        window.location.href = 'estudiante.html';
+      } else {
+        alert('Tipo de usuario desconocido: ' + data.tipo);
+      }
 
     } catch (error) {
-        console.error('ERROR EN LOGIN:', error);
-        alert('No se pudo conectar con el servidor. ¿Está encendido?');
+      console.error('❌ Error de conexión:', error);
+      alert('Error de conexión con el servidor.');
+      btnLogin.disabled = false;
+      btnLogin.innerHTML = '<i class="fas fa-sign-in-alt"></i> Entrar';
     }
+  });
 });

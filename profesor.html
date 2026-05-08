@@ -2,119 +2,274 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Panel de Profesor</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduAgenda - Panel del Profesor</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
+    :root {
+      --primary-blue: #0047ff;
+      --bg-light: #f8fafd;
+      --text-dark: #1e293b;
+      --border-color: #e2e8f0;
     }
 
-    /* Barra superior */
-    header {
-      background: #2c3e50;
-      color: white;
-      padding: 15px 20px;
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-light);
+      color: var(--text-dark);
+    }
+
+    /* Navbar superior */
+    nav {
+      background: white;
+      padding: 10px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     }
 
-    header h1 {
-      font-size: 18px;
+    .logo {
+      font-size: 22px;
+      font-weight: bold;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-user {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .user-info {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .btn-logout {
+      background: #ff4d4d;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Contenido Principal */
+    .main-container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 20px;
+    }
+
+    .welcome-section {
+      margin-bottom: 30px;
+    }
+
+    .welcome-section h1 {
+      font-size: 28px;
       margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    /* Contenedor principal */
-    .container {
-      padding: 20px;
-    }
-
-    /* Tarjetas */
-    .cards {
+    /* Menú de pestañas/iconos */
+    .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
       gap: 15px;
+      margin-bottom: 30px;
     }
 
-    .card {
+    .menu-item {
       background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 20px 10px;
+      border-radius: 12px;
       text-align: center;
+      text-decoration: none;
+      color: #64748b;
+      border: 1px solid var(--border-color);
+      transition: all 0.3s;
+      font-size: 13px;
+      font-weight: 500;
     }
 
-    .card h3 {
-      margin-bottom: 10px;
-      color: #2c3e50;
+    .menu-item i {
+      display: block;
+      font-size: 20px;
+      margin-bottom: 8px;
+      color: var(--primary-blue);
     }
 
-    .btn {
-      display: inline-block;
+    .menu-item:hover {
+      border-color: var(--primary-blue);
+      color: var(--primary-blue);
+      box-shadow: 0 4px 12px rgba(0,71,255,0.1);
+    }
+
+    /* Tabla y Secciones */
+    .content-card {
+      background: white;
+      border-radius: 15px;
+      padding: 25px;
+      border: 1px solid var(--border-color);
+    }
+
+    .table-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .btn-add {
+      background: var(--primary-blue);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
       margin-top: 10px;
-      padding: 10px 15px;
-      background: #3498db;
-      color: white;
-      border-radius: 5px;
-      text-decoration: none;
     }
 
-    .btn:hover {
-      background: #2980b9;
+    th {
+      text-align: left;
+      padding: 12px;
+      background: #f8fafc;
+      font-size: 13px;
+      color: #64748b;
+      border-bottom: 2px solid var(--border-color);
     }
 
-    /* Botón cerrar sesión */
-    .logout {
-      background: #e74c3c;
-      padding: 8px 12px;
-      border-radius: 5px;
-      color: white;
-      text-decoration: none;
+    td {
+      padding: 15px 12px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 14px;
+    }
+
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .status-available { background: #dcfce7; color: #166534; }
+    .status-busy { background: #fef3c7; color: #92400e; }
+
+    /* Footer */
+    footer {
+      margin-top: 50px;
+      padding: 20px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: #64748b;
     }
   </style>
 </head>
-
 <body>
 
-<header>
-  <h1>👨‍🏫 Bienvenido Profesor</h1>
-  <a href="#" class="logout">Cerrar sesión</a>
-</header>
+  <nav>
+    <div class="logo">
+      <i class="fas fa-graduation-cap" style="color: var(--primary-blue);"></i> EduAgenda
+    </div>
+    <div class="nav-user">
+      <i class="fas fa-bell"></i>
+      <span class="user-info" id="profesorNombre">Cargando...</span>
+      <a href="/sesion.html" class="btn-logout" onclick="localStorage.clear()">
+        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+      </a>
+    </div>
+  </nav>
 
-<div class="container">
-
-  <h2>Panel de Control</h2>
-
-  <div class="cards">
-
-    <div class="card">
-      <h3>📚 Mis cursos</h3>
-      <p>Gestiona tus materias</p>
-      <a href="#" class="btn">Ver</a>
+  <div class="main-container">
+    <div class="welcome-section">
+      <h1><i class="fas fa-crown" style="color: #f1c40f;"></i> Panel del Profesor</h1>
+      <p>Bienvenido, <span id="saludoNombre">Profesor</span></p>
     </div>
 
-    <div class="card">
-      <h3>📝 Notas</h3>
-      <p>Registrar calificaciones</p>
-      <a href="#" class="btn">Entrar</a>
+    <div class="menu-grid">
+      <a href="#" class="menu-item"><i class="fas fa-home"></i> Mi agenda</a>
+      <a href="#" class="menu-item"><i class="fas fa-clock"></i> Solicitudes</a>
+      <a href="#" class="menu-item"><i class="fas fa-users"></i> Estudiantes</a>
+      <a href="#" class="menu-item"><i class="fas fa-chart-line"></i> Ingresos</a>
+      <a href="#" class="menu-item"><i class="fas fa-book"></i> Materias</a>
+      <a href="#" class="menu-item"><i class="fas fa-graduation-cap"></i> Calificaciones</a>
+      <a href="#" class="menu-item"><i class="fas fa-cog"></i> Configuración</a>
     </div>
 
-    <div class="card">
-      <h3>👨‍🎓 Estudiantes</h3>
-      <p>Lista de alumnos</p>
-      <a href="#" class="btn">Ver</a>
+    <div class="content-card">
+      <div class="table-header">
+        <div>
+          <h3 style="margin:0">Mi Disponibilidad Académica</h3>
+          <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Gestiona tus horarios por materia evitando cruces.</p>
+        </div>
+        <button class="btn-add">+ Agregar Horario</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Día</th>
+            <th>Materia</th>
+            <th>Hora Inicio</th>
+            <th>Hora Fin</th>
+            <th>Modalidad</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Lunes</td>
+            <td><strong>Matemáticas</strong></td>
+            <td>08:00 AM</td>
+            <td>10:00 AM</td>
+            <td><i class="fas fa-video"></i> Virtual</td>
+            <td><span class="status-badge status-available">Disponible</span></td>
+            <td><i class="fas fa-edit"></i> <i class="fas fa-trash" style="color:red; margin-left:10px;"></i></td>
+          </tr>
+          <tr>
+            <td>Miércoles</td>
+            <td><strong>Química</strong></td>
+            <td>09:00 AM</td>
+            <td>11:00 AM</td>
+            <td><i class="fas fa-video"></i> Virtual</td>
+            <td><span class="status-badge status-busy">Ocupado</span></td>
+            <td><i class="fas fa-edit"></i> <i class="fas fa-trash" style="color:red; margin-left:10px;"></i></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
 
-    <div class="card">
-      <h3>📊 Reportes</h3>
-      <p>Estadísticas generales</p>
-      <a href="#" class="btn">Abrir</a>
-    </div>
-
+    <footer>
+      <span><i class="fas fa-envelope"></i> soporte@eduagenda.com</span>
+      <span>© 2026 EduAgenda - Todos los derechos reservados</span>
+      <span><i class="fas fa-map-marker-alt"></i> Colombia - Tumaco, Nariño</span>
+    </footer>
   </div>
 
-</div>
-
+  <script>
+    // Recuperar el nombre guardado en el login
+    const nombre = localStorage.getItem('nombre') || 'Profesor';
+    document.getElementById('profesorNombre').innerText = nombre;
+    document.getElementById('saludoNombre').innerText = nombre;
+  </script>
 </body>
 </html>
