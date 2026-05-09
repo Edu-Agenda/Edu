@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAgenda - Seguimiento Académico</title>
+
+    <!-- FONT AWESOME -->
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        :root {
+            --primary-blue: #0061ff;
+            --bg-light: #f8faff;
+            --text-dark: #1e293b;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 8%;
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-blue);
+            font-weight: bold;
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 5px;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .user-profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-size: 1.8rem;
+            color: #0f172a;
+            margin-bottom: 30px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            display: block;
+            font-size: 0.85rem;
+            margin-bottom: 5px;
+            color: #64748b;
+        }
+
+        select,
+        input {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+            width: 220px;
+            outline: none;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+            text-align: left;
+            padding: 15px;
+            font-size: 0.9rem;
+            color: #475569;
+        }
+
+        td {
+            padding: 15px;
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+        }
+
+        .actions-cell {
+            color: var(--primary-blue);
+            display: flex;
+            gap: 15px;
+            cursor: pointer;
+            align-items: center;
+        }
+
+        .btn-add {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-save {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .form-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .input-box {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .illustration {
+            text-align: center;
+        }
+
+        .illustration img {
+            width: 180px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <nav>
+
+        <div class="logo">
+            <strong>EduAgenda</strong>
+        </div>
+
+        <div class="nav-links">
+
+            <a href="profesor.html">Inicio</a>
+
+            <a href="#">Clases</a>
+
+            <a href="#" class="active">Calificaciones</a>
+
+            <div class="user-profile">
+
+                <img src="https://via.placeholder.com/150"
+                    alt="Avatar"
+                    id="navAvatar">
+
+                <span id="navName">
+                    Darwin Rosero
+                </span>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <div class="container">
+
+        <h1>Seguimiento Académico</h1>
+
+        <div class="filters">
+
+            <div class="filter-group">
+
+                <label>Profesor:</label>
+
+                <select id="profSelect">
+                    <option>Darwin Rosero</option>
+                </select>
+
+            </div>
+
+            <div class="filter-group">
+
+                <label>Seleccionar Estudiante:</label>
+
+                <select id="estuSelect">
+
+                    <option>Ana Ruiz</option>
+                    <option>Carlos Medina</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <!-- TABLA -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Estudiante</th>
+                        <th>Materia</th>
+                        <th>Calificación</th>
+                        <th>Observación</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="calificacionesBody">
+
+                    <tr>
+
+                        <td>Ana Ruiz</td>
+                        <td>Matemáticas</td>
+                        <td>4.5</td>
+                        <td>Buen avance</td>
+
+                        <td class="actions-cell">
+
+                            <i class="fas fa-pencil"></i>
+
+                            <i class="fas fa-trash"
+                                style="color:#ef4444"></i>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- BOTON -->
+
+        <button class="btn-add">
+
+            <i class="fas fa-plus"></i>
+
+            Agregar Registro
+
+        </button>
+
+        <!-- FORM -->
+
+        <div class="form-card">
+
+            <div>
+
+                <h3>Nuevo Registro</h3>
+
+                <div class="form-grid">
+
+                    <div class="input-box">
+
+                        <label>Estudiante</label>
+
+                        <input
+                            type="text"
+                            id="estudianteInput"
+                            placeholder="Estudiante">
+
+                    </div>
+
+                    <div class="input-box">
+
+                        <label>Materia</label>
+
+                        <select id="materiaSelect">
+
+                            <option value="">
+                                Seleccionar Materia
+                            </option>
+
+                            <option value="Matemáticas">
+                                Matemáticas
+                            </option>
+
+                            <option value="Inglés">
+                                Inglés
+                            </option>
+
+                            <option value="Ciencias">
+                                Ciencias
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="input-box">
+
+                        <label>Nota</label>
+
+                        <input
+                            type="number"
+                            step="0.1"
+                            min="0"
+                            max="5"
+                            id="notaInput"
+                            placeholder="0.0 - 5.0">
+
+                    </div>
+
+                    <div class="input-box">
+
+                        <label>Observación</label>
+
+                        <input
+                            type="text"
+                            id="observacionInput"
+                            placeholder="Observación">
+
+                    </div>
+
+                </div>
+
+                <div
+                    style="
+                    margin-top: 25px;
+                    display: flex;
+                    gap: 15px;
+                ">
+
+                    <button class="btn-save">
+                        Guardar
+                    </button>
+
+                    <button class="btn-cancel">
+                        Cancelar
+                    </button>
+
+                </div>
+
+            </div>
+
+            <div class="illustration">
+
+                <img
+                    src="https://img.freepik.com/vector-premium/profesor-personaje-dibujos-animados-portapapeles_101179-432.jpg"
+                    alt="Profesor">
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- JS -->
+
+    <script src="js/calificaciones.js"></script>
+
+</body>
+
+</html>

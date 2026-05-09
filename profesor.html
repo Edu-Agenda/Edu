@@ -1,11 +1,16 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>EduAgenda - Panel del Profesor</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
   <style>
+
     :root {
       --primary-blue: #0047ff;
       --bg-light: #f8fafd;
@@ -13,30 +18,45 @@
       --border-color: #e2e8f0;
     }
 
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
     body {
-      margin: 0;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: var(--bg-light);
       color: var(--text-dark);
     }
 
-    /* Navbar superior */
+    /* =========================================
+       NAVBAR
+    ========================================== */
+
     nav {
       background: white;
-      padding: 10px 40px;
+      padding: 14px 40px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .logo {
-      font-size: 22px;
+      font-size: 24px;
       font-weight: bold;
       color: var(--text-dark);
       display: flex;
       align-items: center;
       gap: 10px;
+    }
+
+    .logo i{
+      color: var(--primary-blue);
     }
 
     .nav-user {
@@ -53,73 +73,95 @@
     .btn-logout {
       background: #ff4d4d;
       color: white;
-      padding: 8px 15px;
-      border-radius: 6px;
+      padding: 10px 16px;
+      border-radius: 8px;
       text-decoration: none;
       font-size: 14px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+      cursor: pointer;
+      transition: .3s;
     }
 
-    /* Contenido Principal */
+    .btn-logout:hover{
+      transform: translateY(-2px);
+      opacity: .9;
+    }
+
+    /* =========================================
+       CONTENIDO PRINCIPAL
+    ========================================== */
+
     .main-container {
       max-width: 1200px;
-      margin: 30px auto;
+      margin: 35px auto;
       padding: 0 20px;
     }
 
     .welcome-section {
-      margin-bottom: 30px;
+      margin-bottom: 35px;
     }
 
     .welcome-section h1 {
-      font-size: 28px;
-      margin: 0;
+      font-size: 34px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
     }
 
-    /* Menú de pestañas/iconos */
+    .welcome-section p{
+      color:#64748b;
+      font-size:16px;
+    }
+
+    /* =========================================
+       MENÚ
+    ========================================== */
+
     .menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 15px;
-      margin-bottom: 30px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 18px;
+      margin-bottom: 35px;
     }
 
     .menu-item {
       background: white;
-      padding: 20px 10px;
-      border-radius: 12px;
+      padding: 25px 15px;
+      border-radius: 14px;
       text-align: center;
-      text-decoration: none;
       color: #64748b;
       border: 1px solid var(--border-color);
-      transition: all 0.3s;
-      font-size: 13px;
-      font-weight: 500;
+      transition: all 0.3s ease;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
     }
 
     .menu-item i {
       display: block;
-      font-size: 20px;
-      margin-bottom: 8px;
+      font-size: 24px;
+      margin-bottom: 10px;
       color: var(--primary-blue);
     }
 
     .menu-item:hover {
       border-color: var(--primary-blue);
       color: var(--primary-blue);
-      box-shadow: 0 4px 12px rgba(0,71,255,0.1);
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0,71,255,0.10);
     }
 
-    /* Tabla y Secciones */
+    /* =========================================
+       TABLA
+    ========================================== */
+
     .content-card {
       background: white;
-      border-radius: 15px;
-      padding: 25px;
+      border-radius: 18px;
+      padding: 30px;
       border: 1px solid var(--border-color);
     }
 
@@ -127,28 +169,44 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+    }
+
+    .table-header h3{
+      font-size:28px;
+      margin-bottom:8px;
+    }
+
+    .table-header p{
+      color:#64748b;
+      font-size:13px;
     }
 
     .btn-add {
       background: var(--primary-blue);
       color: white;
       border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 12px 22px;
+      border-radius: 10px;
       cursor: pointer;
       font-weight: 600;
+      transition:.3s;
+    }
+
+    .btn-add:hover{
+      transform: translateY(-2px);
+      opacity:.9;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 10px;
+      margin-top: 15px;
     }
 
     th {
       text-align: left;
-      padding: 12px;
+      padding: 14px;
       background: #f8fafc;
       font-size: 13px;
       color: #64748b;
@@ -156,75 +214,240 @@
     }
 
     td {
-      padding: 15px 12px;
+      padding: 18px 14px;
       border-bottom: 1px solid var(--border-color);
       font-size: 14px;
     }
 
     .status-badge {
-      padding: 4px 10px;
-      border-radius: 20px;
+      padding: 5px 12px;
+      border-radius: 30px;
       font-size: 12px;
       font-weight: 600;
     }
 
-    .status-available { background: #dcfce7; color: #166534; }
-    .status-busy { background: #fef3c7; color: #92400e; }
+    .status-available {
+      background: #dcfce7;
+      color: #166534;
+    }
 
-    /* Footer */
+    .status-busy {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .actions i{
+      cursor:pointer;
+      transition:.3s;
+    }
+
+    .actions i:hover{
+      transform: scale(1.1);
+    }
+
+    /* =========================================
+       FOOTER
+    ========================================== */
+
     footer {
       margin-top: 50px;
-      padding: 20px;
+      padding: 25px 10px;
       border-top: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
-      font-size: 12px;
+      gap:20px;
+      flex-wrap:wrap;
+      font-size: 13px;
       color: #64748b;
     }
+
+    /* =========================================
+       RESPONSIVE
+    ========================================== */
+
+    @media(max-width:768px){
+
+      nav{
+        padding:15px 20px;
+      }
+
+      .nav-user{
+        gap:10px;
+      }
+
+      .welcome-section h1{
+        font-size:28px;
+      }
+
+      .table-header{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:20px;
+      }
+
+      table{
+        display:block;
+        overflow-x:auto;
+      }
+
+    }
+
   </style>
 </head>
+
 <body>
 
+  <!-- =========================================
+       NAVBAR
+  ========================================== -->
+
   <nav>
+
     <div class="logo">
-      <i class="fas fa-graduation-cap" style="color: var(--primary-blue);"></i> EduAgenda
+      <i class="fas fa-graduation-cap"></i>
+      EduAgenda
     </div>
+
     <div class="nav-user">
+
       <i class="fas fa-bell"></i>
-      <span class="user-info" id="profesorNombre">Cargando...</span>
-      <a href="/sesion.html" class="btn-logout" onclick="localStorage.clear()">
-        <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+
+      <span class="user-info" id="profesorNombre">
+        Cargando...
+      </span>
+
+      <a href="javascript:void(0)"
+        class="btn-logout"
+        id="logoutBtn">
+
+        <i class="fas fa-sign-out-alt"></i>
+        Cerrar sesión
+
       </a>
+
     </div>
+
   </nav>
 
+  <!-- =========================================
+       MAIN
+  ========================================== -->
+
   <div class="main-container">
+
+    <!-- BIENVENIDA -->
+
     <div class="welcome-section">
-      <h1><i class="fas fa-crown" style="color: #f1c40f;"></i> Panel del Profesor</h1>
-      <p>Bienvenido, <span id="saludoNombre">Profesor</span></p>
+
+      <h1>
+        <i class="fas fa-crown"
+          style="color:#f1c40f;">
+        </i>
+
+        Panel del Profesor
+      </h1>
+
+      <p>
+        Bienvenido,
+        <span id="saludoNombre">Profesor</span>
+      </p>
+
     </div>
+
+    <!-- =====================================
+         MENÚ
+    ====================================== -->
 
     <div class="menu-grid">
-      <a href="#" class="menu-item"><i class="fas fa-home"></i> Mi agenda</a>
-      <a href="#" class="menu-item"><i class="fas fa-clock"></i> Solicitudes</a>
-      <a href="#" class="menu-item"><i class="fas fa-users"></i> Estudiantes</a>
-      <a href="#" class="menu-item"><i class="fas fa-chart-line"></i> Ingresos</a>
-      <a href="#" class="menu-item"><i class="fas fa-book"></i> Materias</a>
-      <a href="#" class="menu-item"><i class="fas fa-graduation-cap"></i> Calificaciones</a>
-      <a href="#" class="menu-item"><i class="fas fa-cog"></i> Configuración</a>
+
+      <div onclick="navegar('agenda.html')"
+        class="menu-item">
+
+        <i class="fas fa-home"></i>
+        Mi agenda
+
+      </div>
+
+      <div onclick="navegar('solicitudes.html')"
+        class="menu-item">
+
+        <i class="fas fa-clock"></i>
+        Solicitudes
+
+      </div>
+
+      <div onclick="navegar('estudiantes2.html')"
+        class="menu-item">
+
+        <i class="fas fa-users"></i>
+        Estudiantes
+
+      </div>
+
+      <div onclick="navegar('ingresos.html')"
+        class="menu-item">
+
+        <i class="fas fa-chart-line"></i>
+        Ingresos
+
+      </div>
+
+      <div onclick="navegar('materias.html')"
+        class="menu-item">
+
+        <i class="fas fa-book"></i>
+        Materias
+
+      </div>
+
+      <div onclick="navegar('calificaciones.html')"
+        class="menu-item">
+
+        <i class="fas fa-graduation-cap"></i>
+        Calificaciones
+
+      </div>
+
+      <div onclick="navegar('configuracion2.html')"
+        class="menu-item">
+
+        <i class="fas fa-cog"></i>
+        Configuración
+
+      </div>
+
     </div>
 
+    <!-- =====================================
+         TABLA
+    ====================================== -->
+
     <div class="content-card">
+
       <div class="table-header">
+
         <div>
-          <h3 style="margin:0">Mi Disponibilidad Académica</h3>
-          <p style="font-size: 12px; color: #64748b; margin: 5px 0 0 0;">Gestiona tus horarios por materia evitando cruces.</p>
+
+          <h3>
+            Mi Disponibilidad Académica
+          </h3>
+
+          <p>
+            Gestiona tus horarios por materia evitando cruces.
+          </p>
+
         </div>
-        <button class="btn-add">+ Agregar Horario</button>
+
+        <button class="btn-add">
+          + Agregar Horario
+        </button>
+
       </div>
 
       <table>
+
         <thead>
+
           <tr>
             <th>Día</th>
             <th>Materia</th>
@@ -234,42 +457,267 @@
             <th>Estado</th>
             <th>Acciones</th>
           </tr>
+
         </thead>
+
         <tbody>
+
           <tr>
+
             <td>Lunes</td>
-            <td><strong>Matemáticas</strong></td>
+
+            <td>
+              <strong>Matemáticas</strong>
+            </td>
+
             <td>08:00 AM</td>
+
             <td>10:00 AM</td>
-            <td><i class="fas fa-video"></i> Virtual</td>
-            <td><span class="status-badge status-available">Disponible</span></td>
-            <td><i class="fas fa-edit"></i> <i class="fas fa-trash" style="color:red; margin-left:10px;"></i></td>
+
+            <td>
+              <i class="fas fa-video"></i>
+              Virtual
+            </td>
+
+            <td>
+              <span class="status-badge status-available">
+                Disponible
+              </span>
+            </td>
+
+            <td class="actions">
+
+              <i class="fas fa-edit"></i>
+
+              <i class="fas fa-trash"
+                style="color:red;margin-left:10px;">
+              </i>
+
+            </td>
+
           </tr>
+
           <tr>
+
             <td>Miércoles</td>
-            <td><strong>Química</strong></td>
+
+            <td>
+              <strong>Química</strong>
+            </td>
+
             <td>09:00 AM</td>
+
             <td>11:00 AM</td>
-            <td><i class="fas fa-video"></i> Virtual</td>
-            <td><span class="status-badge status-busy">Ocupado</span></td>
-            <td><i class="fas fa-edit"></i> <i class="fas fa-trash" style="color:red; margin-left:10px;"></i></td>
+
+            <td>
+              <i class="fas fa-video"></i>
+              Virtual
+            </td>
+
+            <td>
+              <span class="status-badge status-busy">
+                Ocupado
+              </span>
+            </td>
+
+            <td class="actions">
+
+              <i class="fas fa-edit"></i>
+
+              <i class="fas fa-trash"
+                style="color:red;margin-left:10px;">
+              </i>
+
+            </td>
+
           </tr>
+
         </tbody>
+
       </table>
+
     </div>
 
+    <!-- =====================================
+         FOOTER
+    ====================================== -->
+
     <footer>
-      <span><i class="fas fa-envelope"></i> soporte@eduagenda.com</span>
-      <span>© 2026 EduAgenda - Todos los derechos reservados</span>
-      <span><i class="fas fa-map-marker-alt"></i> Colombia - Tumaco, Nariño</span>
+
+      <span>
+        <i class="fas fa-envelope"></i>
+        soporte@eduagenda.com
+      </span>
+
+      <span>
+        © 2026 EduAgenda - Todos los derechos reservados
+      </span>
+
+      <span>
+        <i class="fas fa-map-marker-alt"></i>
+        Colombia - Tumaco, Nariño
+      </span>
+
     </footer>
+
   </div>
 
+  <!-- =========================================
+       SCRIPT
+  ========================================== -->
+
   <script>
-    // Recuperar el nombre guardado en el login
-    const nombre = localStorage.getItem('nombre') || 'Profesor';
-    document.getElementById('profesorNombre').innerText = nombre;
-    document.getElementById('saludoNombre').innerText = nombre;
+
+    // =========================================
+    // FUNCIÓN DE NAVEGACIÓN
+    // =========================================
+
+    function navegar(ruta){
+
+      if(!ruta){
+        console.error("Ruta inválida");
+        return;
+      }
+
+      window.location.href = ruta;
+
+    }
+
+    // =========================================
+    // DOM READY
+    // =========================================
+
+    document.addEventListener('DOMContentLoaded', () => {
+
+      // =====================================
+      // VALIDACIÓN DE SESIÓN
+      // =====================================
+
+      const token = localStorage.getItem('token');
+      const tipo = localStorage.getItem('tipo');
+      const nombre = localStorage.getItem('nombre');
+
+      if(!token){
+
+        alert('Debes iniciar sesión');
+
+        window.location.href = 'sesion.html';
+
+        return;
+
+      }
+
+      if(tipo !== 'profesor'){
+
+        alert('Acceso denegado');
+
+        window.location.href = 'sesion.html';
+
+        return;
+
+      }
+
+      // =====================================
+      // MOSTRAR NOMBRE
+      // =====================================
+
+      if(nombre){
+
+        document.getElementById('profesorNombre')
+          .innerText = nombre;
+
+        document.getElementById('saludoNombre')
+          .innerText = nombre;
+
+      }
+
+      // =====================================
+      // LOGOUT
+      // =====================================
+
+      const logoutBtn =
+        document.getElementById('logoutBtn');
+
+      logoutBtn.addEventListener('click', () => {
+
+        const confirmar =
+          confirm('¿Deseas cerrar sesión?');
+
+        if(confirmar){
+
+          localStorage.clear();
+
+          window.location.href = 'sesion.html';
+
+        }
+
+      });
+
+      // =====================================
+      // AGREGAR HORARIO
+      // =====================================
+
+      const btnAdd =
+        document.querySelector('.btn-add');
+
+      btnAdd.addEventListener('click', () => {
+
+        navegar('agregar_horario.html');
+
+      });
+
+      // =====================================
+      // EDITAR
+      // =====================================
+
+      const editarBtns =
+        document.querySelectorAll('.fa-edit');
+
+      editarBtns.forEach(btn => {
+
+        btn.addEventListener('click', () => {
+
+          alert('Editar horario');
+
+        });
+
+      });
+
+      // =====================================
+      // ELIMINAR
+      // =====================================
+
+      const eliminarBtns =
+        document.querySelectorAll('.fa-trash');
+
+      eliminarBtns.forEach(btn => {
+
+        btn.addEventListener('click', () => {
+
+          const confirmar =
+            confirm('¿Eliminar horario?');
+
+          if(confirmar){
+
+            const fila =
+              btn.closest('tr');
+
+            if(fila){
+
+              fila.remove();
+
+            }
+
+          }
+
+        });
+
+      });
+
+    });
+
   </script>
+
 </body>
 </html>
+```

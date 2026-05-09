@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAgenda - Agenda del Profesor</title>
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        :root {
+            --primary-blue: #0061ff;
+            --light-blue: #eef4ff;
+            --bg-light: #f5f7fb;
+            --text-dark: #1e293b;
+            --border-color: #dbe3ef;
+            --green: #22c55e;
+            --orange: #f59e0b;
+            --red: #ef4444;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+
+        /* =========================
+           NAVBAR
+        ========================== */
+
+        nav {
+            background: white;
+            padding: 15px 8%;
+            border-bottom: 1px solid var(--border-color);
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-blue);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-blue);
+            border-bottom: 2px solid var(--primary-blue);
+            padding-bottom: 5px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .profile img {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-blue);
+        }
+
+        /* =========================
+           CONTENIDO
+        ========================== */
+
+        .container {
+            max-width: 1300px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .top-section h1 {
+            font-size: 2rem;
+        }
+
+        .btn-new {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* =========================
+           CARDS
+        ========================== */
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card h3 {
+            color: #64748b;
+            font-size: .95rem;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        /* =========================
+           FILTROS
+        ========================== */
+
+        .filters {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+
+            margin-bottom: 30px;
+        }
+
+        .filters input,
+        .filters select {
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            outline: none;
+        }
+
+        /* =========================
+           TABLA
+        ========================== */
+
+        .table-container {
+            background: white;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #f1f5f9;
+            padding: 18px;
+            text-align: left;
+            color: #475569;
+            font-size: .9rem;
+        }
+
+        td {
+            padding: 18px;
+            border-top: 1px solid var(--border-color);
+            font-size: .95rem;
+        }
+
+        tr:hover {
+            background: #fafcff;
+        }
+
+        /* =========================
+           ESTADOS
+        ========================== */
+
+        .status {
+            padding: 7px 14px;
+            border-radius: 30px;
+            font-size: .8rem;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .confirmed {
+            background: #dcfce7;
+            color: var(--green);
+        }
+
+        .pending {
+            background: #fef3c7;
+            color: var(--orange);
+        }
+
+        .cancelled {
+            background: #fee2e2;
+            color: var(--red);
+        }
+
+        /* =========================
+           ACCIONES
+        ========================== */
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            font-size: 1rem;
+        }
+
+        .actions i {
+            cursor: pointer;
+            transition: .2s;
+        }
+
+        .actions i:hover {
+            transform: scale(1.15);
+        }
+
+        .fa-pen {
+            color: var(--primary-blue);
+        }
+
+        .fa-trash {
+            color: var(--red);
+        }
+
+        .fa-eye {
+            color: #0f172a;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================== */
+
+        @media(max-width: 1000px) {
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+        }
+
+        @media(max-width: 700px) {
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                min-width: 900px;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
+    <nav>
+
+        <div class="logo">
+            EduAgenda
+        </div>
+
+        <div class="nav-links">
+
+            <a href="profesor.html">
+                Inicio
+            </a>
+
+            <a href="#" class="active">
+                Agenda
+            </a>
+
+            <a href="calificaciones.html">
+                Calificaciones
+            </a>
+
+            <a href="configuracion.html">
+                Configuración
+            </a>
+
+            <div class="profile">
+
+                <img src="https://via.placeholder.com/150"
+                    alt="Profesor">
+
+                <span>
+                    Darwin Rosero
+                </span>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+    <!-- =========================
+         CONTENIDO
+    ========================== -->
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="top-section">
+
+            <h1>
+                Agenda de Clases
+            </h1>
+
+            <button class="btn-new">
+
+                <i class="fas fa-plus"></i>
+
+                Nueva Reserva
+
+            </button>
+
+        </div>
+
+        <!-- ESTADISTICAS -->
+
+        <div class="stats-grid">
+
+            <div class="stat-card">
+
+                <h3>
+                    Clases Hoy
+                </h3>
+
+                <p>
+                    6
+                </p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h3>
+                    Reservas Pendientes
+                </h3>
+
+                <p>
+                    3
+                </p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h3>
+                    Horas Ocupadas
+                </h3>
+
+                <p>
+                    18h
+                </p>
+
+            </div>
+
+            <div class="stat-card">
+
+                <h3>
+                    Estudiantes Activos
+                </h3>
+
+                <p>
+                    24
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- FILTROS -->
+
+        <div class="filters">
+
+            <input type="date">
+
+            <select>
+
+                <option>
+                    Todas las materias
+                </option>
+
+                <option>
+                    Matemáticas
+                </option>
+
+                <option>
+                    Inglés
+                </option>
+
+                <option>
+                    Ciencias
+                </option>
+
+            </select>
+
+            <select>
+
+                <option>
+                    Todos los estados
+                </option>
+
+                <option>
+                    Confirmada
+                </option>
+
+                <option>
+                    Pendiente
+                </option>
+
+                <option>
+                    Cancelada
+                </option>
+
+            </select>
+
+        </div>
+
+        <!-- TABLA -->
+
+        <div class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>Estudiante</th>
+                        <th>Materia</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Duración</th>
+                        <th>Modalidad</th>
+                        <th>Estado</th>
+                        <th>Observaciones</th>
+                        <th>Acciones</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <tr>
+
+                        <td>
+                            Ana Ruiz
+                        </td>
+
+                        <td>
+                            Matemáticas
+                        </td>
+
+                        <td>
+                            12/05/2026
+                        </td>
+
+                        <td>
+                            08:00 AM
+                        </td>
+
+                        <td>
+                            2h
+                        </td>
+
+                        <td>
+                            Virtual
+                        </td>
+
+                        <td>
+
+                            <span class="status confirmed">
+                                Confirmada
+                            </span>
+
+                        </td>
+
+                        <td>
+                            Reforzar álgebra
+                        </td>
+
+                        <td class="actions">
+
+                            <i class="fas fa-eye"></i>
+
+                            <i class="fas fa-pen"></i>
+
+                            <i class="fas fa-trash"></i>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            Carlos Medina
+                        </td>
+
+                        <td>
+                            Inglés
+                        </td>
+
+                        <td>
+                            12/05/2026
+                        </td>
+
+                        <td>
+                            11:00 AM
+                        </td>
+
+                        <td>
+                            1h
+                        </td>
+
+                        <td>
+                            Presencial
+                        </td>
+
+                        <td>
+
+                            <span class="status pending">
+                                Pendiente
+                            </span>
+
+                        </td>
+
+                        <td>
+                            Speaking practice
+                        </td>
+
+                        <td class="actions">
+
+                            <i class="fas fa-eye"></i>
+
+                            <i class="fas fa-pen"></i>
+
+                            <i class="fas fa-trash"></i>
+
+                        </td>
+
+                    </tr>
+
+                    <tr>
+
+                        <td>
+                            Laura Torres
+                        </td>
+
+                        <td>
+                            Ciencias
+                        </td>
+
+                        <td>
+                            13/05/2026
+                        </td>
+
+                        <td>
+                            03:00 PM
+                        </td>
+
+                        <td>
+                            1.5h
+                        </td>
+
+                        <td>
+                            Virtual
+                        </td>
+
+                        <td>
+
+                            <span class="status cancelled">
+                                Cancelada
+                            </span>
+
+                        </td>
+
+                        <td>
+                            Reagendar próxima semana
+                        </td>
+
+                        <td class="actions">
+
+                            <i class="fas fa-eye"></i>
+
+                            <i class="fas fa-pen"></i>
+
+                            <i class="fas fa-trash"></i>
+
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

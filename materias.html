@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EduAgenda - Materias</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root{
+    --primary:#0061ff;
+    --bg:#f8faff;
+    --text:#1e293b;
+    --border:#e2e8f0;
+    --success:#22c55e;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+}
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:'Segoe UI', sans-serif;
+    background:var(--bg);
+    color:var(--text);
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+nav{
+    background:white;
+    border-bottom:1px solid var(--border);
+    padding:14px 8%;
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:1.2rem;
+    font-weight:700;
+}
+
+.nav-links{
+    display:flex;
+    align-items:center;
+    gap:30px;
+}
+
+.nav-links a{
+    text-decoration:none;
+    color:#64748b;
+    font-size:.95rem;
+}
+
+.nav-links a.active{
+    color:var(--primary);
+    font-weight:600;
+    border-bottom:2px solid var(--primary);
+    padding-bottom:5px;
+}
+
+.user-profile{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.user-profile img{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    border:2px solid var(--primary);
+}
+
+/* =========================
+   CONTENIDO
+========================= */
+
+.container{
+    max-width:1200px;
+    margin:40px auto;
+    padding:0 20px;
+}
+
+.header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+    gap:20px;
+}
+
+.header h1{
+    font-size:2rem;
+}
+
+.btn-add{
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:12px 20px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+/* =========================
+   TARJETAS
+========================= */
+
+.cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:25px;
+}
+
+.card-title{
+    color:#64748b;
+    margin-bottom:12px;
+    font-size:.95rem;
+}
+
+.card-value{
+    font-size:2rem;
+    font-weight:700;
+}
+
+/* =========================
+   TABLA
+========================= */
+
+.table-container{
+    background:white;
+    border-radius:16px;
+    border:1px solid var(--border);
+    overflow:hidden;
+    margin-bottom:30px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#f1f5f9;
+}
+
+th{
+    text-align:left;
+    padding:18px;
+    color:#475569;
+    font-size:.9rem;
+}
+
+td{
+    padding:18px;
+    border-top:1px solid var(--border);
+    font-size:.95rem;
+}
+
+.badge{
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:.8rem;
+    font-weight:600;
+}
+
+.active{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.warning{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.actions{
+    display:flex;
+    gap:15px;
+    color:var(--primary);
+    cursor:pointer;
+}
+
+.actions i:hover{
+    transform:scale(1.1);
+}
+
+/* =========================
+   FORMULARIO
+========================= */
+
+.form-card{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:30px;
+}
+
+.form-card h2{
+    margin-bottom:25px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
+}
+
+.input-box{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+}
+
+.input-box label{
+    font-size:.9rem;
+    font-weight:600;
+}
+
+.input-box input,
+.input-box select,
+.input-box textarea{
+    padding:12px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    outline:none;
+    font-family:inherit;
+}
+
+.input-box textarea{
+    resize:none;
+    height:100px;
+}
+
+.input-box input:focus,
+.input-box select:focus,
+.input-box textarea:focus{
+    border-color:var(--primary);
+}
+
+.form-buttons{
+    margin-top:25px;
+    display:flex;
+    gap:15px;
+}
+
+.btn-save{
+    background:var(--primary);
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:10px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btn-cancel{
+    background:white;
+    border:1px solid var(--border);
+    padding:12px 25px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    .table-container{
+        overflow-x:auto;
+    }
+
+    table{
+        min-width:900px;
+    }
+
+}
+
+@media(max-width:700px){
+
+    .header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .nav-links{
+        gap:15px;
+        font-size:12px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<nav>
+
+    <div class="logo">
+        EduAgenda
+    </div>
+
+    <div class="nav-links">
+
+        <a href="profesor.html">
+            Inicio
+        </a>
+
+        <a href="agenda.html">
+            Agenda
+        </a>
+
+        <a href="calificaciones.html">
+            Calificaciones
+        </a>
+
+        <a href="#" class="active">
+            Materias
+        </a>
+
+        <div class="user-profile">
+
+            <img
+            src="https://i.pravatar.cc/100?img=12"
+            alt="Profesor">
+
+            <span>
+                Darwin Rosero
+            </span>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- =========================
+     CONTENIDO
+========================= -->
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <div class="header">
+
+        <div>
+
+            <h1>
+                Gestión de Materias
+            </h1>
+
+            <p style="margin-top:8px; color:#64748b;">
+                Administra tus materias y horarios
+            </p>
+
+        </div>
+
+        <button class="btn-add">
+
+            <i class="fas fa-plus"></i>
+
+            Nueva Materia
+
+        </button>
+
+    </div>
+
+    <!-- TARJETAS -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <div class="card-title">
+                Materias Activas
+            </div>
+
+            <div class="card-value">
+                6
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-title">
+                Total Estudiantes
+            </div>
+
+            <div class="card-value">
+                48
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="card-title">
+                Horas Semanales
+            </div>
+
+            <div class="card-value">
+                24h
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- TABLA -->
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>Materia</th>
+                    <th>Horario</th>
+                    <th>Estudiantes</th>
+                    <th>Aula</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tablaMaterias">
+
+                <tr>
+
+                    <td>
+                        Matemáticas
+                    </td>
+
+                    <td>
+                        Lunes - 8:00 AM
+                    </td>
+
+                    <td>
+                        12
+                    </td>
+
+                    <td>
+                        Aula 201
+                    </td>
+
+                    <td>
+
+                        <span class="badge active">
+                            Activa
+                        </span>
+
+                    </td>
+
+                    <td class="actions">
+
+                        <i class="fas fa-pencil"></i>
+
+                        <i class="fas fa-trash"
+                        style="color:#ef4444"></i>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Inglés
+                    </td>
+
+                    <td>
+                        Martes - 2:00 PM
+                    </td>
+
+                    <td>
+                        8
+                    </td>
+
+                    <td>
+                        Aula 105
+                    </td>
+
+                    <td>
+
+                        <span class="badge warning">
+                            Pendiente
+                        </span>
+
+                    </td>
+
+                    <td class="actions">
+
+                        <i class="fas fa-pencil"></i>
+
+                        <i class="fas fa-trash"
+                        style="color:#ef4444"></i>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- FORMULARIO -->
+
+    <div class="form-card">
+
+        <h2>
+            Registrar Nueva Materia
+        </h2>
+
+        <div class="form-grid">
+
+            <!-- MATERIA -->
+
+            <div class="input-box">
+
+                <label>
+                    Nombre de la Materia
+                </label>
+
+                <input
+                type="text"
+                id="materiaInput"
+                placeholder="Ej: Física">
+
+            </div>
+
+            <!-- HORARIO -->
+
+            <div class="input-box">
+
+                <label>
+                    Horario
+                </label>
+
+                <input
+                type="text"
+                id="horarioInput"
+                placeholder="Ej: Lunes 8:00 AM">
+
+            </div>
+
+            <!-- ESTUDIANTES -->
+
+            <div class="input-box">
+
+                <label>
+                    Cantidad de Estudiantes
+                </label>
+
+                <input
+                type="number"
+                id="estudiantesInput"
+                placeholder="0">
+
+            </div>
+
+            <!-- AULA -->
+
+            <div class="input-box">
+
+                <label>
+                    Aula
+                </label>
+
+                <input
+                type="text"
+                id="aulaInput"
+                placeholder="Ej: Aula 301">
+
+            </div>
+
+            <!-- ESTADO -->
+
+            <div class="input-box">
+
+                <label>
+                    Estado
+                </label>
+
+                <select id="estadoInput">
+
+                    <option value="Activa">
+                        Activa
+                    </option>
+
+                    <option value="Pendiente">
+                        Pendiente
+                    </option>
+
+                </select>
+
+            </div>
+
+            <!-- DESCRIPCIÓN -->
+
+            <div class="input-box">
+
+                <label>
+                    Descripción
+                </label>
+
+                <textarea
+                id="descripcionInput"
+                placeholder="Descripción de la materia">
+                </textarea>
+
+            </div>
+
+        </div>
+
+        <!-- BOTONES -->
+
+        <div class="form-buttons">
+
+            <button class="btn-save">
+
+                Guardar
+
+            </button>
+
+            <button class="btn-cancel">
+
+                Cancelar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+const tabla =
+document.getElementById(
+'tablaMaterias'
+);
+
+const materiaInput =
+document.getElementById(
+'materiaInput'
+);
+
+const horarioInput =
+document.getElementById(
+'horarioInput'
+);
+
+const estudiantesInput =
+document.getElementById(
+'estudiantesInput'
+);
+
+const aulaInput =
+document.getElementById(
+'aulaInput'
+);
+
+const estadoInput =
+document.getElementById(
+'estadoInput'
+);
+
+const descripcionInput =
+document.getElementById(
+'descripcionInput'
+);
+
+const btnSave =
+document.querySelector(
+'.btn-save'
+);
+
+const btnCancel =
+document.querySelector(
+'.btn-cancel'
+);
+
+btnSave.addEventListener(
+'click',
+() => {
+
+    const materia =
+    materiaInput.value.trim();
+
+    const horario =
+    horarioInput.value.trim();
+
+    const estudiantes =
+    estudiantesInput.value;
+
+    const aula =
+    aulaInput.value.trim();
+
+    const estado =
+    estadoInput.value;
+
+    if(
+        materia === '' ||
+        horario === '' ||
+        estudiantes === '' ||
+        aula === ''
+    ){
+
+        alert(
+            'Completa todos los campos'
+        );
+
+        return;
+
+    }
+
+    const fila =
+    document.createElement('tr');
+
+    fila.innerHTML = `
+        <td>${materia}</td>
+
+        <td>${horario}</td>
+
+        <td>${estudiantes}</td>
+
+        <td>${aula}</td>
+
+        <td>
+
+            <span class="badge ${
+                estado === 'Activa'
+                ? 'active'
+                : 'warning'
+            }">
+
+                ${estado}
+
+            </span>
+
+        </td>
+
+        <td class="actions">
+
+            <i class="fas fa-pencil"></i>
+
+            <i class="fas fa-trash"
+            style="color:#ef4444"></i>
+
+        </td>
+    `;
+
+    tabla.appendChild(fila);
+
+    agregarEliminar(fila);
+
+    limpiarFormulario();
+
+});
+
+btnCancel.addEventListener(
+'click',
+() => {
+
+    limpiarFormulario();
+
+});
+
+function limpiarFormulario(){
+
+    materiaInput.value = '';
+    horarioInput.value = '';
+    estudiantesInput.value = '';
+    aulaInput.value = '';
+    descripcionInput.value = '';
+
+}
+
+function agregarEliminar(fila){
+
+    const eliminarBtn =
+    fila.querySelector('.fa-trash');
+
+    eliminarBtn.addEventListener(
+    'click',
+    () => {
+
+        const confirmar =
+        confirm(
+            '¿Eliminar materia?'
+        );
+
+        if(confirmar){
+
+            fila.remove();
+
+        }
+
+    });
+
+}
+
+document.querySelectorAll(
+'#tablaMaterias tr'
+)
+.forEach(fila => {
+
+    agregarEliminar(fila);
+
+});
+
+</script>
+
+</body>
+</html>
