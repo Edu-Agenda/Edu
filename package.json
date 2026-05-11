@@ -1,15 +1,21 @@
-﻿{
+{
   "name": "eduagenda",
   "version": "1.0.0",
+  "description": "Plataforma de registro academico para la region de Tumaco",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "dev": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.21.0",
-    "cors": "^2.8.5",
     "bcrypt": "^5.1.1",
+    "better-sqlite3": "^11.0.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
-    "better-sqlite3": "^11.3.0"
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

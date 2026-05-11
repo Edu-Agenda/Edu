@@ -14,6 +14,8 @@
             --text-main: #1e293b;
         }
 
+        * { box-sizing: border-box; }
+
         body {
             margin: 0;
             font-family: 'Inter', sans-serif;
@@ -23,7 +25,6 @@
             overflow: hidden;
         }
 
-        /* BARRA LATERAL */
         .sidebar {
             width: var(--sidebar-width);
             background: white;
@@ -42,11 +43,7 @@
             margin-bottom: 40px;
         }
 
-        .menu-nav {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
+        .menu-nav { display: flex; flex-direction: column; gap: 5px; }
 
         .menu-item {
             display: flex;
@@ -60,22 +57,10 @@
             transition: 0.3s;
         }
 
-        .menu-item.active {
-            background: #eff6ff;
-            color: var(--primary-blue);
-            font-weight: 600;
-        }
+        .menu-item.active { background: #eff6ff; color: var(--primary-blue); font-weight: 600; }
+        .menu-item:hover:not(.active) { background: #f1f5f9; }
 
-        .menu-item:hover:not(.active) {
-            background: #f1f5f9;
-        }
-
-        /* CONTENIDO PRINCIPAL */
-        .main-content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 30px;
-        }
+        .main-content { flex: 1; overflow-y: auto; padding: 30px; }
 
         .header-top {
             display: flex;
@@ -85,17 +70,9 @@
             margin-bottom: 30px;
         }
 
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-        }
+        .user-profile { display: flex; align-items: center; gap: 10px; font-size: 14px; }
 
-        /* AGENDA SECTION */
-        .agenda-header {
-            margin-bottom: 25px;
-        }
+        .agenda-header { margin-bottom: 25px; }
 
         .filters {
             display: grid;
@@ -111,21 +88,12 @@
             border: 1px solid var(--border-color);
         }
 
-        .filter-group label {
-            display: block;
-            font-size: 12px;
-            color: #64748b;
-            margin-bottom: 5px;
-        }
+        .filter-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 5px; }
 
         .filter-group select, .filter-group input {
-            border: none;
-            width: 100%;
-            font-weight: 600;
-            outline: none;
+            border: none; width: 100%; font-weight: 600; outline: none; background: transparent;
         }
 
-        /* CALENDARIO GRID */
         .calendar-container {
             display: grid;
             grid-template-columns: 3fr 1.2fr;
@@ -139,10 +107,7 @@
             padding: 20px;
         }
 
-        .calendar-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        .calendar-table { width: 100%; border-collapse: collapse; }
 
         .calendar-table th, .calendar-table td {
             border: 1px solid #f1f5f9;
@@ -152,52 +117,114 @@
         }
 
         .calendar-table th { background: #f8fafc; color: #64748b; }
+        .hour { font-weight: 600; color: #475569; white-space: nowrap; }
 
-        /* BLOQUES DE ESTADO */
         .slot {
             padding: 8px;
             border-radius: 6px;
             font-size: 11px;
             font-weight: 600;
             cursor: pointer;
+            transition: 0.15s;
         }
 
-        .slot.available { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-        .slot.reserved { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .slot.available {
+            background: #dcfce7;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .slot.available:hover { background: #bbf7d0; }
+
+        .slot.available.seleccionado {
+            border: 2px solid var(--primary-blue);
+            background: #eff6ff;
+            color: var(--primary-blue);
+        }
+
+        .slot.reserved {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
         .slot.busy { background: #f1f5f9; color: #64748b; }
 
-        /* DETALLE DERECHA */
+        /* PANEL DERECHO */
         .detail-card {
             background: white;
             border-radius: 15px;
             border: 1px solid var(--border-color);
             padding: 25px;
+            position: sticky;
+            top: 0;
+            height: fit-content;
         }
 
-        .detail-info {
+        /* Estado vacío */
+        .panel-vacio {
+            text-align: center;
+            padding: 20px 0;
+            color: #cbd5e1;
+        }
+        .panel-vacio i { font-size: 48px; margin-bottom: 12px; display: block; }
+        .panel-vacio p { font-size: 13px; color: #94a3b8; margin: 0; }
+
+        /* Estado con clase seleccionada */
+        .panel-clase { display: none; }
+        .panel-clase.visible { display: block; }
+
+        .teacher-info {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin: 20px 0;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            background: #f8fafc;
+            border-radius: 10px;
+            margin-bottom: 16px;
         }
 
-        .info-row {
+        .teacher-avatar {
+            width: 44px; height: 44px;
+            background: var(--primary-blue);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-weight: 700; font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .info-item {
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 14px;
+            font-size: 13px;
+            color: #475569;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .btn-reserve {
-            background: var(--primary-blue);
-            color: white;
-            width: 100%;
-            border: none;
+        .info-item:last-child { border-bottom: none; }
+        .info-item i { width: 16px; color: var(--primary-blue); flex-shrink: 0; }
+
+        .precio-badge {
+            background: #dcfce7;
+            color: #15803d;
+            font-size: 18px;
+            font-weight: 700;
             padding: 12px;
-            border-radius: 8px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 16px 0;
+        }
+
+        .nota-label {
+            font-size: 13px;
             font-weight: 600;
-            cursor: pointer;
-            margin-top: 15px;
+            margin-bottom: 6px;
+            display: block;
+            color: var(--text-main);
         }
 
         textarea {
@@ -205,132 +232,293 @@
             padding: 10px;
             border: 1px solid var(--border-color);
             border-radius: 8px;
-            margin-top: 10px;
             resize: none;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        textarea:focus { border-color: var(--primary-blue); }
+
+        .btn-reserve {
+            background: var(--primary-blue);
+            color: white;
+            width: 100%;
+            border: none;
+            padding: 13px;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .btn-reserve:hover { background: #0052d4; transform: translateY(-1px); }
+
+        .seguro-tag {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+
+        /* Leyenda */
+        .legend {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 14px;
+            font-size: 12px;
+            color: #64748b;
+            align-items: center;
+        }
+
+        .legend-dot {
+            display: inline-block;
+            width: 10px; height: 10px;
+            border-radius: 3px;
+            margin-right: 4px;
         }
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
-        <div class="logo">
-            <i class="fas fa-graduation-cap" style="color: var(--primary-blue);"></i> EduAgenda
+<aside class="sidebar">
+    <div class="logo">
+        <i class="fas fa-graduation-cap" style="color: var(--primary-blue);"></i> EduAgenda
+    </div>
+    <nav class="menu-nav">
+        <a href="#" class="menu-item" id="nav-resumen"><i class="fas fa-th-large"></i> Resumen</a>
+        <a href="#" class="menu-item active" id="nav-agenda"><i class="fas fa-calendar-alt"></i> Agenda de Profesores</a>
+        <a href="#" class="menu-item" id="nav-clases"><i class="fas fa-book"></i> Mis Clases</a>
+        <a href="#" class="menu-item" id="nav-tareas"><i class="fas fa-tasks"></i> Tareas Pendientes</a>
+        <a href="#" class="menu-item" id="nav-calificaciones"><i class="fas fa-chart-bar"></i> Mis Calificaciones</a>
+        <a href="#" class="menu-item" id="nav-perfil"><i class="fas fa-user"></i> Mi Perfil</a>
+    </nav>
+</aside>
+
+<main class="main-content">
+    <header class="header-top">
+        <div class="user-profile">
+            <div style="text-align: right;">
+                <strong id="userName">Estudiante</strong><br>
+                <small style="color: #64748b;">Estudiante</small>
+            </div>
+            <div style="width:40px; height:40px; background:#e2e8f0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">ML</div>
         </div>
-        <nav class="menu-nav">
-            <a href="#" class="menu-item"><i class="fas fa-th-large"></i> Resumen</a>
-            <a href="#" class="menu-item active"><i class="fas fa-calendar-alt"></i> Agenda de Profesores</a>
-            <a href="#" class="menu-item"><i class="fas fa-book"></i> Mis Clases</a>
-            <a href="#" class="menu-item"><i class="fas fa-tasks"></i> Tareas Pendientes</a>
-            <a href="#" class="menu-item"><i class="fas fa-chart-bar"></i> Mis Calificaciones</a>
-            <a href="#" class="menu-item"><i class="fas fa-user"></i> Mi Perfil</a>
-        </nav>
-    </aside>
+    </header>
 
-    <main class="main-content">
-        <header class="header-top">
-            <div class="user-profile">
-                <div style="text-align: right;">
-                    <strong id="userName">María López</strong><br>
-                    <small style="color: #64748b;">Estudiante</small>
-                </div>
-                <div style="width: 40px; height: 40px; background: #e2e8f0; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">ML</div>
-            </div>
-        </header>
+    <div id="sec-agenda">
+    <section class="agenda-header">
+        <h1 style="margin:0 0 6px;">Agenda de Profesores</h1>
+        <p style="color:#64748b; margin:0;">Consulta los horarios disponibles y reserva tus clases.</p>
+    </section>
 
-        <section class="agenda-header">
-            <h1>Agenda de Profesores</h1>
-            <p style="color: #64748b;">Consulta los horarios disponibles y reserva tus clases.</p>
-        </section>
+    <div class="filters" style="margin-top:20px;">
+        <div class="filter-group">
+            <label>Profesor</label>
+            <select><option>Darwin Rosero</option></select>
+        </div>
+        <div class="filter-group">
+            <label>Asignatura</label>
+            <select id="filtroMateria">
+                <option value="">Todas las materias</option>
+                <option value="Matemáticas">Matemáticas</option>
+                <option value="Física">Física</option>
+                <option value="Química">Química</option>
+                <option value="Inglés">Inglés</option>
+                <option value="Programación">Programación</option>
+                <option value="Estadística">Estadística</option>
+                <option value="Biología">Biología</option>
+                <option value="Historia">Historia</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label>Fecha</label>
+            <input type="text" value="Semana del 26 de mayo" readonly>
+        </div>
+    </div>
 
-        <div class="filters">
-            <div class="filter-group">
-                <label>Profesor</label>
-                <select><option>Darwin Rosero</option></select>
+    <div class="calendar-container">
+
+        <!-- TABLA -->
+        <div class="calendar-card">
+            <div class="legend">
+                <span><span class="legend-dot" style="background:#dcfce7; border:1px solid #bbf7d0;"></span>Disponible</span>
+                <span><span class="legend-dot" style="background:#dbeafe; border:1px solid #bfdbfe;"></span>Reservado</span>
+                <span><span class="legend-dot" style="background:#eff6ff; border:2px solid var(--primary-blue);"></span>Seleccionado</span>
             </div>
-            <div class="filter-group">
-                <label>Asignatura</label>
-                <select><option>Matemáticas</option></select>
-            </div>
-            <div class="filter-group">
-                <label>Fecha</label>
-                <input type="text" value="Semana del 26 de mayo" readonly>
-            </div>
+            <table class="calendar-table">
+                <thead>
+                    <tr>
+                        <th>Hora</th>
+                        <th>Lun 26</th>
+                        <th>Mar 27</th>
+                        <th>Mié 28</th>
+                        <th>Jue 29</th>
+                        <th>Vie 30</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="hour">08:00 AM</td>
+                        <td><div class="slot reserved">Matemáticas<br>Reservado</div></td>
+                        <td><div class="slot available">Matemáticas</div></td>
+                        <td></td>
+                        <td><div class="slot reserved">Física<br>Reservado</div></td>
+                        <td><div class="slot available">Física</div></td>
+                    </tr>
+                    <tr>
+                        <td class="hour">09:00 AM</td>
+                        <td></td>
+                        <td><div class="slot available">Química</div></td>
+                        <td><div class="slot available">Química</div></td>
+                        <td></td>
+                        <td><div class="slot available">Química</div></td>
+                    </tr>
+                    <tr>
+                        <td class="hour">10:00 AM</td>
+                        <td><div class="slot available">Inglés</div></td>
+                        <td></td>
+                        <td><div class="slot available">Inglés</div></td>
+                        <td><div class="slot available">Inglés</div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="hour">11:00 AM</td>
+                        <td><div class="slot available">Programación</div></td>
+                        <td><div class="slot available">Programación</div></td>
+                        <td></td>
+                        <td></td>
+                        <td><div class="slot available">Programación</div></td>
+                    </tr>
+                    <tr>
+                        <td class="hour">02:00 PM</td>
+                        <td></td>
+                        <td><div class="slot available">Estadística</div></td>
+                        <td><div class="slot available">Estadística</div></td>
+                        <td><div class="slot available">Estadística</div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="hour">03:00 PM</td>
+                        <td><div class="slot available">Matemáticas</div></td>
+                        <td></td>
+                        <td><div class="slot available">Biología</div></td>
+                        <td></td>
+                        <td><div class="slot available">Biología</div></td>
+                    </tr>
+                    <tr>
+                        <td class="hour">04:00 PM</td>
+                        <td><div class="slot available">Historia</div></td>
+                        <td><div class="slot available">Historia</div></td>
+                        <td></td>
+                        <td><div class="slot available">Historia</div></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td class="hour">05:00 PM</td>
+                        <td></td>
+                        <td><div class="slot available">Física</div></td>
+                        <td><div class="slot available">Matemáticas</div></td>
+                        <td></td>
+                        <td><div class="slot available">Estadística</div></td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="calendar-container">
-            <div class="calendar-card">
-                <table class="calendar-table">
-                    <thead>
-                        <tr>
-                            <th>Hora</th>
-                            <th>Lun 26</th>
-                            <th>Mar 27</th>
-                            <th>Mié 28</th>
-                            <th>Jue 29</th>
-                            <th>Vie 30</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>08:00 AM</td>
-                            <td><div class="slot reserved">Reservado</div></td>
-                            <td><div class="slot available">Disponible</div></td>
-                            <td></td>
-                            <td><div class="slot reserved">Reservado</div></td>
-                            <td><div class="slot available">Disponible</div></td>
-                        </tr>
-                        <tr>
-                            <td>09:00 AM</td>
-                            <td></td>
-                            <td></td>
-                            <td><div class="slot available">Disponible</div></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>03:00 PM</td>
-                            <td><div class="slot available" style="border: 2px solid var(--primary-blue);">Disponible</div></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <!-- PANEL DERECHO -->
+        <div class="detail-card teacher-card">
+
+            <!-- Estado vacío -->
+            <div class="panel-vacio" id="panelVacio">
+                <i class="fas fa-calendar-check"></i>
+                <h3 style="font-size:15px; color:#64748b; margin:0 0 8px;">Selecciona un horario</h3>
+                <p>Haz clic en cualquier bloque verde disponible para ver los detalles y reservar tu clase.</p>
             </div>
 
-            <div class="detail-card">
-                <h3>Detalle del horario</h3>
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <div style="background: #eff6ff; padding: 10px; border-radius: 8px;"><i class="fas fa-book-open" style="color: var(--primary-blue);"></i></div>
+            <!-- Clase seleccionada (oculto hasta que se haga clic) -->
+            <div class="panel-clase" id="panelClase">
+
+                <h3 style="font-size:15px; margin:0 0 14px; color:var(--text-main);">Clase seleccionada</h3>
+
+                <div class="teacher-info">
+                    <div class="teacher-avatar">DR</div>
                     <div>
-                        <strong>Matemáticas</strong><br>
-                        <small>Profesor: Darwin Rosero</small>
+                        <strong style="font-size:14px;">Darwin Rosero</strong><br>
+                        <small style="color:#64748b;" id="panelMateriaLabel">Profesor</small>
                     </div>
                 </div>
 
-                <div class="detail-info">
-                    <div class="info-row"><i class="far fa-calendar"></i> Lunes, 26 de mayo de 2026</div>
-                    <div class="info-row"><i class="far fa-clock"></i> 03:00 PM - 05:00 PM</div>
-                    <div class="info-row"><i class="fas fa-video"></i> Modalidad: Virtual</div>
+                <div>
+                    <div class="info-item">
+                        <i class="fas fa-book"></i>
+                        <span id="panelMateria">—</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="far fa-calendar"></i>
+                        <span id="panelFecha">—</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="far fa-clock"></i>
+                        <span id="panelHora">—</span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-video"></i>
+                        <span>Modalidad Virtual (Google Meet)</span>
+                    </div>
                 </div>
 
-                <div class="slot available" style="display: inline-block; padding: 5px 15px;">Disponible</div>
-
-                <div style="margin-top: 20px;">
-                    <label style="font-size: 13px; font-weight: 600;">Reservar esta clase</label>
-                    <textarea rows="3" placeholder="Notas (opcional)"></textarea>
+                <div class="precio-badge">
+                    💳 $50.000 COP
                 </div>
 
-                <button class="btn-reserve">Reservar clase</button>
+                <label class="nota-label">Nota para el profesor (opcional)</label>
+                <textarea id="notaProfesor" rows="3" placeholder="Ej: Necesito ayuda con integrales..."></textarea>
+
+                <button class="btn-reserve" id="btnReservar">
+                    <i class="fas fa-lock"></i>
+                    Reservar y pagar
+                </button>
+
+                <div class="seguro-tag">
+                    <i class="fas fa-shield-alt"></i> Pago 100% seguro · SSL encriptado
+                </div>
+
             </div>
         </div>
-    </main>
 
-    <script>
-        // Cargar nombre del estudiante desde localStorage
-        document.getElementById('userName').innerText = localStorage.getItem('nombre') || 'Estudiante';
-    </script>
-    <script src="js/estudiante.js"></script>
+    </div>
+</div><!-- /sec-agenda -->
+
+    <!-- SECCIÓN: RESUMEN -->
+    <div id="sec-resumen" style="display:none;"></div>
+
+    <!-- SECCIÓN: MIS CLASES -->
+    <div id="sec-clases" style="display:none;"></div>
+
+    <!-- SECCIÓN: TAREAS PENDIENTES -->
+    <div id="sec-tareas" style="display:none;"></div>
+
+    <!-- SECCIÓN: CALIFICACIONES -->
+    <div id="sec-calificaciones" style="display:none;"></div>
+
+    <!-- SECCIÓN: MI PERFIL -->
+    <div id="sec-perfil" style="display:none;"></div>
+
+</main>
+
+<script src="js/estudiante.js"></script>
+
 </body>
 </html>

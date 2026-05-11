@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>EduAgenda - Solicitudes del Estudiante</title>
+<title>EduAgenda - Solicitudes Recibidas</title>
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -53,6 +54,7 @@ nav{
 .logo{
     font-size:1.2rem;
     font-weight:700;
+    color:var(--primary);
 }
 
 .nav-links{
@@ -94,12 +96,12 @@ nav{
 
 .container{
     width:90%;
-    max-width:1200px;
+    max-width:1300px;
     margin:40px auto;
 }
 
 .title{
-    margin-bottom:25px;
+    margin-bottom:30px;
 }
 
 .title h1{
@@ -212,6 +214,10 @@ td{
     font-size:.93rem;
 }
 
+tr:hover{
+    background:#f8fbff;
+}
+
 .estado{
     padding:7px 12px;
     border-radius:20px;
@@ -235,91 +241,122 @@ td{
     color:var(--danger);
 }
 
+/* =========================
+   ACCIONES
+========================= */
+
 .actions{
     display:flex;
     gap:15px;
+    align-items:center;
 }
 
 .actions i{
     cursor:pointer;
     transition:.2s;
+    font-size:1rem;
 }
 
 .actions i:hover{
     transform:scale(1.1);
 }
 
-/* =========================
-   FORMULARIO
-========================= */
-
-.form-box{
-    margin-top:35px;
-    background:white;
-    border-radius:14px;
-    border:1px solid var(--border);
-    padding:30px;
-}
-
-.form-box h3{
-    margin-bottom:25px;
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:20px;
-}
-
-.input-box{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.input-box label{
-    font-size:.9rem;
+.btn-accept{
+    background:#dcfce7;
+    color:var(--success);
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:.8rem;
     font-weight:600;
 }
 
-.input-box input,
-.input-box select,
-.input-box textarea{
-    padding:12px;
-    border:1px solid var(--border);
+.btn-reject{
+    background:#fee2e2;
+    color:var(--danger);
+    border:none;
+    padding:8px 12px;
     border-radius:8px;
-    resize:none;
-    outline:none;
+    cursor:pointer;
+    font-size:.8rem;
+    font-weight:600;
 }
 
-textarea{
-    min-height:100px;
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.45);
+    display:none;
+    justify-content:center;
+    align-items:center;
+    z-index:1000;
 }
 
-.full{
-    grid-column:1/3;
+.modal-content{
+    width:90%;
+    max-width:500px;
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    animation:fade .25s ease;
 }
 
-.btns{
-    margin-top:25px;
+@keyframes fade{
+    from{
+        opacity:0;
+        transform:translateY(20px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.modal-header{
+    padding:18px 22px;
+    border-bottom:1px solid var(--border);
+
     display:flex;
-    gap:15px;
+    justify-content:space-between;
+    align-items:center;
 }
 
-.btn-primary{
+.modal-header h3{
+    font-size:1.1rem;
+}
+
+.close-modal{
+    font-size:1.3rem;
+    cursor:pointer;
+}
+
+.modal-body{
+    padding:25px;
+}
+
+.modal-body p{
+    margin-bottom:12px;
+    line-height:1.6;
+}
+
+.modal-footer{
+    padding:18px 22px;
+    border-top:1px solid var(--border);
+
+    display:flex;
+    justify-content:flex-end;
+}
+
+.btn-close{
     background:var(--primary);
     color:white;
     border:none;
-    padding:12px 22px;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:600;
-}
-
-.btn-secondary{
-    background:white;
-    border:1px solid var(--border);
-    padding:12px 22px;
+    padding:10px 18px;
     border-radius:8px;
     cursor:pointer;
 }
@@ -328,18 +365,23 @@ textarea{
    RESPONSIVE
 ========================= */
 
-@media(max-width:768px){
-
-    .form-grid{
-        grid-template-columns:1fr;
-    }
-
-    .full{
-        grid-column:auto;
-    }
+@media(max-width:900px){
 
     .table-box{
         overflow-x:auto;
+    }
+
+}
+
+@media(max-width:768px){
+
+    .cards{
+        grid-template-columns:1fr;
+    }
+
+    .table-header{
+        flex-direction:column;
+        align-items:flex-start;
     }
 
 }
@@ -361,17 +403,21 @@ textarea{
 
     <div class="nav-links">
 
-        <a href="estudiante.html">
+        <a href="profesor.html">
             Inicio
         </a>
 
-        <a href="reservas.html">
-            Reservas
+        <a href="agenda.html">
+            Agenda
         </a>
 
-        <a href="solicitudes-estudiante.html"
+        <a href="solicitudes-profesor.html"
         class="active">
             Solicitudes
+        </a>
+
+        <a href="configuracion.html">
+            Configuración
         </a>
 
         <div class="profile">
@@ -381,7 +427,7 @@ textarea{
             alt="avatar">
 
             <span>
-                Ana Ruiz
+                Darwin Rosero
             </span>
 
         </div>
@@ -399,18 +445,18 @@ textarea{
     <div class="title">
 
         <h1>
-            Mis Solicitudes
+            Solicitudes Recibidas
         </h1>
 
         <p>
-            Gestiona solicitudes de clases,
-            cambios de horario y tutorías.
+            Administra solicitudes de tutorías,
+            clases extra y cambios de horario.
         </p>
 
     </div>
 
     <!-- =========================
-         RESUMEN
+         TARJETAS
     ========================== -->
 
     <div class="cards">
@@ -419,13 +465,13 @@ textarea{
 
             <div class="card-top">
                 <span>Total Solicitudes</span>
-                <i class="fa-solid fa-file-circle-plus"></i>
+                <i class="fa-solid fa-envelope-open-text"></i>
             </div>
 
-            <h2>18</h2>
+            <h2 id="totalSolicitudes">12</h2>
 
             <p>
-                Registradas este mes
+                Solicitudes recibidas
             </p>
 
         </div>
@@ -437,10 +483,10 @@ textarea{
                 <i class="fa-solid fa-clock"></i>
             </div>
 
-            <h2>5</h2>
+            <h2 id="pendientes">5</h2>
 
             <p>
-                Esperando respuesta
+                Esperando revisión
             </p>
 
         </div>
@@ -452,7 +498,7 @@ textarea{
                 <i class="fa-solid fa-circle-check"></i>
             </div>
 
-            <h2>10</h2>
+            <h2 id="aprobadas">5</h2>
 
             <p>
                 Confirmadas
@@ -467,7 +513,7 @@ textarea{
                 <i class="fa-solid fa-circle-xmark"></i>
             </div>
 
-            <h2>3</h2>
+            <h2 id="rechazadas">2</h2>
 
             <p>
                 No aprobadas
@@ -485,31 +531,45 @@ textarea{
 
         <div class="table-header">
 
-            <h3>
-                Historial de Solicitudes
-            </h3>
+            <div>
+
+                <h3>
+                    Historial de Solicitudes
+                </h3>
+
+                <p style="
+                    margin-top:6px;
+                    color:#64748b;
+                    font-size:.9rem;
+                ">
+                    Gestiona solicitudes enviadas
+                    por los estudiantes.
+                </p>
+
+            </div>
 
             <div class="filters">
 
                 <input
                 type="text"
-                placeholder="Buscar...">
+                id="searchInput"
+                placeholder="Buscar estudiante o materia...">
 
-                <select>
+                <select id="filterEstado">
 
-                    <option>
+                    <option value="todas">
                         Todas
                     </option>
 
-                    <option>
+                    <option value="pendiente">
                         Pendientes
                     </option>
 
-                    <option>
+                    <option value="aprobada">
                         Aprobadas
                     </option>
 
-                    <option>
+                    <option value="rechazada">
                         Rechazadas
                     </option>
 
@@ -525,50 +585,47 @@ textarea{
 
                 <tr>
 
-                    <th>Profesor</th>
+                    <th>Estudiante</th>
                     <th>Materia</th>
+                    <th>Tipo</th>
                     <th>Fecha</th>
                     <th>Hora</th>
+                    <th>Modalidad</th>
                     <th>Estado</th>
+                    <th>Descripción</th>
                     <th>Acciones</th>
 
                 </tr>
 
             </thead>
 
-            <tbody>
+            <tbody id="solicitudesBody">
 
                 <tr>
-
-                    <td>Darwin Rosero</td>
-                    <td>Matemáticas</td>
-                    <td>12/05/2026</td>
-                    <td>04:00 PM</td>
 
                     <td>
-                        <span class="estado aprobada">
-                            Aprobada
-                        </span>
+                        Ana Ruiz
                     </td>
 
-                    <td class="actions">
-
-                        <i class="fa-solid fa-eye"></i>
-
-                        <i class="fa-solid fa-trash"
-                        style="color:#ef4444">
-                        </i>
-
+                    <td>
+                        Matemáticas
                     </td>
 
-                </tr>
+                    <td>
+                        Tutoría
+                    </td>
 
-                <tr>
+                    <td>
+                        12/05/2026
+                    </td>
 
-                    <td>Laura Gómez</td>
-                    <td>Inglés</td>
-                    <td>15/05/2026</td>
-                    <td>09:00 AM</td>
+                    <td>
+                        04:00 PM
+                    </td>
+
+                    <td>
+                        Virtual
+                    </td>
 
                     <td>
                         <span class="estado pendiente">
@@ -576,13 +633,22 @@ textarea{
                         </span>
                     </td>
 
+                    <td>
+                        Refuerzo de álgebra
+                    </td>
+
                     <td class="actions">
 
-                        <i class="fa-solid fa-eye"></i>
+                        <button class="btn-accept">
+                            Aprobar
+                        </button>
 
-                        <i class="fa-solid fa-trash"
-                        style="color:#ef4444">
-                        </i>
+                        <button class="btn-reject">
+                            Rechazar
+                        </button>
+
+                        <i class="fa-solid fa-eye"
+                        title="Ver"></i>
 
                     </td>
 
@@ -590,10 +656,73 @@ textarea{
 
                 <tr>
 
-                    <td>Carlos Medina</td>
-                    <td>Programación</td>
-                    <td>17/05/2026</td>
-                    <td>06:00 PM</td>
+                    <td>
+                        Laura Gómez
+                    </td>
+
+                    <td>
+                        Inglés
+                    </td>
+
+                    <td>
+                        Cambio Horario
+                    </td>
+
+                    <td>
+                        15/05/2026
+                    </td>
+
+                    <td>
+                        09:00 AM
+                    </td>
+
+                    <td>
+                        Presencial
+                    </td>
+
+                    <td>
+                        <span class="estado aprobada">
+                            Aprobada
+                        </span>
+                    </td>
+
+                    <td>
+                        Solicita mover clase al viernes
+                    </td>
+
+                    <td class="actions">
+
+                        <i class="fa-solid fa-eye"></i>
+
+                    </td>
+
+                </tr>
+
+                <tr>
+
+                    <td>
+                        Carlos Medina
+                    </td>
+
+                    <td>
+                        Programación
+                    </td>
+
+                    <td>
+                        Clase Extra
+                    </td>
+
+                    <td>
+                        17/05/2026
+                    </td>
+
+                    <td>
+                        06:00 PM
+                    </td>
+
+                    <td>
+                        Virtual
+                    </td>
 
                     <td>
                         <span class="estado rechazada">
@@ -601,13 +730,13 @@ textarea{
                         </span>
                     </td>
 
+                    <td>
+                        Horario no disponible
+                    </td>
+
                     <td class="actions">
 
                         <i class="fa-solid fa-eye"></i>
-
-                        <i class="fa-solid fa-trash"
-                        style="color:#ef4444">
-                        </i>
 
                     </td>
 
@@ -619,116 +748,36 @@ textarea{
 
     </div>
 
-    <!-- =========================
-         NUEVA SOLICITUD
-    ========================== -->
+</div>
 
-    <div class="form-box">
+<!-- =========================
+     MODAL
+========================= -->
 
-        <h3>
-            Nueva Solicitud
-        </h3>
+<div class="modal" id="modalDetalle">
 
-        <div class="form-grid">
+    <div class="modal-content">
 
-            <div class="input-box">
+        <div class="modal-header">
 
-                <label>
-                    Profesor
-                </label>
+            <h3>
+                Detalle de Solicitud
+            </h3>
 
-                <select>
-
-                    <option>
-                        Seleccionar Profesor
-                    </option>
-
-                    <option>
-                        Darwin Rosero
-                    </option>
-
-                    <option>
-                        Laura Gómez
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="input-box">
-
-                <label>
-                    Materia
-                </label>
-
-                <select>
-
-                    <option>
-                        Seleccionar Materia
-                    </option>
-
-                    <option>
-                        Matemáticas
-                    </option>
-
-                    <option>
-                        Inglés
-                    </option>
-
-                    <option>
-                        Programación
-                    </option>
-
-                </select>
-
-            </div>
-
-            <div class="input-box">
-
-                <label>
-                    Fecha
-                </label>
-
-                <input type="date">
-
-            </div>
-
-            <div class="input-box">
-
-                <label>
-                    Hora
-                </label>
-
-                <input type="time">
-
-            </div>
-
-            <div class="input-box full">
-
-                <label>
-                    Descripción
-                </label>
-
-                <textarea
-                placeholder="Describe tu solicitud...">
-                </textarea>
-
-            </div>
+            <span class="close-modal">
+                &times;
+            </span>
 
         </div>
 
-        <div class="btns">
+        <div class="modal-body" id="detalleContenido">
 
-            <button class="btn-primary">
+        </div>
 
-                Enviar Solicitud
+        <div class="modal-footer">
 
-            </button>
-
-            <button class="btn-secondary">
-
-                Cancelar
-
+            <button class="btn-close">
+                Cerrar
             </button>
 
         </div>
@@ -736,6 +785,298 @@ textarea{
     </div>
 
 </div>
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+// =========================
+// SELECTORES
+// =========================
+
+const tableBody =
+document.getElementById('solicitudesBody');
+
+const filterEstado =
+document.getElementById('filterEstado');
+
+const searchInput =
+document.getElementById('searchInput');
+
+const modal =
+document.getElementById('modalDetalle');
+
+const detalleContenido =
+document.getElementById('detalleContenido');
+
+const closeModal =
+document.querySelector('.close-modal');
+
+const btnClose =
+document.querySelector('.btn-close');
+
+// =========================
+// ACTUALIZAR TARJETAS
+// =========================
+
+function actualizarEstadisticas(){
+
+    const rows =
+    tableBody.querySelectorAll('tr');
+
+    let pendientes = 0;
+    let aprobadas = 0;
+    let rechazadas = 0;
+
+    rows.forEach(row => {
+
+        const estado =
+        row.querySelector('.estado')
+        .innerText
+        .toLowerCase();
+
+        if(estado.includes('pendiente')){
+            pendientes++;
+        }
+
+        if(estado.includes('aprobada')){
+            aprobadas++;
+        }
+
+        if(estado.includes('rechazada')){
+            rechazadas++;
+        }
+
+    });
+
+    document.getElementById('totalSolicitudes')
+    .innerText = rows.length;
+
+    document.getElementById('pendientes')
+    .innerText = pendientes;
+
+    document.getElementById('aprobadas')
+    .innerText = aprobadas;
+
+    document.getElementById('rechazadas')
+    .innerText = rechazadas;
+
+}
+
+actualizarEstadisticas();
+
+// =========================
+// APROBAR / RECHAZAR
+// =========================
+
+tableBody.addEventListener('click', (e) => {
+
+    const row =
+    e.target.closest('tr');
+
+    if(!row) return;
+
+    const estado =
+    row.querySelector('.estado');
+
+    // APROBAR
+
+    if(
+        e.target.classList.contains('btn-accept')
+    ){
+
+        estado.className =
+        'estado aprobada';
+
+        estado.innerText =
+        'Aprobada';
+
+        row.querySelector('.actions')
+        .innerHTML = `
+            <i class="fa-solid fa-eye"></i>
+        `;
+
+        actualizarEstadisticas();
+
+    }
+
+    // RECHAZAR
+
+    if(
+        e.target.classList.contains('btn-reject')
+    ){
+
+        estado.className =
+        'estado rechazada';
+
+        estado.innerText =
+        'Rechazada';
+
+        row.querySelector('.actions')
+        .innerHTML = `
+            <i class="fa-solid fa-eye"></i>
+        `;
+
+        actualizarEstadisticas();
+
+    }
+
+    // VER DETALLE
+
+    if(
+        e.target.classList.contains('fa-eye')
+    ){
+
+        detalleContenido.innerHTML = `
+
+            <p>
+                <strong>Estudiante:</strong>
+                ${row.cells[0].innerText}
+            </p>
+
+            <p>
+                <strong>Materia:</strong>
+                ${row.cells[1].innerText}
+            </p>
+
+            <p>
+                <strong>Tipo:</strong>
+                ${row.cells[2].innerText}
+            </p>
+
+            <p>
+                <strong>Fecha:</strong>
+                ${row.cells[3].innerText}
+            </p>
+
+            <p>
+                <strong>Hora:</strong>
+                ${row.cells[4].innerText}
+            </p>
+
+            <p>
+                <strong>Modalidad:</strong>
+                ${row.cells[5].innerText}
+            </p>
+
+            <p>
+                <strong>Estado:</strong>
+                ${row.cells[6].innerText}
+            </p>
+
+            <p>
+                <strong>Descripción:</strong>
+                ${row.cells[7].innerText}
+            </p>
+
+        `;
+
+        modal.style.display = 'flex';
+
+    }
+
+});
+
+// =========================
+// CERRAR MODAL
+// =========================
+
+closeModal.onclick = () => {
+
+    modal.style.display = 'none';
+
+};
+
+btnClose.onclick = () => {
+
+    modal.style.display = 'none';
+
+};
+
+window.onclick = (e) => {
+
+    if(e.target === modal){
+
+        modal.style.display = 'none';
+
+    }
+
+};
+
+// =========================
+// FILTRO ESTADO
+// =========================
+
+filterEstado.addEventListener('change', () => {
+
+    const value =
+    filterEstado.value.toLowerCase();
+
+    tableBody.querySelectorAll('tr')
+    .forEach(row => {
+
+        const estado =
+        row.querySelector('.estado')
+        .innerText
+        .toLowerCase();
+
+        if(
+            value === 'todas' ||
+            estado.includes(value)
+        ){
+
+            row.style.display = '';
+
+        }else{
+
+            row.style.display = 'none';
+
+        }
+
+    });
+
+});
+
+// =========================
+// BUSCADOR
+// =========================
+
+searchInput.addEventListener('keyup', () => {
+
+    const text =
+    searchInput.value.toLowerCase();
+
+    tableBody.querySelectorAll('tr')
+    .forEach(row => {
+
+        const estudiante =
+        row.cells[0].innerText
+        .toLowerCase();
+
+        const materia =
+        row.cells[1].innerText
+        .toLowerCase();
+
+        if(
+            estudiante.includes(text) ||
+            materia.includes(text)
+        ){
+
+            row.style.display = '';
+
+        }else{
+
+            row.style.display = 'none';
+
+        }
+
+    });
+
+});
+
+</script>
 
 </body>
 </html>

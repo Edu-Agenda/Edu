@@ -220,6 +220,10 @@ td{
     cursor:pointer;
 }
 
+.actions i:hover{
+    transform:scale(1.1);
+}
+
 /* =========================
    FORMULARIO
 ========================= */
@@ -232,6 +236,11 @@ td{
 }
 
 .form-card h2{
+    margin-bottom:10px;
+}
+
+.form-card p{
+    color:#64748b;
     margin-bottom:25px;
 }
 
@@ -344,8 +353,8 @@ td{
             Agenda
         </a>
 
-        <a href="calificaciones.html">
-            Calificaciones
+        <a href="mis-estudiantes.html">
+            Estudiantes
         </a>
 
         <a href="#" class="active">
@@ -385,7 +394,7 @@ td{
             </h1>
 
             <p style="margin-top:8px; color:#64748b;">
-                Control de pagos y ganancias de tus clases
+                Pagos registrados de tus estudiantes activos
             </p>
 
         </div>
@@ -394,7 +403,7 @@ td{
 
             <i class="fas fa-plus"></i>
 
-            Nuevo Ingreso
+            Registrar Pago
 
         </button>
 
@@ -410,8 +419,9 @@ td{
                 Ingresos del Mes
             </div>
 
-            <div class="card-value green">
-                $2.450.000
+            <div class="card-value green"
+            id="ingresosMes">
+                $530.000
             </div>
 
         </div>
@@ -422,8 +432,9 @@ td{
                 Pagos Pendientes
             </div>
 
-            <div class="card-value orange">
-                $450.000
+            <div class="card-value orange"
+            id="pagosPendientes">
+                $120.000
             </div>
 
         </div>
@@ -431,11 +442,12 @@ td{
         <div class="card">
 
             <div class="card-title">
-                Total Estudiantes
+                Estudiantes Activos
             </div>
 
-            <div class="card-value">
-                18
+            <div class="card-value"
+            id="totalEstudiantes">
+                4
             </div>
 
         </div>
@@ -454,7 +466,8 @@ td{
 
                     <th>Estudiante</th>
                     <th>Materia</th>
-                    <th>Fecha</th>
+                    <th>Clases</th>
+                    <th>Último Pago</th>
                     <th>Monto</th>
                     <th>Estado</th>
                     <th>Acciones</th>
@@ -464,6 +477,8 @@ td{
             </thead>
 
             <tbody id="tablaIngresos">
+
+                <!-- ANA -->
 
                 <tr>
 
@@ -476,11 +491,103 @@ td{
                     </td>
 
                     <td>
-                        08/05/2026
+                        12 clases
                     </td>
 
                     <td>
-                        $150.000
+                        08/05/2026
+                    </td>
+
+                    <td class="monto">
+                        150000
+                    </td>
+
+                    <td>
+
+                        <span class="estado pagado">
+                            Pagado
+                        </span>
+
+                    </td>
+
+                    <td class="actions">
+
+                        <i class="fas fa-eye"
+                        title="Ver"></i>
+
+                        <i class="fas fa-trash"
+                        style="color:#ef4444"
+                        title="Eliminar"></i>
+
+                    </td>
+
+                </tr>
+
+                <!-- CARLOS -->
+
+                <tr>
+
+                    <td>
+                        Carlos Medina
+                    </td>
+
+                    <td>
+                        Inglés
+                    </td>
+
+                    <td>
+                        8 clases
+                    </td>
+
+                    <td>
+                        10/05/2026
+                    </td>
+
+                    <td class="monto">
+                        120000
+                    </td>
+
+                    <td>
+
+                        <span class="estado pendiente">
+                            Pendiente
+                        </span>
+
+                    </td>
+
+                    <td class="actions">
+
+                        <i class="fas fa-eye"></i>
+
+                        <i class="fas fa-trash"
+                        style="color:#ef4444"></i>
+
+                    </td>
+
+                </tr>
+
+                <!-- LAURA -->
+
+                <tr>
+
+                    <td>
+                        Laura Gómez
+                    </td>
+
+                    <td>
+                        Física
+                    </td>
+
+                    <td>
+                        15 clases
+                    </td>
+
+                    <td>
+                        11/05/2026
+                    </td>
+
+                    <td class="monto">
+                        180000
                     </td>
 
                     <td>
@@ -502,28 +609,34 @@ td{
 
                 </tr>
 
+                <!-- SOFIA -->
+
                 <tr>
 
                     <td>
-                        Carlos Medina
+                        Sofía Martínez
                     </td>
 
                     <td>
-                        Inglés
+                        Programación
                     </td>
 
                     <td>
-                        09/05/2026
+                        10 clases
                     </td>
 
                     <td>
-                        $120.000
+                        12/05/2026
+                    </td>
+
+                    <td class="monto">
+                        200000
                     </td>
 
                     <td>
 
-                        <span class="estado pendiente">
-                            Pendiente
+                        <span class="estado pagado">
+                            Pagado
                         </span>
 
                     </td>
@@ -550,8 +663,12 @@ td{
     <div class="form-card">
 
         <h2>
-            Registrar Nuevo Ingreso
+            Registrar Nuevo Pago
         </h2>
+
+        <p>
+            Registra pagos realizados por tus estudiantes.
+        </p>
 
         <div class="form-grid">
 
@@ -563,10 +680,29 @@ td{
                     Estudiante
                 </label>
 
-                <input
-                type="text"
-                id="estudianteInput"
-                placeholder="Nombre del estudiante">
+                <select id="estudianteInput">
+
+                    <option value="">
+                        Seleccionar estudiante
+                    </option>
+
+                    <option value="Ana Ruiz">
+                        Ana Ruiz
+                    </option>
+
+                    <option value="Carlos Medina">
+                        Carlos Medina
+                    </option>
+
+                    <option value="Laura Gómez">
+                        Laura Gómez
+                    </option>
+
+                    <option value="Sofía Martínez">
+                        Sofía Martínez
+                    </option>
+
+                </select>
 
             </div>
 
@@ -578,10 +714,29 @@ td{
                     Materia
                 </label>
 
-                <input
-                type="text"
-                id="materiaInput"
-                placeholder="Materia">
+                <select id="materiaInput">
+
+                    <option value="">
+                        Seleccionar materia
+                    </option>
+
+                    <option>
+                        Matemáticas
+                    </option>
+
+                    <option>
+                        Inglés
+                    </option>
+
+                    <option>
+                        Física
+                    </option>
+
+                    <option>
+                        Programación
+                    </option>
+
+                </select>
 
             </div>
 
@@ -590,7 +745,7 @@ td{
             <div class="input-box">
 
                 <label>
-                    Fecha
+                    Fecha de Pago
                 </label>
 
                 <input
@@ -644,13 +799,13 @@ td{
 
             <button class="btn-save">
 
-                Guardar
+                Guardar Pago
 
             </button>
 
             <button class="btn-cancel">
 
-                Cancelar
+                Limpiar
 
             </button>
 
@@ -690,13 +845,81 @@ document.querySelector('.btn-save');
 const btnCancel =
 document.querySelector('.btn-cancel');
 
+const ingresosMes =
+document.getElementById('ingresosMes');
+
+const pagosPendientes =
+document.getElementById('pagosPendientes');
+
+// =========================
+// FORMATEAR PESOS
+// =========================
+
+function formatearPesos(valor){
+
+    return '$' +
+    Number(valor)
+    .toLocaleString('es-CO');
+
+}
+
+// =========================
+// ACTUALIZAR TARJETAS
+// =========================
+
+function actualizarResumen(){
+
+    let totalPagado = 0;
+    let totalPendiente = 0;
+
+    document
+    .querySelectorAll('#tablaIngresos tr')
+    .forEach(fila => {
+
+        const monto =
+        Number(
+            fila.querySelector('.monto')
+            .innerText
+        );
+
+        const estado =
+        fila.querySelector('.estado')
+        .innerText
+        .trim();
+
+        if(estado === 'Pagado'){
+
+            totalPagado += monto;
+
+        }
+
+        else{
+
+            totalPendiente += monto;
+
+        }
+
+    });
+
+    ingresosMes.innerText =
+    formatearPesos(totalPagado);
+
+    pagosPendientes.innerText =
+    formatearPesos(totalPendiente);
+
+}
+
+// =========================
+// REGISTRAR NUEVO PAGO
+// =========================
+
 btnSave.addEventListener('click', () => {
 
     const estudiante =
-    estudianteInput.value.trim();
+    estudianteInput.value;
 
     const materia =
-    materiaInput.value.trim();
+    materiaInput.value;
 
     const fecha =
     fechaInput.value;
@@ -722,19 +945,31 @@ btnSave.addEventListener('click', () => {
 
     }
 
+    const [y,m,d] =
+    fecha.split('-');
+
+    const fechaFormateada =
+    `${d}/${m}/${y}`;
+
     const fila =
     document.createElement('tr');
 
     fila.innerHTML = `
+
         <td>${estudiante}</td>
 
         <td>${materia}</td>
 
-        <td>${fecha}</td>
+        <td>1 clase</td>
 
-        <td>$${monto}</td>
+        <td>${fechaFormateada}</td>
+
+        <td class="monto">
+            ${monto}
+        </td>
 
         <td>
+
             <span class="estado ${
                 estado === 'Pagado'
                 ? 'pagado'
@@ -742,6 +977,7 @@ btnSave.addEventListener('click', () => {
             }">
                 ${estado}
             </span>
+
         </td>
 
         <td class="actions">
@@ -752,15 +988,22 @@ btnSave.addEventListener('click', () => {
             style="color:#ef4444"></i>
 
         </td>
+
     `;
 
-    tabla.appendChild(fila);
+    tabla.prepend(fila);
 
-    agregarEventoEliminar(fila);
+    agregarEliminar(fila);
+
+    actualizarResumen();
 
     limpiarFormulario();
 
 });
+
+// =========================
+// LIMPIAR
+// =========================
 
 btnCancel.addEventListener('click', () => {
 
@@ -777,23 +1020,29 @@ function limpiarFormulario(){
 
 }
 
-function agregarEventoEliminar(fila){
+// =========================
+// ELIMINAR FILA
+// =========================
 
-    const eliminarBtn =
+function agregarEliminar(fila){
+
+    const eliminar =
     fila.querySelector('.fa-trash');
 
-    eliminarBtn.addEventListener(
+    eliminar.addEventListener(
     'click',
     () => {
 
         const confirmar =
         confirm(
-            '¿Eliminar ingreso?'
+            '¿Eliminar registro de pago?'
         );
 
         if(confirmar){
 
             fila.remove();
+
+            actualizarResumen();
 
         }
 
@@ -801,14 +1050,21 @@ function agregarEventoEliminar(fila){
 
 }
 
-document.querySelectorAll(
+// =========================
+// INICIALIZAR
+// =========================
+
+document
+.querySelectorAll(
 '#tablaIngresos tr'
 )
 .forEach(fila => {
 
-    agregarEventoEliminar(fila);
+    agregarEliminar(fila);
 
 });
+
+actualizarResumen();
 
 </script>
 

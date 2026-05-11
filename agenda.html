@@ -10,7 +10,6 @@
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-
         :root {
             --primary-blue: #0061ff;
             --light-blue: #eef4ff;
@@ -42,7 +41,6 @@
             background: white;
             padding: 15px 8%;
             border-bottom: 1px solid var(--border-color);
-
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -116,10 +114,14 @@
             border-radius: 10px;
             cursor: pointer;
             font-weight: 600;
-
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .btn-new:hover {
+            background: #0056e0;
         }
 
         /* =========================
@@ -160,11 +162,9 @@
             padding: 20px;
             border-radius: 15px;
             border: 1px solid var(--border-color);
-
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
-
             margin-bottom: 30px;
         }
 
@@ -174,6 +174,7 @@
             border-radius: 8px;
             border: 1px solid var(--border-color);
             outline: none;
+            color: var(--text-dark);
         }
 
         /* =========================
@@ -185,6 +186,7 @@
             border-radius: 15px;
             border: 1px solid var(--border-color);
             overflow: hidden;
+            margin-bottom: 20px;
         }
 
         table {
@@ -269,19 +271,166 @@
         }
 
         /* =========================
+           PAGINACIÓN
+        ========================== */
+
+        .pagination {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-page {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-page.active {
+            background: var(--primary-blue);
+            color: white;
+            border-color: var(--primary-blue);
+        }
+
+        /* =========================
+           MODAL
+        ========================== */
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.55);
+            backdrop-filter: blur(4px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 20px;
+            overflow: hidden;
+            animation: modalShow .25s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes modalShow {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            padding: 20px 25px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .close-modal {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: .2s;
+        }
+
+        .close-modal:hover {
+            color: var(--red);
+        }
+
+        #formReserva {
+            padding: 25px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            font-size: .95rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary-blue);
+        }
+
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn-cancel,
+        .btn-save {
+            padding: 11px 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-save {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #0056e0;
+        }
+
+        /* =========================
            RESPONSIVE
         ========================== */
 
         @media(max-width: 1000px) {
-
             .stats-grid {
                 grid-template-columns: repeat(2, 1fr);
             }
-
         }
 
         @media(max-width: 700px) {
-
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -294,192 +443,99 @@
                 overflow-x: auto;
             }
 
+            .nav-links {
+                gap: 15px;
+                font-size: 0.9rem;
+            }
         }
-
     </style>
 </head>
 
 <body>
 
-    <!-- =========================
-         NAVBAR
-    ========================== -->
-
+    <!-- NAVBAR -->
     <nav>
-
-        <div class="logo">
-            EduAgenda
-        </div>
+        <div class="logo">EduAgenda</div>
 
         <div class="nav-links">
-
-            <a href="profesor.html">
-                Inicio
-            </a>
-
-            <a href="#" class="active">
-                Agenda
-            </a>
-
-            <a href="calificaciones.html">
-                Calificaciones
-            </a>
-
-            <a href="configuracion.html">
-                Configuración
-            </a>
+            <a href="profesor.html">Inicio</a>
+            <a href="#" class="active">Agenda</a>
+            <a href="calificaciones.html">Calificaciones</a>
+            <a href="configuracion.html">Configuración</a>
 
             <div class="profile">
-
-                <img src="https://via.placeholder.com/150"
-                    alt="Profesor">
-
-                <span>
-                    Darwin Rosero
-                </span>
-
+                <img src="https://via.placeholder.com/150" alt="Profesor">
+                <span>Darwin Rosero</span>
             </div>
-
         </div>
-
     </nav>
 
-    <!-- =========================
-         CONTENIDO
-    ========================== -->
-
+    <!-- CONTENIDO -->
     <div class="container">
 
         <!-- HEADER -->
-
         <div class="top-section">
+            <h1>Agenda de Clases</h1>
 
-            <h1>
-                Agenda de Clases
-            </h1>
-
-            <button class="btn-new">
-
+            <button class="btn-new" id="btnNuevaReserva">
                 <i class="fas fa-plus"></i>
-
                 Nueva Reserva
-
             </button>
-
         </div>
 
         <!-- ESTADISTICAS -->
-
         <div class="stats-grid">
 
             <div class="stat-card">
-
-                <h3>
-                    Clases Hoy
-                </h3>
-
-                <p>
-                    6
-                </p>
-
+                <h3>Clases Hoy</h3>
+                <p id="stat-clases-hoy">6</p>
             </div>
 
             <div class="stat-card">
-
-                <h3>
-                    Reservas Pendientes
-                </h3>
-
-                <p>
-                    3
-                </p>
-
+                <h3>Reservas Pendientes</h3>
+                <p id="stat-pendientes">3</p>
             </div>
 
             <div class="stat-card">
-
-                <h3>
-                    Horas Ocupadas
-                </h3>
-
-                <p>
-                    18h
-                </p>
-
+                <h3>Horas Ocupadas</h3>
+                <p id="stat-horas">18h</p>
             </div>
 
             <div class="stat-card">
-
-                <h3>
-                    Estudiantes Activos
-                </h3>
-
-                <p>
-                    24
-                </p>
-
+                <h3>Estudiantes Activos</h3>
+                <p id="stat-estudiantes">24</p>
             </div>
 
         </div>
 
         <!-- FILTROS -->
-
         <div class="filters">
 
-            <input type="date">
+            <input type="date" id="filter-date">
 
-            <select>
-
-                <option>
-                    Todas las materias
-                </option>
-
-                <option>
-                    Matemáticas
-                </option>
-
-                <option>
-                    Inglés
-                </option>
-
-                <option>
-                    Ciencias
-                </option>
-
+            <select id="filter-materia">
+                <option value="todas">Todas las materias</option>
+                <option value="matematicas">Matemáticas</option>
+                <option value="ingles">Inglés</option>
+                <option value="ciencias">Ciencias</option>
             </select>
 
-            <select>
-
-                <option>
-                    Todos los estados
-                </option>
-
-                <option>
-                    Confirmada
-                </option>
-
-                <option>
-                    Pendiente
-                </option>
-
-                <option>
-                    Cancelada
-                </option>
-
+            <select id="filter-estado">
+                <option value="todos">Todos los estados</option>
+                <option value="confirmada">Confirmada</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="cancelada">Cancelada</option>
             </select>
 
         </div>
 
         <!-- TABLA -->
-
         <div class="table-container">
 
-            <table>
+            <table id="tabla-agenda">
 
                 <thead>
-
                     <tr>
-
                         <th>Estudiante</th>
                         <th>Materia</th>
                         <th>Fecha</th>
@@ -489,161 +545,72 @@
                         <th>Estado</th>
                         <th>Observaciones</th>
                         <th>Acciones</th>
-
                     </tr>
-
                 </thead>
 
-                <tbody>
+                <tbody id="agenda-body">
 
-                    <tr>
-
+                    <tr data-id="1">
+                        <td>Ana Ruiz</td>
+                        <td>Matemáticas</td>
+                        <td>12/05/2026</td>
+                        <td>08:00 AM</td>
+                        <td>2h</td>
+                        <td>Virtual</td>
                         <td>
-                            Ana Ruiz
-                        </td>
-
-                        <td>
-                            Matemáticas
-                        </td>
-
-                        <td>
-                            12/05/2026
-                        </td>
-
-                        <td>
-                            08:00 AM
-                        </td>
-
-                        <td>
-                            2h
-                        </td>
-
-                        <td>
-                            Virtual
-                        </td>
-
-                        <td>
-
                             <span class="status confirmed">
                                 Confirmada
                             </span>
-
                         </td>
-
-                        <td>
-                            Reforzar álgebra
-                        </td>
+                        <td>Reforzar álgebra</td>
 
                         <td class="actions">
-
-                            <i class="fas fa-eye"></i>
-
-                            <i class="fas fa-pen"></i>
-
-                            <i class="fas fa-trash"></i>
-
+                            <i class="fas fa-eye" title="Ver detalle"></i>
+                            <i class="fas fa-pen" title="Editar"></i>
+                            <i class="fas fa-trash" title="Eliminar"></i>
                         </td>
-
                     </tr>
 
-                    <tr>
-
+                    <tr data-id="2">
+                        <td>Carlos Medina</td>
+                        <td>Inglés</td>
+                        <td>12/05/2026</td>
+                        <td>11:00 AM</td>
+                        <td>1h</td>
+                        <td>Presencial</td>
                         <td>
-                            Carlos Medina
-                        </td>
-
-                        <td>
-                            Inglés
-                        </td>
-
-                        <td>
-                            12/05/2026
-                        </td>
-
-                        <td>
-                            11:00 AM
-                        </td>
-
-                        <td>
-                            1h
-                        </td>
-
-                        <td>
-                            Presencial
-                        </td>
-
-                        <td>
-
                             <span class="status pending">
                                 Pendiente
                             </span>
-
                         </td>
-
-                        <td>
-                            Speaking practice
-                        </td>
+                        <td>Speaking practice</td>
 
                         <td class="actions">
-
-                            <i class="fas fa-eye"></i>
-
-                            <i class="fas fa-pen"></i>
-
-                            <i class="fas fa-trash"></i>
-
+                            <i class="fas fa-eye" title="Ver detalle"></i>
+                            <i class="fas fa-pen" title="Editar"></i>
+                            <i class="fas fa-trash" title="Eliminar"></i>
                         </td>
-
                     </tr>
 
-                    <tr>
-
+                    <tr data-id="3">
+                        <td>Laura Torres</td>
+                        <td>Ciencias</td>
+                        <td>13/05/2026</td>
+                        <td>03:00 PM</td>
+                        <td>1.5h</td>
+                        <td>Virtual</td>
                         <td>
-                            Laura Torres
-                        </td>
-
-                        <td>
-                            Ciencias
-                        </td>
-
-                        <td>
-                            13/05/2026
-                        </td>
-
-                        <td>
-                            03:00 PM
-                        </td>
-
-                        <td>
-                            1.5h
-                        </td>
-
-                        <td>
-                            Virtual
-                        </td>
-
-                        <td>
-
                             <span class="status cancelled">
                                 Cancelada
                             </span>
-
                         </td>
-
-                        <td>
-                            Reagendar próxima semana
-                        </td>
+                        <td>Reagendar próxima semana</td>
 
                         <td class="actions">
-
-                            <i class="fas fa-eye"></i>
-
-                            <i class="fas fa-pen"></i>
-
-                            <i class="fas fa-trash"></i>
-
+                            <i class="fas fa-eye" title="Ver detalle"></i>
+                            <i class="fas fa-pen" title="Editar"></i>
+                            <i class="fas fa-trash" title="Eliminar"></i>
                         </td>
-
                     </tr>
 
                 </tbody>
@@ -652,7 +619,217 @@
 
         </div>
 
+        <!-- PAGINACIÓN -->
+        <div class="pagination">
+
+            <button class="btn-page">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <button class="btn-page active">
+                1
+            </button>
+
+            <button class="btn-page">
+                2
+            </button>
+
+            <button class="btn-page">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+        </div>
+
     </div>
+
+    <!-- MODAL DE RESERVA -->
+    <div id="modalReserva" class="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h2 id="modalTitle">
+                    Nueva Reserva
+                </h2>
+
+                <span class="close-modal">
+                    &times;
+                </span>
+            </div>
+
+            <form id="formReserva">
+
+                <div class="form-group">
+                    <label>Nombre del Estudiante</label>
+
+                    <input type="text"
+                        id="inputNombre"
+                        required
+                        placeholder="Ej. Ana Ruiz">
+                </div>
+
+                <div class="form-group">
+                    <label>Materia</label>
+
+                    <select id="inputMateria" required>
+                        <option value="Matemáticas">Matemáticas</option>
+                        <option value="Inglés">Inglés</option>
+                        <option value="Ciencias">Ciencias</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha</label>
+
+                    <input type="date"
+                        id="inputFecha"
+                        required>
+                </div>
+
+                <div class="modal-footer">
+
+                    <button type="button" class="btn-cancel">
+                        Cancelar
+                    </button>
+
+                    <button type="submit" class="btn-save">
+                        Guardar Reserva
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script src="js/agenda.js"></script>
+
+    <script>
+
+        const modal = document.getElementById("modalReserva");
+
+        const btnNuevaReserva =
+            document.getElementById("btnNuevaReserva");
+
+        const closeModal =
+            document.querySelector(".close-modal");
+
+        const btnCancel =
+            document.querySelector(".btn-cancel");
+
+        const formReserva =
+            document.getElementById("formReserva");
+
+        const agendaBody =
+            document.getElementById("agenda-body");
+
+        // =========================
+        // ABRIR MODAL
+        // =========================
+
+        btnNuevaReserva.addEventListener("click", () => {
+            modal.classList.add("active");
+        });
+
+        // =========================
+        // CERRAR MODAL
+        // =========================
+
+        function cerrarModal() {
+            modal.classList.remove("active");
+        }
+
+        closeModal.addEventListener(
+            "click",
+            cerrarModal
+        );
+
+        btnCancel.addEventListener(
+            "click",
+            cerrarModal
+        );
+
+        // =========================
+        // CERRAR CLICK AFUERA
+        // =========================
+
+        window.addEventListener("click", (e) => {
+
+            if (e.target === modal) {
+                cerrarModal();
+            }
+
+        });
+
+        // =========================
+        // GUARDAR RESERVA
+        // =========================
+
+        formReserva.addEventListener("submit", (e) => {
+
+            e.preventDefault();
+
+            const nombre =
+                document.getElementById("inputNombre").value;
+
+            const materia =
+                document.getElementById("inputMateria").value;
+
+            const fecha =
+                document.getElementById("inputFecha").value;
+
+            const nuevaFila = `
+
+                <tr>
+
+                    <td>${nombre}</td>
+
+                    <td>${materia}</td>
+
+                    <td>${fecha}</td>
+
+                    <td>09:00 AM</td>
+
+                    <td>1h</td>
+
+                    <td>Virtual</td>
+
+                    <td>
+                        <span class="status pending">
+                            Pendiente
+                        </span>
+                    </td>
+
+                    <td>
+                        Nueva reserva creada
+                    </td>
+
+                    <td class="actions">
+                        <i class="fas fa-eye"
+                            title="Ver detalle"></i>
+
+                        <i class="fas fa-pen"
+                            title="Editar"></i>
+
+                        <i class="fas fa-trash"
+                            title="Eliminar"></i>
+                    </td>
+
+                </tr>
+
+            `;
+
+            agendaBody.innerHTML += nuevaFila;
+
+            formReserva.reset();
+
+            cerrarModal();
+
+        });
+
+    </script>
 
 </body>
 

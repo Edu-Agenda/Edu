@@ -9,164 +9,373 @@
 <title>Configuración - EduAgenda</title>
 
 <link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
 
-body{
-    margin:0;
-    font-family:Arial;
-    background:#f3f4f6;
+:root{
+    --primary:#2563eb;
+    --primary-dark:#1d4ed8;
+    --success:#16a34a;
+    --danger:#dc2626;
+    --warning:#f59e0b;
+
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --text:#0f172a;
+    --text-light:#64748b;
+    --border:#e2e8f0;
 }
 
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    background:var(--bg);
+    font-family:'Segoe UI', sans-serif;
+    color:var(--text);
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
 .navbar{
+    width:100%;
     background:white;
-    padding:15px 25px;
+    border-bottom:1px solid var(--border);
+
     display:flex;
     justify-content:space-between;
     align-items:center;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+
+    padding:16px 8%;
+    position:sticky;
+    top:0;
+    z-index:100;
 }
 
 .logo{
-    font-size:22px;
-    font-weight:bold;
-    color:#111827;
+    font-size:1.3rem;
+    font-weight:700;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo i{
+    color:var(--primary);
 }
 
 .menu{
     display:flex;
-    gap:15px;
     align-items:center;
+    gap:15px;
 }
+
+.menu a,
+.menu button{
+    border:none;
+    text-decoration:none;
+    padding:11px 16px;
+    border-radius:10px;
+    font-size:.9rem;
+    font-weight:600;
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+    cursor:pointer;
+    transition:.3s;
+}
+
+.btn-back{
+    background:var(--primary);
+    color:white;
+}
+
+.btn-back:hover{
+    background:var(--primary-dark);
+}
+
+.btn-logout{
+    background:var(--danger);
+    color:white;
+}
+
+.btn-logout:hover{
+    opacity:.9;
+}
+
+/* =========================
+   CONTENIDO
+========================= */
 
 .container{
-    width:90%;
+    width:100%;
+    max-width:1300px;
     margin:40px auto;
+    padding:0 20px;
 }
 
-.titulo{
-    font-size:32px;
-    margin-bottom:25px;
-    color:#111827;
+.title-section{
+    margin-bottom:35px;
 }
+
+.title-section h1{
+    font-size:2rem;
+    margin-bottom:10px;
+}
+
+.title-section p{
+    color:var(--text-light);
+    line-height:1.6;
+}
+
+/* =========================
+   GRID
+========================= */
 
 .grid{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:22px;
+    margin-bottom:35px;
 }
 
+/* =========================
+   CARDS
+========================= */
+
 .card{
-    background:white;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:18px;
     padding:25px;
-    border-radius:16px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+
     transition:.3s;
 }
 
 .card:hover{
     transform:translateY(-5px);
+    box-shadow:0 8px 20px rgba(0,0,0,.05);
 }
 
-.card i{
-    font-size:30px;
-    color:#2563eb;
-    margin-bottom:15px;
+.card .icon{
+    width:60px;
+    height:60px;
+
+    border-radius:16px;
+    background:#eff6ff;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-bottom:18px;
+}
+
+.card .icon i{
+    font-size:1.5rem;
+    color:var(--primary);
 }
 
 .card h3{
     margin-bottom:10px;
-    color:#111827;
 }
 
 .card p{
-    color:#6b7280;
+    color:var(--text-light);
     line-height:1.5;
-    font-size:14px;
+    font-size:.95rem;
 }
 
-.btn{
-    margin-top:15px;
-    background:#2563eb;
-    color:white;
+.card button{
+    margin-top:20px;
+
+    width:100%;
     border:none;
-    padding:10px 15px;
-    border-radius:8px;
+    background:var(--primary);
+    color:white;
+
+    padding:12px;
+    border-radius:12px;
+
+    font-weight:600;
     cursor:pointer;
-    font-weight:bold;
+
+    transition:.3s;
 }
+
+.card button:hover{
+    background:var(--primary-dark);
+}
+
+/* =========================
+   PANEL
+========================= */
 
 .panel{
     display:none;
-    margin-top:35px;
+
     background:white;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    border:1px solid var(--border);
+
+    border-radius:20px;
+    padding:30px;
+
+    margin-bottom:30px;
+}
+
+.panel.active{
+    display:block;
 }
 
 .panel h2{
-    margin-bottom:20px;
-    color:#111827;
+    margin-bottom:25px;
+
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
 }
 
 .input-group{
-    margin-bottom:15px;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
 }
 
 .input-group label{
-    display:block;
-    margin-bottom:8px;
-    font-weight:bold;
-    color:#374151;
+    font-size:.92rem;
+    font-weight:600;
 }
 
 .input-group input,
 .input-group select{
-    width:100%;
-    padding:12px;
-    border:1px solid #d1d5db;
-    border-radius:10px;
-    font-size:14px;
+    padding:13px;
+    border:1px solid var(--border);
+    border-radius:12px;
+    outline:none;
+    font-size:.95rem;
+}
+
+.input-group input:focus,
+.input-group select:focus{
+    border-color:var(--primary);
+}
+
+.panel-buttons{
+    display:flex;
+    gap:15px;
+    margin-top:25px;
 }
 
 .save-btn{
-    background:#16a34a;
+    background:var(--success);
     color:white;
     border:none;
-    padding:12px 18px;
-    border-radius:10px;
+    padding:12px 20px;
+    border-radius:12px;
+    font-weight:600;
     cursor:pointer;
-    font-weight:bold;
-    margin-top:10px;
 }
 
+.clear-btn{
+    background:#f8fafc;
+    border:1px solid var(--border);
+    padding:12px 20px;
+    border-radius:12px;
+    font-weight:600;
+    cursor:pointer;
+}
+
+/* =========================
+   RESUMEN
+========================= */
+
 .resumen{
-    margin-top:35px;
     background:white;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 2px 10px rgba(0,0,0,.05);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:30px;
 }
 
 .resumen h2{
-    margin-bottom:20px;
-    color:#111827;
+    margin-bottom:25px;
 }
 
-.resumen p{
-    margin:10px 0;
-    color:#374151;
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:20px;
 }
+
+.summary-card{
+    background:#f8fafc;
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:20px;
+}
+
+.summary-card h4{
+    margin-bottom:12px;
+}
+
+.summary-card p{
+    margin:8px 0;
+    color:var(--text-light);
+}
+
+.summary-card span{
+    color:var(--text);
+    font-weight:600;
+}
+
+/* =========================
+   FOOTER
+========================= */
 
 .footer{
     margin-top:50px;
     background:white;
+    border-top:1px solid var(--border);
     text-align:center;
-    padding:18px;
-    font-size:14px;
-    color:#6b7280;
+    padding:20px;
+    color:var(--text-light);
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:768px){
+
+    .navbar{
+        flex-direction:column;
+        gap:15px;
+    }
+
+    .menu{
+        width:100%;
+        justify-content:center;
+        flex-wrap:wrap;
+    }
+
+    .title-section h1{
+        font-size:1.6rem;
+    }
+
 }
 
 </style>
@@ -175,397 +384,537 @@ body{
 
 <body>
 
-<!-- NAVBAR -->
+<!-- =========================
+     NAVBAR
+========================= -->
 
 <div class="navbar">
 
-<div class="logo">
-⚙ Configuración
-</div>
+    <div class="logo">
 
-<div class="menu">
+        <i class="fas fa-cogs"></i>
 
-    <!-- VOLVER -->
+        EduAgenda Configuración
 
-    <a href="admin.html"
-    style="
-        background:#2563eb;
-        color:white;
-        padding:10px 15px;
-        border-radius:10px;
-        text-decoration:none;
-        display:flex;
-        align-items:center;
-        gap:8px;
-        font-weight:bold;
-        font-size:14px;
-    ">
+    </div>
 
-        <i class="fas fa-arrow-left"></i>
+    <div class="menu">
 
-        Volver
+        <a href="profesor.html" class="btn-back">
 
-    </a>
+            <i class="fas fa-arrow-left"></i>
 
-    <!-- SALIR -->
+            Volver
 
-    <button
-    onclick="logout()"
-    style="
-        background:#ef4444;
-        color:white;
-        border:none;
-        padding:10px 15px;
-        border-radius:10px;
-        cursor:pointer;
-        font-weight:bold;
-        display:flex;
-        align-items:center;
-        gap:8px;
-        font-size:14px;
-    ">
+        </a>
 
-        <i class="fas fa-sign-out-alt"></i>
+        <button class="btn-logout" onclick="logout()">
 
-        Salir
+            <i class="fas fa-sign-out-alt"></i>
 
-    </button>
+            Cerrar Sesión
+
+        </button>
+
+    </div>
 
 </div>
 
-</div>
-
-<!-- CONTENIDO -->
+<!-- =========================
+     CONTENIDO
+========================= -->
 
 <div class="container">
 
-<h1 class="titulo">
-<i class="fas fa-cogs"></i>
-Configuración de la Plataforma
-</h1>
+    <!-- TITULO -->
 
-<div class="grid">
+    <div class="title-section">
 
-<!-- CLASES -->
+        <h1>
+            Panel de Configuración
+        </h1>
 
-<div class="card">
+        <p>
+            Configura materias, horarios,
+            pagos y permisos de la plataforma EduAgenda.
+        </p>
 
-<i class="fas fa-book-open"></i>
+    </div>
 
-<h3>Clases y Materias</h3>
+    <!-- GRID -->
 
-<p>
+    <div class="grid">
 
-Administra materias disponibles,
-tipos de clases particulares
-y categorías educativas.
+        <!-- CLASES -->
 
-</p>
+        <div class="card">
 
-<button class="btn"
-onclick="mostrarPanel('panelClases')">
-Administrar
-</button>
+            <div class="icon">
+                <i class="fas fa-book-open"></i>
+            </div>
 
-</div>
+            <h3>
+                Materias
+            </h3>
 
-<!-- HORARIOS -->
+            <p>
+                Configura materias, modalidades
+                y organización académica.
+            </p>
 
-<div class="card">
+            <button onclick="mostrarPanel('panelClases')">
 
-<i class="fas fa-clock"></i>
+                Administrar
 
-<h3>Horarios</h3>
+            </button>
 
-<p>
+        </div>
 
-Configura horarios de clases,
-disponibilidad de profesores
-y reservas estudiantiles.
+        <!-- HORARIOS -->
 
-</p>
+        <div class="card">
 
-<button class="btn"
-onclick="mostrarPanel('panelHorarios')">
-Configurar
-</button>
+            <div class="icon">
+                <i class="fas fa-clock"></i>
+            </div>
 
-</div>
+            <h3>
+                Horarios
+            </h3>
 
-<!-- PAGOS -->
+            <p>
+                Configura disponibilidad
+                y horarios de atención.
+            </p>
 
-<div class="card">
+            <button onclick="mostrarPanel('panelHorarios')">
 
-<i class="fas fa-money-bill-wave"></i>
+                Configurar
 
-<h3>Pagos</h3>
+            </button>
 
-<p>
+        </div>
 
-Gestiona pagos realizados,
-métodos de pago y
-transacciones de usuarios.
+        <!-- PAGOS -->
 
-</p>
+        <div class="card">
 
-<button class="btn"
-onclick="mostrarPanel('panelPagos')">
-Ver Pagos
-</button>
+            <div class="icon">
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
 
-</div>
+            <h3>
+                Pagos
+            </h3>
 
-<!-- SEGURIDAD -->
+            <p>
+                Gestiona métodos de pago
+                y costos de las clases.
+            </p>
 
-<div class="card">
+            <button onclick="mostrarPanel('panelPagos')">
 
-<i class="fas fa-user-shield"></i>
+                Administrar
 
-<h3>Permisos del Sistema</h3>
+            </button>
 
-<p>
+        </div>
 
-Gestiona permisos y accesos
-para administradores,
-profesores y estudiantes.
+        <!-- SEGURIDAD -->
 
-</p>
+        <div class="card">
 
-<button class="btn"
-onclick="mostrarPanel('panelSeguridad')">
-Gestionar
-</button>
+            <div class="icon">
+                <i class="fas fa-user-shield"></i>
+            </div>
 
-</div>
+            <h3>
+                Seguridad
+            </h3>
 
-</div>
+            <p>
+                Controla permisos,
+                accesos y roles del sistema.
+            </p>
 
-<!-- PANEL CLASES -->
+            <button onclick="mostrarPanel('panelSeguridad')">
 
-<div class="panel" id="panelClases">
+                Gestionar
 
-<h2>
-<i class="fas fa-book-open"></i>
-Configuración de Clases
-</h2>
+            </button>
 
-<div class="input-group">
+        </div>
 
-<label>Nombre de la materia</label>
+    </div>
 
-<input
-type="text"
-id="materia"
-placeholder="Ejemplo: Matemáticas">
+    <!-- =========================
+         PANEL MATERIAS
+    ========================= -->
 
-</div>
+    <div class="panel" id="panelClases">
 
-<div class="input-group">
+        <h2>
 
-<label>Tipo de clase</label>
+            <i class="fas fa-book-open"></i>
 
-<select id="tipoClase">
+            Configuración de Materias
 
-<option>Virtual</option>
-<option>Presencial</option>
+        </h2>
 
-</select>
+        <div class="form-grid">
 
-</div>
+            <div class="input-group">
 
-<button
-class="save-btn"
-onclick="guardarClases()">
+                <label>
+                    Materia
+                </label>
 
-Guardar Configuración
+                <input
+                type="text"
+                id="materia"
+                placeholder="Ej: Matemáticas">
 
-</button>
+            </div>
 
-</div>
+            <div class="input-group">
 
-<!-- PANEL HORARIOS -->
+                <label>
+                    Modalidad
+                </label>
 
-<div class="panel" id="panelHorarios">
+                <select id="tipoClase">
 
-<h2>
-<i class="fas fa-clock"></i>
-Configuración de Horarios
-</h2>
+                    <option>Virtual</option>
+                    <option>Presencial</option>
 
-<div class="input-group">
+                </select>
 
-<label>Hora de inicio</label>
+            </div>
 
-<input
-type="time"
-id="horaInicio">
+        </div>
 
-</div>
+        <div class="panel-buttons">
 
-<div class="input-group">
+            <button class="save-btn"
+            onclick="guardarClases()">
 
-<label>Hora de finalización</label>
+                Guardar
 
-<input
-type="time"
-id="horaFin">
+            </button>
 
-</div>
+            <button class="clear-btn"
+            onclick="limpiarPanel('panelClases')">
 
-<button
-class="save-btn"
-onclick="guardarHorarios()">
+                Limpiar
 
-Guardar Horarios
+            </button>
 
-</button>
+        </div>
 
-</div>
+    </div>
 
-<!-- PANEL PAGOS -->
+    <!-- =========================
+         PANEL HORARIOS
+    ========================= -->
 
-<div class="panel" id="panelPagos">
+    <div class="panel" id="panelHorarios">
 
-<h2>
-<i class="fas fa-money-bill-wave"></i>
-Configuración de Pagos
-</h2>
+        <h2>
 
-<div class="input-group">
+            <i class="fas fa-clock"></i>
 
-<label>Método de pago</label>
+            Configuración de Horarios
 
-<select id="metodoPago">
+        </h2>
 
-<option>Transferencia</option>
-<option>Nequi</option>
-<option>Daviplata</option>
-<option>Tarjeta</option>
+        <div class="form-grid">
 
-</select>
+            <div class="input-group">
 
-</div>
+                <label>
+                    Hora Inicio
+                </label>
 
-<div class="input-group">
+                <input type="time" id="horaInicio">
 
-<label>Valor por clase</label>
+            </div>
 
-<input
-type="number"
-id="valorClase"
-placeholder="$">
+            <div class="input-group">
 
-</div>
+                <label>
+                    Hora Final
+                </label>
 
-<button
-class="save-btn"
-onclick="guardarPagos()">
+                <input type="time" id="horaFin">
 
-Guardar Pagos
+            </div>
 
-</button>
+        </div>
 
-</div>
+        <div class="panel-buttons">
 
-<!-- PANEL SEGURIDAD -->
+            <button class="save-btn"
+            onclick="guardarHorarios()">
 
-<div class="panel" id="panelSeguridad">
+                Guardar
 
-<h2>
-<i class="fas fa-user-shield"></i>
-Permisos y Seguridad
-</h2>
+            </button>
 
-<div class="input-group">
+        </div>
 
-<label>Rol de usuario</label>
+    </div>
 
-<select id="rolUsuario">
+    <!-- =========================
+         PANEL PAGOS
+    ========================= -->
 
-<option>Administrador</option>
-<option>Profesor</option>
-<option>Estudiante</option>
+    <div class="panel" id="panelPagos">
 
-</select>
+        <h2>
 
-</div>
+            <i class="fas fa-money-bill-wave"></i>
 
-<div class="input-group">
+            Configuración de Pagos
 
-<label>Estado</label>
+        </h2>
 
-<select id="estadoUsuario">
+        <div class="form-grid">
 
-<option>Activo</option>
-<option>Bloqueado</option>
+            <div class="input-group">
 
-</select>
+                <label>
+                    Método de Pago
+                </label>
 
-</div>
+                <select id="metodoPago">
 
-<button
-class="save-btn"
-onclick="guardarSeguridad()">
+                    <option>Transferencia</option>
+                    <option>Nequi</option>
+                    <option>Daviplata</option>
+                    <option>Tarjeta</option>
 
-Guardar Permisos
+                </select>
 
-</button>
+            </div>
 
-</div>
+            <div class="input-group">
 
-<!-- RESUMEN -->
+                <label>
+                    Valor por Clase
+                </label>
 
-<div class="resumen">
+                <input
+                type="number"
+                id="valorClase"
+                placeholder="$ 0">
 
-<h2>
-<i class="fas fa-clipboard-check"></i>
-Configuración Actual
-</h2>
+            </div>
 
-<p><strong>Materia:</strong> <span id="mostrarMateria">No configurado</span></p>
+        </div>
 
-<p><strong>Tipo de Clase:</strong> <span id="mostrarTipoClase">No configurado</span></p>
+        <div class="panel-buttons">
 
-<p><strong>Hora Inicio:</strong> <span id="mostrarHoraInicio">No configurado</span></p>
+            <button class="save-btn"
+            onclick="guardarPagos()">
 
-<p><strong>Hora Final:</strong> <span id="mostrarHoraFin">No configurado</span></p>
+                Guardar
 
-<p><strong>Método de Pago:</strong> <span id="mostrarMetodoPago">No configurado</span></p>
+            </button>
 
-<p><strong>Valor Clase:</strong> <span id="mostrarValorClase">No configurado</span></p>
+        </div>
 
-<p><strong>Usuario Bloqueado:</strong> <span id="mostrarBloqueado">Ninguno</span></p>
+    </div>
 
-</div>
+    <!-- =========================
+         PANEL SEGURIDAD
+    ========================= -->
 
-<!-- ELIMINAR -->
+    <div class="panel" id="panelSeguridad">
 
-<div style="
-    width:90%;
-    margin:30px auto;
-    text-align:center;
-">
+        <h2>
 
-    <button
-    onclick="eliminarConfiguracion()"
-    style="
-        background:#dc2626;
-        color:white;
-        border:none;
-        padding:14px 20px;
-        border-radius:10px;
-        cursor:pointer;
-        font-weight:bold;
-        font-size:15px;
-    ">
+            <i class="fas fa-user-shield"></i>
 
-        <i class="fas fa-trash"></i>
+            Seguridad y Permisos
 
-        Eliminar Configuración
+        </h2>
 
-    </button>
+        <div class="form-grid">
 
-</div>
+            <div class="input-group">
+
+                <label>
+                    Rol
+                </label>
+
+                <select id="rolUsuario">
+
+                    <option>Administrador</option>
+                    <option>Profesor</option>
+                    <option>Estudiante</option>
+
+                </select>
+
+            </div>
+
+            <div class="input-group">
+
+                <label>
+                    Estado
+                </label>
+
+                <select id="estadoUsuario">
+
+                    <option>Activo</option>
+                    <option>Bloqueado</option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+        <div class="panel-buttons">
+
+            <button class="save-btn"
+            onclick="guardarSeguridad()">
+
+                Guardar
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         RESUMEN
+    ========================= -->
+
+    <div class="resumen">
+
+        <h2>
+
+            <i class="fas fa-chart-bar"></i>
+
+            Resumen Actual
+
+        </h2>
+
+        <div class="summary-grid">
+
+            <div class="summary-card">
+
+                <h4>
+                    Materias
+                </h4>
+
+                <p>
+                    Materia:
+                    <span id="mostrarMateria">
+                        No configurado
+                    </span>
+                </p>
+
+                <p>
+                    Modalidad:
+                    <span id="mostrarTipoClase">
+                        No configurado
+                    </span>
+                </p>
+
+            </div>
+
+            <div class="summary-card">
+
+                <h4>
+                    Horarios
+                </h4>
+
+                <p>
+                    Inicio:
+                    <span id="mostrarHoraInicio">
+                        No configurado
+                    </span>
+                </p>
+
+                <p>
+                    Final:
+                    <span id="mostrarHoraFin">
+                        No configurado
+                    </span>
+                </p>
+
+            </div>
+
+            <div class="summary-card">
+
+                <h4>
+                    Pagos
+                </h4>
+
+                <p>
+                    Método:
+                    <span id="mostrarMetodoPago">
+                        No configurado
+                    </span>
+                </p>
+
+                <p>
+                    Valor:
+                    <span id="mostrarValorClase">
+                        No configurado
+                    </span>
+                </p>
+
+            </div>
+
+            <div class="summary-card">
+
+                <h4>
+                    Seguridad
+                </h4>
+
+                <p>
+                    Usuario:
+                    <span id="mostrarBloqueado">
+                        Ninguno
+                    </span>
+                </p>
+
+            </div>
+
+        </div>
+
+        <!-- BOTÓN ELIMINAR -->
+
+        <div style="
+            margin-top:30px;
+            display:flex;
+            justify-content:flex-end;
+        ">
+
+            <button
+            onclick="eliminarConfiguracion()"
+            style="
+                background:var(--danger);
+                color:white;
+                border:none;
+                padding:14px 20px;
+                border-radius:12px;
+                font-weight:600;
+                cursor:pointer;
+            ">
+
+                <i class="fas fa-trash"></i>
+
+                Eliminar Configuración
+
+            </button>
+
+        </div>
+
+    </div>
 
 </div>
 
@@ -573,55 +922,84 @@ Configuración Actual
 
 <footer class="footer">
 
-    © 2026 EduAgenda - Configuración
+    © 2026 EduAgenda - Panel de Configuración
 
 </footer>
 
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
 <script>
+
+/* =========================
+   MOSTRAR PANEL
+========================= */
 
 function mostrarPanel(id){
 
-    const paneles = document.querySelectorAll('.panel');
+    const paneles =
+    document.querySelectorAll('.panel');
 
     paneles.forEach(panel => {
-        panel.style.display = 'none';
+        panel.classList.remove('active');
     });
 
-    document.getElementById(id).style.display = 'block';
+    document
+    .getElementById(id)
+    .classList.add('active');
 
 }
 
-// GUARDAR CLASES
+/* =========================
+   GUARDAR MATERIAS
+========================= */
 
 function guardarClases(){
 
     const materia =
-        document.getElementById('materia').value;
+    document.getElementById('materia').value;
 
     const tipoClase =
-        document.getElementById('tipoClase').value;
+    document.getElementById('tipoClase').value;
 
-    localStorage.setItem('materia', materia);
-    localStorage.setItem('tipoClase', tipoClase);
+    localStorage.setItem(
+        'materia',
+        materia
+    );
+
+    localStorage.setItem(
+        'tipoClase',
+        tipoClase
+    );
 
     actualizarResumen();
 
-    alert('Configuración guardada');
+    alert('Materias guardadas');
 
 }
 
-// GUARDAR HORARIOS
+/* =========================
+   GUARDAR HORARIOS
+========================= */
 
 function guardarHorarios(){
 
     const inicio =
-        document.getElementById('horaInicio').value;
+    document.getElementById('horaInicio').value;
 
     const fin =
-        document.getElementById('horaFin').value;
+    document.getElementById('horaFin').value;
 
-    localStorage.setItem('horaInicio', inicio);
-    localStorage.setItem('horaFin', fin);
+    localStorage.setItem(
+        'horaInicio',
+        inicio
+    );
+
+    localStorage.setItem(
+        'horaFin',
+        fin
+    );
 
     actualizarResumen();
 
@@ -629,18 +1007,27 @@ function guardarHorarios(){
 
 }
 
-// GUARDAR PAGOS
+/* =========================
+   GUARDAR PAGOS
+========================= */
 
 function guardarPagos(){
 
     const metodo =
-        document.getElementById('metodoPago').value;
+    document.getElementById('metodoPago').value;
 
     const valor =
-        document.getElementById('valorClase').value;
+    document.getElementById('valorClase').value;
 
-    localStorage.setItem('metodoPago', metodo);
-    localStorage.setItem('valorClase', valor);
+    localStorage.setItem(
+        'metodoPago',
+        metodo
+    );
+
+    localStorage.setItem(
+        'valorClase',
+        valor
+    );
 
     actualizarResumen();
 
@@ -648,23 +1035,32 @@ function guardarPagos(){
 
 }
 
-// GUARDAR SEGURIDAD
+/* =========================
+   GUARDAR SEGURIDAD
+========================= */
 
 function guardarSeguridad(){
 
     const rol =
-        document.getElementById('rolUsuario').value;
+    document.getElementById('rolUsuario').value;
 
     const estado =
-        document.getElementById('estadoUsuario').value;
-
-    localStorage.setItem('rolUsuario', rol);
-    localStorage.setItem('estadoUsuario', estado);
+    document.getElementById('estadoUsuario').value;
 
     if(estado === 'Bloqueado'){
-        localStorage.setItem('usuarioBloqueado', rol);
+
+        localStorage.setItem(
+            'usuarioBloqueado',
+            rol
+        );
+
     }else{
-        localStorage.setItem('usuarioBloqueado', 'Ninguno');
+
+        localStorage.setItem(
+            'usuarioBloqueado',
+            'Ninguno'
+        );
+
     }
 
     actualizarResumen();
@@ -673,116 +1069,163 @@ function guardarSeguridad(){
 
 }
 
-// ACTUALIZAR RESUMEN
+/* =========================
+   ACTUALIZAR RESUMEN
+========================= */
 
 function actualizarResumen(){
 
-    document.getElementById('mostrarMateria').textContent =
-        localStorage.getItem('materia') || 'No configurado';
+    document.getElementById(
+    'mostrarMateria').textContent =
+    localStorage.getItem('materia')
+    || 'No configurado';
 
-    document.getElementById('mostrarTipoClase').textContent =
-        localStorage.getItem('tipoClase') || 'No configurado';
+    document.getElementById(
+    'mostrarTipoClase').textContent =
+    localStorage.getItem('tipoClase')
+    || 'No configurado';
 
-    document.getElementById('mostrarHoraInicio').textContent =
-        localStorage.getItem('horaInicio') || 'No configurado';
+    document.getElementById(
+    'mostrarHoraInicio').textContent =
+    localStorage.getItem('horaInicio')
+    || 'No configurado';
 
-    document.getElementById('mostrarHoraFin').textContent =
-        localStorage.getItem('horaFin') || 'No configurado';
+    document.getElementById(
+    'mostrarHoraFin').textContent =
+    localStorage.getItem('horaFin')
+    || 'No configurado';
 
-    document.getElementById('mostrarMetodoPago').textContent =
-        localStorage.getItem('metodoPago') || 'No configurado';
+    document.getElementById(
+    'mostrarMetodoPago').textContent =
+    localStorage.getItem('metodoPago')
+    || 'No configurado';
 
-    document.getElementById('mostrarValorClase').textContent =
-        localStorage.getItem('valorClase') || 'No configurado';
+    document.getElementById(
+    'mostrarValorClase').textContent =
+    localStorage.getItem('valorClase')
+    || 'No configurado';
 
-    document.getElementById('mostrarBloqueado').textContent =
-        localStorage.getItem('usuarioBloqueado') || 'Ninguno';
+    document.getElementById(
+    'mostrarBloqueado').textContent =
+    localStorage.getItem('usuarioBloqueado')
+    || 'Ninguno';
 
 }
 
-// ELIMINAR CONFIGURACIÓN
+/* =========================
+   ELIMINAR CONFIGURACIÓN
+========================= */
 
 function eliminarConfiguracion(){
 
-    if(confirm('¿Deseas eliminar toda la configuración?')){
+    const confirmar =
+    confirm(
+        '¿Eliminar toda la configuración?'
+    );
 
-        localStorage.removeItem('materia');
-        localStorage.removeItem('tipoClase');
+    if(confirmar){
 
-        localStorage.removeItem('horaInicio');
-        localStorage.removeItem('horaFin');
-
-        localStorage.removeItem('metodoPago');
-        localStorage.removeItem('valorClase');
-
-        localStorage.removeItem('rolUsuario');
-        localStorage.removeItem('estadoUsuario');
-
-        localStorage.removeItem('usuarioBloqueado');
-
-        document.getElementById('materia').value = '';
-
-        document.getElementById('tipoClase').value = 'Virtual';
-
-        document.getElementById('horaInicio').value = '';
-
-        document.getElementById('horaFin').value = '';
-
-        document.getElementById('metodoPago').value = 'Transferencia';
-
-        document.getElementById('valorClase').value = '';
-
-        document.getElementById('rolUsuario').value = 'Administrador';
-
-        document.getElementById('estadoUsuario').value = 'Activo';
+        localStorage.clear();
 
         actualizarResumen();
 
-        alert('Configuración eliminada correctamente');
+        alert(
+            'Configuración eliminada'
+        );
+
+        location.reload();
 
     }
 
 }
 
-// CARGAR DATOS
+/* =========================
+   LIMPIAR PANEL
+========================= */
 
-window.onload = function(){
+function limpiarPanel(id){
 
-    document.getElementById('materia').value =
-        localStorage.getItem('materia') || '';
+    const panel =
+    document.getElementById(id);
 
-    document.getElementById('tipoClase').value =
-        localStorage.getItem('tipoClase') || 'Virtual';
+    const inputs =
+    panel.querySelectorAll(
+        'input, select'
+    );
 
-    document.getElementById('horaInicio').value =
-        localStorage.getItem('horaInicio') || '';
+    inputs.forEach(input => {
 
-    document.getElementById('horaFin').value =
-        localStorage.getItem('horaFin') || '';
+        if(input.tagName === 'SELECT'){
 
-    document.getElementById('metodoPago').value =
-        localStorage.getItem('metodoPago') || 'Transferencia';
+            input.selectedIndex = 0;
 
-    document.getElementById('valorClase').value =
-        localStorage.getItem('valorClase') || '';
+        }else{
 
-    document.getElementById('rolUsuario').value =
-        localStorage.getItem('rolUsuario') || 'Administrador';
+            input.value = '';
 
-    document.getElementById('estadoUsuario').value =
-        localStorage.getItem('estadoUsuario') || 'Activo';
+        }
+
+    });
+
+}
+
+/* =========================
+   CARGAR DATOS
+========================= */
+
+window.onload = () => {
+
+    document.getElementById(
+    'materia').value =
+    localStorage.getItem('materia')
+    || '';
+
+    document.getElementById(
+    'tipoClase').value =
+    localStorage.getItem('tipoClase')
+    || 'Virtual';
+
+    document.getElementById(
+    'horaInicio').value =
+    localStorage.getItem('horaInicio')
+    || '';
+
+    document.getElementById(
+    'horaFin').value =
+    localStorage.getItem('horaFin')
+    || '';
+
+    document.getElementById(
+    'metodoPago').value =
+    localStorage.getItem('metodoPago')
+    || 'Transferencia';
+
+    document.getElementById(
+    'valorClase').value =
+    localStorage.getItem('valorClase')
+    || '';
 
     actualizarResumen();
 
 }
 
-// CERRAR SESIÓN
+/* =========================
+   LOGOUT
+========================= */
 
 function logout(){
 
-    localStorage.clear();
+    const salir =
+    confirm(
+        '¿Cerrar sesión?'
+    );
 
-    window.location.href = 'main.html';
+    if(salir){
+
+        window.location.href =
+        'main.html';
+
+    }
 
 }
 

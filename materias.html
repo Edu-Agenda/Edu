@@ -107,18 +107,25 @@ nav{
     font-size:2rem;
 }
 
-.btn-add{
-    background:var(--primary);
-    color:white;
-    border:none;
-    padding:12px 20px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:600;
+.search-box{
+    position:relative;
+}
 
-    display:flex;
-    align-items:center;
-    gap:10px;
+.search-box input{
+    width:280px;
+    padding:12px 40px 12px 15px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    outline:none;
+    background:white;
+}
+
+.search-box i{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    color:#64748b;
 }
 
 /* =========================
@@ -159,7 +166,6 @@ nav{
     border-radius:16px;
     border:1px solid var(--border);
     overflow:hidden;
-    margin-bottom:30px;
 }
 
 table{
@@ -201,6 +207,21 @@ td{
     color:#92400e;
 }
 
+.progress-box{
+    width:100%;
+    height:10px;
+    background:#e2e8f0;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:6px;
+}
+
+.progress{
+    height:100%;
+    background:var(--primary);
+    border-radius:20px;
+}
+
 .actions{
     display:flex;
     gap:15px;
@@ -210,83 +231,6 @@ td{
 
 .actions i:hover{
     transform:scale(1.1);
-}
-
-/* =========================
-   FORMULARIO
-========================= */
-
-.form-card{
-    background:white;
-    border:1px solid var(--border);
-    border-radius:16px;
-    padding:30px;
-}
-
-.form-card h2{
-    margin-bottom:25px;
-}
-
-.form-grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-    gap:20px;
-}
-
-.input-box{
-    display:flex;
-    flex-direction:column;
-    gap:8px;
-}
-
-.input-box label{
-    font-size:.9rem;
-    font-weight:600;
-}
-
-.input-box input,
-.input-box select,
-.input-box textarea{
-    padding:12px;
-    border:1px solid var(--border);
-    border-radius:10px;
-    outline:none;
-    font-family:inherit;
-}
-
-.input-box textarea{
-    resize:none;
-    height:100px;
-}
-
-.input-box input:focus,
-.input-box select:focus,
-.input-box textarea:focus{
-    border-color:var(--primary);
-}
-
-.form-buttons{
-    margin-top:25px;
-    display:flex;
-    gap:15px;
-}
-
-.btn-save{
-    background:var(--primary);
-    color:white;
-    border:none;
-    padding:12px 25px;
-    border-radius:10px;
-    cursor:pointer;
-    font-weight:600;
-}
-
-.btn-cancel{
-    background:white;
-    border:1px solid var(--border);
-    padding:12px 25px;
-    border-radius:10px;
-    cursor:pointer;
 }
 
 /* =========================
@@ -300,7 +244,7 @@ td{
     }
 
     table{
-        min-width:900px;
+        min-width:1000px;
     }
 
 }
@@ -315,6 +259,10 @@ td{
     .nav-links{
         gap:15px;
         font-size:12px;
+    }
+
+    .search-box input{
+        width:100%;
     }
 
 }
@@ -344,8 +292,8 @@ td{
             Agenda
         </a>
 
-        <a href="calificaciones.html">
-            Calificaciones
+        <a href="solicitudes.html">
+            Solicitudes
         </a>
 
         <a href="#" class="active">
@@ -381,22 +329,25 @@ td{
         <div>
 
             <h1>
-                Gestión de Materias
+                Mis Materias
             </h1>
 
             <p style="margin-top:8px; color:#64748b;">
-                Administra tus materias y horarios
+                Seguimiento de materias, estudiantes y progreso académico
             </p>
 
         </div>
 
-        <button class="btn-add">
+        <div class="search-box">
 
-            <i class="fas fa-plus"></i>
+            <input
+            type="text"
+            id="buscarMateria"
+            placeholder="Buscar materia...">
 
-            Nueva Materia
+            <i class="fas fa-search"></i>
 
-        </button>
+        </div>
 
     </div>
 
@@ -410,8 +361,8 @@ td{
                 Materias Activas
             </div>
 
-            <div class="card-value">
-                6
+            <div class="card-value" id="totalMaterias">
+                4
             </div>
 
         </div>
@@ -422,8 +373,8 @@ td{
                 Total Estudiantes
             </div>
 
-            <div class="card-value">
-                48
+            <div class="card-value" id="totalEstudiantes">
+                4
             </div>
 
         </div>
@@ -431,11 +382,11 @@ td{
         <div class="card">
 
             <div class="card-title">
-                Horas Semanales
+                Promedio General
             </div>
 
             <div class="card-value">
-                24h
+                87%
             </div>
 
         </div>
@@ -453,9 +404,10 @@ td{
                 <tr>
 
                     <th>Materia</th>
+                    <th>Estudiante</th>
                     <th>Horario</th>
-                    <th>Estudiantes</th>
-                    <th>Aula</th>
+                    <th>Modalidad</th>
+                    <th>Progreso</th>
                     <th>Estado</th>
                     <th>Acciones</th>
 
@@ -465,6 +417,8 @@ td{
 
             <tbody id="tablaMaterias">
 
+                <!-- FILA 1 -->
+
                 <tr>
 
                     <td>
@@ -472,15 +426,30 @@ td{
                     </td>
 
                     <td>
+                        Ana Ruiz
+                    </td>
+
+                    <td>
                         Lunes - 8:00 AM
                     </td>
 
                     <td>
-                        12
+                        Virtual
                     </td>
 
                     <td>
-                        Aula 201
+
+                        92%
+
+                        <div class="progress-box">
+
+                            <div
+                            class="progress"
+                            style="width:92%">
+                            </div>
+
+                        </div>
+
                     </td>
 
                     <td>
@@ -493,14 +462,21 @@ td{
 
                     <td class="actions">
 
-                        <i class="fas fa-pencil"></i>
+                        <i
+                        class="fas fa-eye"
+                        title="Ver">
+                        </i>
 
-                        <i class="fas fa-trash"
-                        style="color:#ef4444"></i>
+                        <i
+                        class="fas fa-envelope"
+                        title="Mensaje">
+                        </i>
 
                     </td>
 
                 </tr>
+
+                <!-- FILA 2 -->
 
                 <tr>
 
@@ -509,15 +485,30 @@ td{
                     </td>
 
                     <td>
-                        Martes - 2:00 PM
+                        Carlos Medina
                     </td>
 
                     <td>
-                        8
+                        Martes - 3:00 PM
                     </td>
 
                     <td>
-                        Aula 105
+                        Presencial
+                    </td>
+
+                    <td>
+
+                        74%
+
+                        <div class="progress-box">
+
+                            <div
+                            class="progress"
+                            style="width:74%">
+                            </div>
+
+                        </div>
+
                     </td>
 
                     <td>
@@ -530,10 +521,119 @@ td{
 
                     <td class="actions">
 
-                        <i class="fas fa-pencil"></i>
+                        <i
+                        class="fas fa-eye">
+                        </i>
 
-                        <i class="fas fa-trash"
-                        style="color:#ef4444"></i>
+                        <i
+                        class="fas fa-envelope">
+                        </i>
+
+                    </td>
+
+                </tr>
+
+                <!-- FILA 3 -->
+
+                <tr>
+
+                    <td>
+                        Física
+                    </td>
+
+                    <td>
+                        Laura Gómez
+                    </td>
+
+                    <td>
+                        Miércoles - 10:00 AM
+                    </td>
+
+                    <td>
+                        Virtual
+                    </td>
+
+                    <td>
+
+                        88%
+
+                        <div class="progress-box">
+
+                            <div
+                            class="progress"
+                            style="width:88%">
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge active">
+                            Activa
+                        </span>
+
+                    </td>
+
+                    <td class="actions">
+
+                        <i class="fas fa-eye"></i>
+
+                        <i class="fas fa-envelope"></i>
+
+                    </td>
+
+                </tr>
+
+                <!-- FILA 4 -->
+
+                <tr>
+
+                    <td>
+                        Programación
+                    </td>
+
+                    <td>
+                        Miguel Torres
+                    </td>
+
+                    <td>
+                        Jueves - 5:00 PM
+                    </td>
+
+                    <td>
+                        Virtual
+                    </td>
+
+                    <td>
+
+                        95%
+
+                        <div class="progress-box">
+
+                            <div
+                            class="progress"
+                            style="width:95%">
+                            </div>
+
+                        </div>
+
+                    </td>
+
+                    <td>
+
+                        <span class="badge active">
+                            Activa
+                        </span>
+
+                    </td>
+
+                    <td class="actions">
+
+                        <i class="fas fa-eye"></i>
+
+                        <i class="fas fa-envelope"></i>
 
                     </td>
 
@@ -545,135 +645,6 @@ td{
 
     </div>
 
-    <!-- FORMULARIO -->
-
-    <div class="form-card">
-
-        <h2>
-            Registrar Nueva Materia
-        </h2>
-
-        <div class="form-grid">
-
-            <!-- MATERIA -->
-
-            <div class="input-box">
-
-                <label>
-                    Nombre de la Materia
-                </label>
-
-                <input
-                type="text"
-                id="materiaInput"
-                placeholder="Ej: Física">
-
-            </div>
-
-            <!-- HORARIO -->
-
-            <div class="input-box">
-
-                <label>
-                    Horario
-                </label>
-
-                <input
-                type="text"
-                id="horarioInput"
-                placeholder="Ej: Lunes 8:00 AM">
-
-            </div>
-
-            <!-- ESTUDIANTES -->
-
-            <div class="input-box">
-
-                <label>
-                    Cantidad de Estudiantes
-                </label>
-
-                <input
-                type="number"
-                id="estudiantesInput"
-                placeholder="0">
-
-            </div>
-
-            <!-- AULA -->
-
-            <div class="input-box">
-
-                <label>
-                    Aula
-                </label>
-
-                <input
-                type="text"
-                id="aulaInput"
-                placeholder="Ej: Aula 301">
-
-            </div>
-
-            <!-- ESTADO -->
-
-            <div class="input-box">
-
-                <label>
-                    Estado
-                </label>
-
-                <select id="estadoInput">
-
-                    <option value="Activa">
-                        Activa
-                    </option>
-
-                    <option value="Pendiente">
-                        Pendiente
-                    </option>
-
-                </select>
-
-            </div>
-
-            <!-- DESCRIPCIÓN -->
-
-            <div class="input-box">
-
-                <label>
-                    Descripción
-                </label>
-
-                <textarea
-                id="descripcionInput"
-                placeholder="Descripción de la materia">
-                </textarea>
-
-            </div>
-
-        </div>
-
-        <!-- BOTONES -->
-
-        <div class="form-buttons">
-
-            <button class="btn-save">
-
-                Guardar
-
-            </button>
-
-            <button class="btn-cancel">
-
-                Cancelar
-
-            </button>
-
-        </div>
-
-    </div>
-
 </div>
 
 <!-- =========================
@@ -682,177 +653,49 @@ td{
 
 <script>
 
-const tabla =
+/* =========================
+   BUSCADOR
+========================= */
+
+const buscarMateria =
 document.getElementById(
-'tablaMaterias'
+'buscarMateria'
 );
 
-const materiaInput =
-document.getElementById(
-'materiaInput'
+const filas =
+document.querySelectorAll(
+'#tablaMaterias tr'
 );
 
-const horarioInput =
-document.getElementById(
-'horarioInput'
-);
-
-const estudiantesInput =
-document.getElementById(
-'estudiantesInput'
-);
-
-const aulaInput =
-document.getElementById(
-'aulaInput'
-);
-
-const estadoInput =
-document.getElementById(
-'estadoInput'
-);
-
-const descripcionInput =
-document.getElementById(
-'descripcionInput'
-);
-
-const btnSave =
-document.querySelector(
-'.btn-save'
-);
-
-const btnCancel =
-document.querySelector(
-'.btn-cancel'
-);
-
-btnSave.addEventListener(
-'click',
+buscarMateria.addEventListener(
+'keyup',
 () => {
 
-    const materia =
-    materiaInput.value.trim();
+    const texto =
+    buscarMateria.value
+    .toLowerCase();
 
-    const horario =
-    horarioInput.value.trim();
+    filas.forEach(fila => {
 
-    const estudiantes =
-    estudiantesInput.value;
+        const contenido =
+        fila.innerText
+        .toLowerCase();
 
-    const aula =
-    aulaInput.value.trim();
+        if(
+            contenido.includes(texto)
+        ){
 
-    const estado =
-    estadoInput.value;
+            fila.style.display = '';
 
-    if(
-        materia === '' ||
-        horario === '' ||
-        estudiantes === '' ||
-        aula === ''
-    ){
+        }
 
-        alert(
-            'Completa todos los campos'
-        );
+        else{
 
-        return;
-
-    }
-
-    const fila =
-    document.createElement('tr');
-
-    fila.innerHTML = `
-        <td>${materia}</td>
-
-        <td>${horario}</td>
-
-        <td>${estudiantes}</td>
-
-        <td>${aula}</td>
-
-        <td>
-
-            <span class="badge ${
-                estado === 'Activa'
-                ? 'active'
-                : 'warning'
-            }">
-
-                ${estado}
-
-            </span>
-
-        </td>
-
-        <td class="actions">
-
-            <i class="fas fa-pencil"></i>
-
-            <i class="fas fa-trash"
-            style="color:#ef4444"></i>
-
-        </td>
-    `;
-
-    tabla.appendChild(fila);
-
-    agregarEliminar(fila);
-
-    limpiarFormulario();
-
-});
-
-btnCancel.addEventListener(
-'click',
-() => {
-
-    limpiarFormulario();
-
-});
-
-function limpiarFormulario(){
-
-    materiaInput.value = '';
-    horarioInput.value = '';
-    estudiantesInput.value = '';
-    aulaInput.value = '';
-    descripcionInput.value = '';
-
-}
-
-function agregarEliminar(fila){
-
-    const eliminarBtn =
-    fila.querySelector('.fa-trash');
-
-    eliminarBtn.addEventListener(
-    'click',
-    () => {
-
-        const confirmar =
-        confirm(
-            '¿Eliminar materia?'
-        );
-
-        if(confirmar){
-
-            fila.remove();
+            fila.style.display = 'none';
 
         }
 
     });
-
-}
-
-document.querySelectorAll(
-'#tablaMaterias tr'
-)
-.forEach(fila => {
-
-    agregarEliminar(fila);
 
 });
 

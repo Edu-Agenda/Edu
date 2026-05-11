@@ -12,6 +12,7 @@
             --border-color: #e2e8f0;
             --text-main: #1e293b;
         }
+        * { box-sizing: border-box; }
         body {
             margin: 0;
             font-family: 'Inter', Arial, sans-serif;
@@ -20,75 +21,150 @@
         }
         .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
 
+        /* PASOS */
         .steps-bar {
-            display: flex;
-            justify-content: space-between;
-            background: white;
-            padding: 20px 60px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 30px;
+            display: flex; justify-content: space-between;
+            background: white; padding: 20px 60px;
+            border-radius: 12px; border: 1px solid var(--border-color);
+            margin-bottom: 30px; position: relative;
+        }
+        .steps-bar::before {
+            content: ''; position: absolute; top: 35px; left: 80px; right: 80px;
+            height: 2px; background: var(--border-color); z-index: 0;
         }
         .step {
             display: flex; flex-direction: column; align-items: center;
-            gap: 8px; color: #94a3b8; font-size: 12px; flex: 1;
+            gap: 8px; color: #94a3b8; font-size: 12px; flex: 1; position: relative; z-index: 1;
         }
+        .step.done  { color: #16a34a; }
         .step.active { color: var(--primary-blue); font-weight: 600; }
         .step-num {
-            width: 30px; height: 30px; border-radius: 50%;
+            width: 32px; height: 32px; border-radius: 50%;
             background: #e2e8f0; display: flex; align-items: center;
-            justify-content: center; color: white; font-weight: bold;
+            justify-content: center; color: white; font-weight: bold; font-size: 13px;
         }
+        .step.done  .step-num { background: #16a34a; }
         .step.active .step-num { background: var(--primary-blue); }
 
+        /* GRID */
         .payment-grid { display: grid; grid-template-columns: 1.8fr 1fr; gap: 30px; }
         .card {
             background: white; border-radius: 15px;
             border: 1px solid var(--border-color); padding: 30px;
         }
+        .card h2 { margin-top: 0; font-size: 18px; }
+        .card h3 { margin-top: 0; font-size: 16px; }
 
+        /* MÉTODOS */
         .method-option {
             border: 1px solid var(--border-color);
-            border-radius: 10px; padding: 20px;
-            margin-bottom: 15px; cursor: pointer; transition: 0.3s;
+            border-radius: 10px; padding: 18px 20px;
+            margin-bottom: 12px; cursor: pointer; transition: 0.2s;
         }
         .method-option.selected { border-color: var(--primary-blue); background: #f0f7ff; }
-        .method-header { display: flex; align-items: center; gap: 15px; margin-bottom: 15px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+        .method-header {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .method-header strong { flex: 1; font-size: 14px; }
+        .method-body { display: none; margin-top: 18px; }
+        .method-option.selected .method-body { display: block; }
 
-        input {
-            width: 100%; padding: 12px;
+        /* INPUTS */
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 12px; color: #64748b; margin-bottom: 5px; font-weight: 600; }
+        input, select {
+            width: 100%; padding: 11px 14px;
             border: 1px solid var(--border-color);
-            border-radius: 8px; box-sizing: border-box; outline: none;
+            border-radius: 8px; outline: none; font-size: 14px;
+            transition: border-color 0.2s; background: white;
         }
+        input:focus, select:focus { border-color: var(--primary-blue); }
+        input.error { border-color: #ef4444; background: #fff5f5; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
 
-        .resumen-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .avatar-circle {
-            width: 45px; height: 45px; background: #7c3aed;
-            border-radius: 50%; display: flex; align-items: center;
-            justify-content: center; color: white; font-weight: bold;
-        }
-        .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; }
-        .total-row {
-            border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 15px;
-            font-size: 18px; font-weight: bold; color: var(--primary-blue);
-            display: flex; justify-content: space-between;
-        }
-
+        /* BOTÓN PAGAR */
         .btn-pay {
             background: var(--primary-blue); color: white; width: 100%;
-            border: none; padding: 15px; border-radius: 8px;
-            font-weight: bold; font-size: 16px; cursor: pointer;
+            border: none; padding: 15px; border-radius: 10px;
+            font-weight: 700; font-size: 16px; cursor: pointer;
             display: flex; align-items: center; justify-content: center;
             gap: 10px; margin-top: 20px; transition: 0.2s;
+            letter-spacing: 0.3px;
         }
-        .btn-pay:hover:not(:disabled) { background: #0052d4; }
-        .btn-pay:disabled { opacity: 0.7; cursor: not-allowed; }
+        .btn-pay:hover:not(:disabled) { background: #0052d4; transform: translateY(-1px); }
+        .btn-pay:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
 
-        .alert-timer {
-            background: #f0fdf4; border: 1px solid #bbf7d0; color: #15803d;
-            padding: 12px; border-radius: 8px; font-size: 13px;
-            margin-top: 15px; display: flex; align-items: center; gap: 10px;
+        /* RESUMEN */
+        .avatar-circle {
+            width: 46px; height: 46px; background: #7c3aed;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; color: white; font-weight: bold; font-size: 15px;
+            flex-shrink: 0;
+        }
+        .price-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 14px; color: #475569; }
+        .price-row strong { color: var(--text-main); }
+        .total-row {
+            border-top: 2px solid var(--border-color); padding-top: 15px; margin-top: 10px;
+            font-size: 18px; font-weight: bold; color: var(--primary-blue);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* TIMER */
+        .timer-box {
+            background: #fff7ed; border: 1px solid #fed7aa; color: #c2410c;
+            padding: 12px 16px; border-radius: 10px; font-size: 13px;
+            margin-top: 18px; display: flex; align-items: center; gap: 10px;
+        }
+        .timer-box.ok { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+        .timer-box.urgent { background: #fef2f2; border-color: #fecaca; color: #b91c1c; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+        #timerDisplay { font-weight: 700; font-size: 15px; min-width: 42px; text-align: center; }
+
+        /* SEGURIDAD */
+        .security-badges {
+            display: flex; gap: 12px; margin-top: 16px;
+            justify-content: center; flex-wrap: wrap;
+        }
+        .badge-sec {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 11px; color: #64748b; background: #f8fafc;
+            padding: 6px 10px; border-radius: 6px; border: 1px solid var(--border-color);
+        }
+
+        /* PANTALLA ÉXITO */
+        .success-screen {
+            display: none; text-align: center; padding: 60px 20px;
+        }
+        .success-screen.show { display: block; }
+        .success-icon {
+            width: 80px; height: 80px; background: #dcfce7;
+            border-radius: 50%; display: flex; align-items: center;
+            justify-content: center; margin: 0 auto 20px; font-size: 36px; color: #16a34a;
+        }
+        .success-card {
+            background: white; border-radius: 15px; border: 1px solid var(--border-color);
+            padding: 40px; max-width: 500px; margin: 0 auto;
+        }
+        .detail-pill {
+            background: #f8fafc; border-radius: 8px; padding: 10px 16px;
+            margin: 8px 0; font-size: 14px; display: flex;
+            justify-content: space-between; color: #475569;
+        }
+        .detail-pill strong { color: var(--text-main); }
+        .btn-back {
+            background: var(--primary-blue); color: white;
+            border: none; padding: 12px 30px; border-radius: 8px;
+            font-weight: 600; cursor: pointer; margin-top: 24px;
+            font-size: 15px; transition: 0.2s;
+        }
+        .btn-back:hover { background: #0052d4; }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .payment-grid { grid-template-columns: 1fr; }
+            .steps-bar { padding: 20px 10px; }
+            .step span { display: none; }
         }
     </style>
 </head>
@@ -96,177 +172,229 @@
 
 <div class="container">
 
-    <!-- BARRA DE PASOS -->
-    <div class="steps-bar">
-        <div class="step"><div class="step-num">1</div>Seleccionar horario</div>
-        <div class="step"><div class="step-num">2</div>Confirmar reserva</div>
-        <div class="step active"><div class="step-num">3</div>Realizar pago</div>
-        <div class="step"><div class="step-num">4</div>Reserva confirmada</div>
-    </div>
-
-    <div class="payment-grid">
-
-        <!-- MÉTODOS DE PAGO -->
-        <div class="card">
-            <h2>Selecciona un método de pago</h2>
-
-            <div class="method-option selected" id="metodoTarjeta">
-                <div class="method-header">
-                    <input type="radio" name="metodo" checked>
-                    <i class="fas fa-credit-card"></i>
-                    <strong>Tarjeta de crédito o débito</strong>
-                    <div style="margin-left:auto;">
-                        <i class="fab fa-cc-visa" style="color:#1a1f71; font-size:20px;"></i>
-                        <i class="fab fa-cc-mastercard" style="color:#eb001b; font-size:20px;"></i>
-                    </div>
-                </div>
-                <input type="text" placeholder="Número de tarjeta" value="1234 5678 9012 3456">
-                <div class="form-row">
-                    <input type="text" placeholder="Nombre en la tarjeta" id="cardName">
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" placeholder="MM/AA" value="12/28">
-                        <input type="text" placeholder="CVV" value="123">
-                    </div>
-                </div>
+    <!-- PANTALLA ÉXITO -->
+    <div class="success-screen" id="successScreen">
+        <div class="success-card">
+            <div class="success-icon"><i class="fas fa-check"></i></div>
+            <h2 style="color:#16a34a; margin:0 0 8px;">¡Pago exitoso!</h2>
+            <p style="color:#64748b; margin:0 0 24px;">Tu clase ha sido reservada correctamente.</p>
+            <div id="successDetails"></div>
+            <div style="margin-top:20px; background:#eff6ff; border-radius:10px; padding:14px; font-size:13px; color:#1e40af;">
+                <i class="fas fa-envelope" style="margin-right:8px;"></i>
+                Recibirás un correo de confirmación con el enlace de Google Meet.
             </div>
-
-            <div class="method-option" id="metodoPSE">
-                <div class="method-header">
-                    <input type="radio" name="metodo">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PSE_Logo.png" width="30" alt="PSE">
-                    <strong>PSE (Débito bancario)</strong>
-                </div>
-            </div>
-
-            <button class="btn-pay" id="confirmPay">
-                <i class="fas fa-lock"></i> Pagar ahora
-                <span id="btnTotal">$50.000 COP</span>
+            <button class="btn-back" onclick="window.location.href='estudiante.html'">
+                <i class="fas fa-calendar-alt" style="margin-right:8px;"></i>Volver a la agenda
             </button>
         </div>
+    </div>
 
-        <!-- RESUMEN -->
-        <div class="card">
-            <h3>Resumen de la reserva</h3>
-            <div class="resumen-header">
-                <div class="avatar-circle" id="avatarLetras">DR</div>
-                <div>
-                    <strong id="profName">Darwin Rosero</strong><br>
-                    <small style="color:#64748b" id="profMateria">Profesor de Matemáticas</small>
-                </div>
+    <!-- PANTALLA PAGO -->
+    <div id="paymentScreen">
+
+        <!-- PASOS -->
+        <div class="steps-bar">
+            <div class="step done">
+                <div class="step-num"><i class="fas fa-check" style="font-size:12px;"></i></div>
+                <span>Seleccionar horario</span>
             </div>
-
-            <div style="font-size:14px; color:#64748b; line-height:2;">
-                <div class="price-row"><span>Materia:</span> <strong id="resMateria">Matemáticas</strong></div>
-                <div class="price-row"><span>Fecha:</span>   <strong id="resFecha">—</strong></div>
-                <div class="price-row"><span>Hora:</span>    <strong id="resHora">—</strong></div>
-                <div class="price-row"><span>Modalidad:</span> <strong>Virtual (Google Meet)</strong></div>
+            <div class="step done">
+                <div class="step-num"><i class="fas fa-check" style="font-size:12px;"></i></div>
+                <span>Confirmar reserva</span>
             </div>
-
-            <div class="total-row">
-                <span>Total a pagar</span>
-                <span id="resTotal">$50.000 COP</span>
+            <div class="step active">
+                <div class="step-num">3</div>
+                <span>Realizar pago</span>
             </div>
-
-            <div class="alert-timer">
-                <i class="fas fa-check-circle"></i>
-                <span>Reserva válida por 15 minutos. Completa tu pago antes de que expire.</span>
+            <div class="step">
+                <div class="step-num">4</div>
+                <span>Reserva confirmada</span>
             </div>
         </div>
 
-    </div>
+        <div class="payment-grid">
+
+            <!-- ── MÉTODOS DE PAGO ── -->
+            <div class="card">
+                <h2>Selecciona un método de pago</h2>
+
+                <!-- TARJETA -->
+                <div class="method-option selected" id="metodoTarjeta">
+                    <div class="method-header">
+                        <input type="radio" name="metodo" checked>
+                        <i class="fas fa-credit-card" style="color:var(--primary-blue); font-size:18px;"></i>
+                        <strong>Tarjeta de crédito o débito</strong>
+                        <div style="display:flex; gap:6px;">
+                            <i class="fab fa-cc-visa" style="color:#1a1f71; font-size:22px;"></i>
+                            <i class="fab fa-cc-mastercard" style="color:#eb001b; font-size:22px;"></i>
+                        </div>
+                    </div>
+                    <div class="method-body">
+                        <div class="form-group">
+                            <label>Número de tarjeta</label>
+                            <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19">
+                        </div>
+                        <div class="form-group">
+                            <label>Nombre en la tarjeta</label>
+                            <input type="text" id="cardName" placeholder="Como aparece en la tarjeta">
+                        </div>
+                        <div class="form-row-3">
+                            <div class="form-group" style="margin:0;">
+                                <label>Mes</label>
+                                <select id="cardMes">
+                                    <option value="">MM</option>
+                                    <option>01</option><option>02</option><option>03</option>
+                                    <option>04</option><option>05</option><option>06</option>
+                                    <option>07</option><option>08</option><option>09</option>
+                                    <option>10</option><option>11</option><option>12</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Año</label>
+                                <select id="cardAnio">
+                                    <option value="">AA</option>
+                                    <option>25</option><option>26</option><option>27</option>
+                                    <option>28</option><option>29</option><option>30</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>CVV</label>
+                                <input type="password" id="cardCvv" placeholder="•••" maxlength="4">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PSE -->
+                <div class="method-option" id="metodoPSE">
+                    <div class="method-header">
+                        <input type="radio" name="metodo">
+                        <i class="fas fa-university" style="color:#0d6efd; font-size:18px;"></i>
+                        <strong>PSE (Débito bancario)</strong>
+                        <span style="font-size:11px; background:#e0f2fe; color:#0369a1; padding:3px 8px; border-radius:20px; margin-left:auto;">Colombia</span>
+                    </div>
+                    <div class="method-body">
+                        <div class="form-group">
+                            <label>Banco</label>
+                            <select id="pseBanco">
+                                <option value="">Selecciona tu banco</option>
+                                <option>Bancolombia</option>
+                                <option>Banco de Bogotá</option>
+                                <option>Davivienda</option>
+                                <option>BBVA Colombia</option>
+                                <option>Banco Popular</option>
+                                <option>Scotiabank Colpatria</option>
+                                <option>Banco de Occidente</option>
+                                <option>Nequi</option>
+                                <option>Daviplata</option>
+                                <option>Otro</option>
+                            </select>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group" style="margin:0;">
+                                <label>Tipo de persona</label>
+                                <select id="pseTipo">
+                                    <option value="">Selecciona</option>
+                                    <option>Natural</option>
+                                    <option>Jurídica</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin:0;">
+                                <label>Tipo de documento</label>
+                                <select id="pseTipoDoc">
+                                    <option value="">Selecciona</option>
+                                    <option>CC - Cédula</option>
+                                    <option>CE - Extranjería</option>
+                                    <option>NIT</option>
+                                    <option>Pasaporte</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de documento</label>
+                            <input type="text" id="pseDoc" placeholder="Número de documento">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEQUI / DAVIPLATA -->
+                <div class="method-option" id="metodoNequi">
+                    <div class="method-header">
+                        <input type="radio" name="metodo">
+                        <i class="fas fa-mobile-alt" style="color:#7c3aed; font-size:18px;"></i>
+                        <strong>Nequi / Daviplata</strong>
+                        <span style="font-size:11px; background:#f3e8ff; color:#7c3aed; padding:3px 8px; border-radius:20px; margin-left:auto;">Billetera digital</span>
+                    </div>
+                    <div class="method-body">
+                        <div class="form-group">
+                            <label>Plataforma</label>
+                            <select id="nequiPlataforma">
+                                <option value="">Selecciona</option>
+                                <option>Nequi</option>
+                                <option>Daviplata</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Número de celular</label>
+                            <input type="tel" id="nequiCelular" placeholder="300 000 0000" maxlength="10">
+                        </div>
+                        <div style="background:#faf5ff; border-radius:8px; padding:10px 14px; font-size:12px; color:#7c3aed;">
+                            <i class="fas fa-info-circle" style="margin-right:6px;"></i>
+                            Recibirás una notificación en tu app para aprobar el pago.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BOTÓN PAGAR -->
+                <button class="btn-pay" id="confirmPay">
+                    <i class="fas fa-lock"></i>
+                    <span>Pagar ahora — </span>
+                    <span id="btnTotal">$50.000 COP</span>
+                </button>
+
+                <!-- SEGURIDAD -->
+                <div class="security-badges">
+                    <div class="badge-sec"><i class="fas fa-shield-alt" style="color:#16a34a;"></i> Pago seguro SSL</div>
+                    <div class="badge-sec"><i class="fas fa-lock" style="color:#0061ff;"></i> Encriptado 256-bit</div>
+                    <div class="badge-sec"><i class="fas fa-undo" style="color:#f59e0b;"></i> Reembolso garantizado</div>
+                </div>
+            </div>
+
+            <!-- ── RESUMEN ── -->
+            <div class="card" style="height: fit-content;">
+                <h3>Resumen de la reserva</h3>
+
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px;">
+                    <div class="avatar-circle" id="avatarLetras">DR</div>
+                    <div>
+                        <strong id="profName">Darwin Rosero</strong><br>
+                        <small style="color:#64748b;" id="profMateria">Profesor</small>
+                    </div>
+                </div>
+
+                <div class="price-row"><span>Materia</span>   <strong id="resMateria">—</strong></div>
+                <div class="price-row"><span>Fecha</span>     <strong id="resFecha">—</strong></div>
+                <div class="price-row"><span>Hora</span>      <strong id="resHora">—</strong></div>
+                <div class="price-row"><span>Modalidad</span> <strong>Virtual (Meet)</strong></div>
+                <div class="price-row"><span>Clase (1 sesión)</span> <strong id="resPrecioLin">$50.000</strong></div>
+
+                <div class="total-row">
+                    <span>Total</span>
+                    <span id="resTotal">$50.000 COP</span>
+                </div>
+
+                <!-- TIMER -->
+                <div class="timer-box ok" id="timerBox">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span>Tu reserva expira en </span>
+                    <span id="timerDisplay">15:00</span>
+                </div>
+            </div>
+
+        </div>
+    </div><!-- /paymentScreen -->
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-
-    // ── Verificar sesión y reserva ───────────────────────────────
-    const token  = localStorage.getItem('token');
-    const reservaStr = localStorage.getItem('reserva_pendiente');
-
-    if (!token) {
-        alert('Debes iniciar sesión primero.');
-        window.location.href = 'sesion.html';
-        return;
-    }
-
-    if (!reservaStr) {
-        alert('No hay reserva pendiente. Selecciona un horario primero.');
-        window.location.href = 'estudiante.html';
-        return;
-    }
-
-    const reserva = JSON.parse(reservaStr);
-
-    // ── Poblar interfaz ──────────────────────────────────────────
-    document.getElementById('profName').innerText    = reserva.profesor  || 'Profesor';
-    document.getElementById('resMateria').innerText  = reserva.materia   || '—';
-    document.getElementById('resFecha').innerText    = reserva.fecha     || '—';
-    document.getElementById('resHora').innerText     = reserva.hora      || '—';
-    document.getElementById('profMateria').innerText = `Profesor de ${reserva.materia || 'la materia'}`;
-    document.getElementById('cardName').value        = reserva.estudiante || '';
-
-    // Letras del avatar
-    const iniciales = (reserva.profesor || 'PR').split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
-    document.getElementById('avatarLetras').innerText = iniciales;
-
-    const precio = new Intl.NumberFormat('es-CO', {
-        style: 'currency', currency: 'COP', maximumFractionDigits: 0
-    }).format(reserva.precio || 50000);
-
-    document.getElementById('resTotal').innerText = precio;
-    document.getElementById('btnTotal').innerText = precio;
-
-    // ── Confirmar pago ───────────────────────────────────────────
-    document.getElementById('confirmPay').addEventListener('click', async () => {
-        const btn = document.getElementById('confirmPay');
-        btn.disabled = true;
-        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
-
-        try {
-            const response = await fetch('/confirmar-pago', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify(reserva)
-            });
-
-            // Verificar que la respuesta sea JSON
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error(`El servidor devolvió una respuesta inesperada (${response.status})`);
-            }
-
-            const result = await response.json();
-
-            if (response.ok) {
-                alert('✅ ¡Pago exitoso! Tu tutoría ha sido agendada.');
-                localStorage.removeItem('reserva_pendiente');
-                window.location.href = 'estudiante.html';
-            } else {
-                throw new Error(result.error || 'Error en el pago');
-            }
-
-        } catch (error) {
-            console.error('Error en pago:', error);
-            alert('❌ ' + error.message);
-            btn.disabled = false;
-            btn.innerHTML = `<i class="fas fa-lock"></i> Pagar ahora ${precio}`;
-        }
-    });
-
-    // ── Selección de método ──────────────────────────────────────
-    document.getElementById('metodoTarjeta').addEventListener('click', () => {
-        document.getElementById('metodoTarjeta').classList.add('selected');
-        document.getElementById('metodoPSE').classList.remove('selected');
-    });
-    document.getElementById('metodoPSE').addEventListener('click', () => {
-        document.getElementById('metodoPSE').classList.add('selected');
-        document.getElementById('metodoTarjeta').classList.remove('selected');
-    });
-});
-</script>
-
+<script src="js/pago.js"></script>
 </body>
 </html>
