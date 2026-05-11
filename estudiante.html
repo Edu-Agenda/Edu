@@ -55,6 +55,7 @@
             border-radius: 8px;
             font-size: 14px;
             transition: 0.3s;
+            cursor: pointer;
         }
 
         .menu-item.active { background: #eff6ff; color: var(--primary-blue); font-weight: 600; }
@@ -288,6 +289,541 @@
             border-radius: 3px;
             margin-right: 4px;
         }
+
+        /* ==================== SECCIÓN RESUMEN ==================== */
+        .resumen-bienvenida {
+            background: linear-gradient(135deg, #0061ff 0%, #0040cc 100%);
+            border-radius: 16px;
+            padding: 28px 32px;
+            color: white;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .resumen-bienvenida h2 { margin: 0 0 6px; font-size: 22px; }
+        .resumen-bienvenida p { margin: 0; opacity: 0.85; font-size: 14px; }
+        .resumen-bienvenida .avatar-grande {
+            width: 70px; height: 70px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 28px; font-weight: 700;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .stat-icon {
+            width: 46px; height: 46px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+        .stat-info .stat-num { font-size: 22px; font-weight: 700; color: var(--text-main); }
+        .stat-info .stat-label { font-size: 12px; color: #64748b; }
+
+        .resumen-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .resumen-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 22px;
+        }
+        .resumen-card h4 {
+            margin: 0 0 16px;
+            font-size: 15px;
+            color: var(--text-main);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .resumen-card h4 i { color: var(--primary-blue); }
+
+        .clase-item-mini {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .clase-item-mini:last-child { border-bottom: none; }
+        .clase-dot {
+            width: 38px; height: 38px;
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; flex-shrink: 0;
+        }
+        .clase-item-mini .clase-info strong { display: block; font-size: 13px; }
+        .clase-item-mini .clase-info small { color: #64748b; font-size: 12px; }
+
+        .tarea-mini {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 9px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+        .tarea-mini:last-child { border-bottom: none; }
+        .tarea-mini input[type="checkbox"] { accent-color: var(--primary-blue); width: 16px; height: 16px; cursor: pointer; }
+        .tarea-mini label { font-size: 13px; color: var(--text-main); cursor: pointer; }
+        .tarea-mini .badge-vence {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-urgente { background: #fee2e2; color: #dc2626; }
+        .badge-pronto { background: #fef9c3; color: #ca8a04; }
+        .badge-ok { background: #dcfce7; color: #16a34a; }
+
+        /* ==================== SECCIÓN MIS CLASES ==================== */
+        .clases-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+        }
+        .tabs-clases {
+            display: flex;
+            gap: 6px;
+            background: white;
+            border: 1px solid var(--border-color);
+            padding: 5px;
+            border-radius: 10px;
+            margin-bottom: 22px;
+        }
+        .tab-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 7px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            color: #64748b;
+            transition: 0.2s;
+        }
+        .tab-btn.active { background: var(--primary-blue); color: white; }
+        .tab-btn:hover:not(.active) { background: #f1f5f9; }
+
+        .clases-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .clase-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            transition: box-shadow 0.2s;
+        }
+        .clase-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        .clase-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+        .clase-icono {
+            width: 46px; height: 46px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px; flex-shrink: 0;
+        }
+        .clase-card-header h3 { margin: 0 0 3px; font-size: 15px; }
+        .clase-card-header small { color: #64748b; font-size: 12px; }
+        .clase-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .meta-tag {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            color: #475569;
+            background: #f8fafc;
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .meta-tag i { color: var(--primary-blue); font-size: 11px; }
+        .clase-estado {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+        .estado-confirmada { background: #dcfce7; color: #16a34a; }
+        .estado-pendiente { background: #fef9c3; color: #ca8a04; }
+        .estado-completada { background: #f1f5f9; color: #64748b; }
+        .clase-acciones {
+            display: flex;
+            gap: 8px;
+            margin-top: 14px;
+        }
+        .btn-accion {
+            flex: 1;
+            padding: 8px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: white;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: 0.2s;
+            color: var(--text-main);
+        }
+        .btn-accion:hover { background: #f1f5f9; }
+        .btn-accion.primary { background: var(--primary-blue); color: white; border-color: var(--primary-blue); }
+        .btn-accion.primary:hover { background: #0052d4; }
+
+        /* ==================== SECCIÓN TAREAS PENDIENTES ==================== */
+        .tareas-layout {
+            display: grid;
+            grid-template-columns: 1fr 320px;
+            gap: 22px;
+        }
+        .tareas-lista { }
+        .tarea-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            transition: box-shadow 0.2s;
+        }
+        .tarea-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.07); }
+        .tarea-check {
+            margin-top: 2px;
+            accent-color: var(--primary-blue);
+            width: 18px; height: 18px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .tarea-contenido { flex: 1; }
+        .tarea-contenido h4 { margin: 0 0 4px; font-size: 14px; color: var(--text-main); }
+        .tarea-contenido p { margin: 0 0 10px; font-size: 13px; color: #64748b; }
+        .tarea-tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .tag {
+            font-size: 11px; font-weight: 600;
+            padding: 3px 9px; border-radius: 20px;
+        }
+        .tag-materia { background: #eff6ff; color: var(--primary-blue); }
+        .tag-urgente { background: #fee2e2; color: #dc2626; }
+        .tag-pronto { background: #fef9c3; color: #ca8a04; }
+        .tag-ok { background: #dcfce7; color: #16a34a; }
+        .tarea-vence { font-size: 12px; color: #94a3b8; margin-left: auto; white-space: nowrap; }
+
+        .tareas-sidebar-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            height: fit-content;
+            position: sticky;
+            top: 0;
+        }
+        .tareas-sidebar-card h4 { margin: 0 0 14px; font-size: 14px; color: var(--text-main); }
+        .progreso-materia {
+            margin-bottom: 14px;
+        }
+        .progreso-materia-top {
+            display: flex; justify-content: space-between;
+            font-size: 13px; margin-bottom: 6px;
+        }
+        .progreso-bar {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .progreso-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: var(--primary-blue);
+        }
+
+        /* ==================== SECCIÓN CALIFICACIONES ==================== */
+        .cal-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .cal-stat-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            text-align: center;
+        }
+        .cal-stat-card .big-num {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-blue);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+        .cal-stat-card .big-label { font-size: 13px; color: #64748b; }
+
+        .calificaciones-table-card {
+            background: white;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+        .calificaciones-table-card h4 {
+            margin: 0 0 16px;
+            font-size: 15px;
+        }
+        .cal-table { width: 100%; border-collapse: collapse; }
+        .cal-table th {
+            text-align: left;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #64748b;
+            background: #f8fafc;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .cal-table td {
+            padding: 12px 14px;
+            font-size: 13px;
+            color: var(--text-main);
+            border-bottom: 1px solid #f8fafc;
+        }
+        .cal-table tr:last-child td { border-bottom: none; }
+        .nota-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 13px;
+        }
+        .nota-excelente { background: #dcfce7; color: #16a34a; }
+        .nota-buena { background: #dbeafe; color: #1e40af; }
+        .nota-regular { background: #fef9c3; color: #ca8a04; }
+        .nota-baja { background: #fee2e2; color: #dc2626; }
+
+        .trend-up { color: #16a34a; font-size: 12px; }
+        .trend-down { color: #dc2626; font-size: 12px; }
+        .trend-equal { color: #64748b; font-size: 12px; }
+
+        /* ==================== SECCIÓN MI PERFIL ==================== */
+        .perfil-layout {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 22px;
+        }
+        .perfil-sidebar-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 28px 22px;
+            text-align: center;
+            height: fit-content;
+        }
+        .perfil-avatar-grande {
+            width: 90px; height: 90px;
+            background: linear-gradient(135deg, #0061ff, #0040cc);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 36px; font-weight: 700;
+            color: white;
+            margin: 0 auto 14px;
+        }
+        .perfil-nombre { font-size: 18px; font-weight: 700; margin: 0 0 4px; }
+        .perfil-rol { font-size: 13px; color: #64748b; margin: 0 0 16px; }
+        .perfil-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #dcfce7;
+            color: #16a34a;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 5px 12px;
+            border-radius: 20px;
+            margin-bottom: 20px;
+        }
+        .perfil-divider { border: none; border-top: 1px solid var(--border-color); margin: 18px 0; }
+        .perfil-stat-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 18px;
+        }
+        .perfil-stat { text-align: center; }
+        .perfil-stat .num { font-size: 20px; font-weight: 700; color: var(--text-main); }
+        .perfil-stat .lbl { font-size: 11px; color: #94a3b8; }
+
+        .btn-cerrar-sesion {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #fee2e2;
+            background: white;
+            color: #dc2626;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: 0.2s;
+            margin-top: 8px;
+        }
+        .btn-cerrar-sesion:hover { background: #fee2e2; }
+
+        .perfil-main-card {
+            background: white;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 28px;
+        }
+        .perfil-main-card h4 {
+            margin: 0 0 20px;
+            font-size: 15px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .perfil-main-card h4 i { color: var(--primary-blue); }
+
+        .perfil-form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            margin-bottom: 24px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 9px;
+            font-size: 13px;
+            font-family: inherit;
+            color: var(--text-main);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--primary-blue); }
+        .form-group.full { grid-column: 1 / -1; }
+
+        .btn-guardar {
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 11px 24px;
+            border-radius: 9px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+        .btn-guardar:hover { background: #0052d4; }
+
+        .perfil-section-divider {
+            border: none;
+            border-top: 1px solid var(--border-color);
+            margin: 26px 0;
+        }
+
+        .logros-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .logro-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .logro-card .logro-icon { font-size: 28px; margin-bottom: 6px; display: block; }
+        .logro-card .logro-nombre { font-size: 12px; font-weight: 600; color: var(--text-main); }
+        .logro-card .logro-desc { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+        .logro-card.bloqueado { opacity: 0.45; }
+
+        /* Modal cerrar sesión */
+        .modal-overlay {
+            display: none;
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.visible { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 32px;
+            width: 340px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.18);
+        }
+        .modal-box .modal-icon { font-size: 44px; margin-bottom: 14px; display: block; }
+        .modal-box h3 { margin: 0 0 8px; }
+        .modal-box p { color: #64748b; font-size: 14px; margin: 0 0 22px; }
+        .modal-btns { display: flex; gap: 10px; }
+        .btn-modal-cancel {
+            flex: 1; padding: 11px;
+            border: 1px solid var(--border-color); background: white;
+            border-radius: 9px; font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: 0.2s; color: var(--text-main);
+        }
+        .btn-modal-cancel:hover { background: #f1f5f9; }
+        .btn-modal-confirm {
+            flex: 1; padding: 11px;
+            border: none; background: #dc2626;
+            color: white; border-radius: 9px;
+            font-size: 14px; font-weight: 600;
+            cursor: pointer; transition: 0.2s;
+        }
+        .btn-modal-confirm:hover { background: #b91c1c; }
     </style>
 </head>
 <body>
@@ -297,12 +833,12 @@
         <i class="fas fa-graduation-cap" style="color: var(--primary-blue);"></i> EduAgenda
     </div>
     <nav class="menu-nav">
-        <a href="#" class="menu-item" id="nav-resumen"><i class="fas fa-th-large"></i> Resumen</a>
-        <a href="#" class="menu-item active" id="nav-agenda"><i class="fas fa-calendar-alt"></i> Agenda de Profesores</a>
-        <a href="#" class="menu-item" id="nav-clases"><i class="fas fa-book"></i> Mis Clases</a>
-        <a href="#" class="menu-item" id="nav-tareas"><i class="fas fa-tasks"></i> Tareas Pendientes</a>
-        <a href="#" class="menu-item" id="nav-calificaciones"><i class="fas fa-chart-bar"></i> Mis Calificaciones</a>
-        <a href="#" class="menu-item" id="nav-perfil"><i class="fas fa-user"></i> Mi Perfil</a>
+        <a class="menu-item" id="nav-resumen" onclick="showSection('resumen')"><i class="fas fa-th-large"></i> Resumen</a>
+        <a class="menu-item active" id="nav-agenda" onclick="showSection('agenda')"><i class="fas fa-calendar-alt"></i> Agenda de Profesores</a>
+        <a class="menu-item" id="nav-clases" onclick="showSection('clases')"><i class="fas fa-book"></i> Mis Clases</a>
+        <a class="menu-item" id="nav-tareas" onclick="showSection('tareas')"><i class="fas fa-tasks"></i> Tareas Pendientes</a>
+        <a class="menu-item" id="nav-calificaciones" onclick="showSection('calificaciones')"><i class="fas fa-chart-bar"></i> Mis Calificaciones</a>
+        <a class="menu-item" id="nav-perfil" onclick="showSection('perfil')"><i class="fas fa-user"></i> Mi Perfil</a>
     </nav>
 </aside>
 
@@ -310,215 +846,868 @@
     <header class="header-top">
         <div class="user-profile">
             <div style="text-align: right;">
-                <strong id="userName">Estudiante</strong><br>
+                <strong id="userName">María López</strong><br>
                 <small style="color: #64748b;">Estudiante</small>
             </div>
-            <div style="width:40px; height:40px; background:#e2e8f0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold;">ML</div>
+            <div style="width:40px; height:40px; background:#e2e8f0; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer;" onclick="showSection('perfil')">ML</div>
         </div>
     </header>
 
+    <!-- ===================== AGENDA ===================== -->
     <div id="sec-agenda">
-    <section class="agenda-header">
-        <h1 style="margin:0 0 6px;">Agenda de Profesores</h1>
-        <p style="color:#64748b; margin:0;">Consulta los horarios disponibles y reserva tus clases.</p>
-    </section>
+        <section class="agenda-header">
+            <h1 style="margin:0 0 6px;">Agenda de Profesores</h1>
+            <p style="color:#64748b; margin:0;">Consulta los horarios disponibles y reserva tus clases.</p>
+        </section>
 
-    <div class="filters" style="margin-top:20px;">
-        <div class="filter-group">
-            <label>Profesor</label>
-            <select><option>Darwin Rosero</option></select>
+        <div class="filters" style="margin-top:20px;">
+            <div class="filter-group">
+                <label>Profesor</label>
+                <select><option>Darwin Rosero</option></select>
+            </div>
+            <div class="filter-group">
+                <label>Asignatura</label>
+                <select id="filtroMateria">
+                    <option value="">Todas las materias</option>
+                    <option value="Matemáticas">Matemáticas</option>
+                    <option value="Física">Física</option>
+                    <option value="Química">Química</option>
+                    <option value="Inglés">Inglés</option>
+                    <option value="Programación">Programación</option>
+                    <option value="Estadística">Estadística</option>
+                    <option value="Biología">Biología</option>
+                    <option value="Historia">Historia</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Fecha</label>
+                <input type="text" value="Semana del 26 de mayo" readonly>
+            </div>
         </div>
-        <div class="filter-group">
-            <label>Asignatura</label>
-            <select id="filtroMateria">
-                <option value="">Todas las materias</option>
-                <option value="Matemáticas">Matemáticas</option>
-                <option value="Física">Física</option>
-                <option value="Química">Química</option>
-                <option value="Inglés">Inglés</option>
-                <option value="Programación">Programación</option>
-                <option value="Estadística">Estadística</option>
-                <option value="Biología">Biología</option>
-                <option value="Historia">Historia</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label>Fecha</label>
-            <input type="text" value="Semana del 26 de mayo" readonly>
+
+        <div class="calendar-container">
+            <!-- TABLA -->
+            <div class="calendar-card">
+                <div class="legend">
+                    <span><span class="legend-dot" style="background:#dcfce7; border:1px solid #bbf7d0;"></span>Disponible</span>
+                    <span><span class="legend-dot" style="background:#dbeafe; border:1px solid #bfdbfe;"></span>Reservado</span>
+                    <span><span class="legend-dot" style="background:#eff6ff; border:2px solid var(--primary-blue);"></span>Seleccionado</span>
+                </div>
+                <table class="calendar-table">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Lun 26</th>
+                            <th>Mar 27</th>
+                            <th>Mié 28</th>
+                            <th>Jue 29</th>
+                            <th>Vie 30</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="hour">08:00 AM</td>
+                            <td><div class="slot reserved">Matemáticas<br>Reservado</div></td>
+                            <td><div class="slot available">Matemáticas</div></td>
+                            <td></td>
+                            <td><div class="slot reserved">Física<br>Reservado</div></td>
+                            <td><div class="slot available">Física</div></td>
+                        </tr>
+                        <tr>
+                            <td class="hour">09:00 AM</td>
+                            <td></td>
+                            <td><div class="slot available">Química</div></td>
+                            <td><div class="slot available">Química</div></td>
+                            <td></td>
+                            <td><div class="slot available">Química</div></td>
+                        </tr>
+                        <tr>
+                            <td class="hour">10:00 AM</td>
+                            <td><div class="slot available">Inglés</div></td>
+                            <td></td>
+                            <td><div class="slot available">Inglés</div></td>
+                            <td><div class="slot available">Inglés</div></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="hour">11:00 AM</td>
+                            <td><div class="slot available">Programación</div></td>
+                            <td><div class="slot available">Programación</div></td>
+                            <td></td>
+                            <td></td>
+                            <td><div class="slot available">Programación</div></td>
+                        </tr>
+                        <tr>
+                            <td class="hour">02:00 PM</td>
+                            <td></td>
+                            <td><div class="slot available">Estadística</div></td>
+                            <td><div class="slot available">Estadística</div></td>
+                            <td><div class="slot available">Estadística</div></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="hour">03:00 PM</td>
+                            <td><div class="slot available">Matemáticas</div></td>
+                            <td></td>
+                            <td><div class="slot available">Biología</div></td>
+                            <td></td>
+                            <td><div class="slot available">Biología</div></td>
+                        </tr>
+                        <tr>
+                            <td class="hour">04:00 PM</td>
+                            <td><div class="slot available">Historia</div></td>
+                            <td><div class="slot available">Historia</div></td>
+                            <td></td>
+                            <td><div class="slot available">Historia</div></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td class="hour">05:00 PM</td>
+                            <td></td>
+                            <td><div class="slot available">Física</div></td>
+                            <td><div class="slot available">Matemáticas</div></td>
+                            <td></td>
+                            <td><div class="slot available">Estadística</div></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PANEL DERECHO -->
+            <div class="detail-card teacher-card">
+                <div class="panel-vacio" id="panelVacio">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3 style="font-size:15px; color:#64748b; margin:0 0 8px;">Selecciona un horario</h3>
+                    <p>Haz clic en cualquier bloque verde disponible para ver los detalles y reservar tu clase.</p>
+                </div>
+                <div class="panel-clase" id="panelClase">
+                    <h3 style="font-size:15px; margin:0 0 14px; color:var(--text-main);">Clase seleccionada</h3>
+                    <div class="teacher-info">
+                        <div class="teacher-avatar">DR</div>
+                        <div>
+                            <strong style="font-size:14px;">Darwin Rosero</strong><br>
+                            <small style="color:#64748b;" id="panelMateriaLabel">Profesor</small>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="info-item">
+                            <i class="fas fa-book"></i>
+                            <span id="panelMateria">—</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="far fa-calendar"></i>
+                            <span id="panelFecha">—</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="far fa-clock"></i>
+                            <span id="panelHora">—</span>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-video"></i>
+                            <span>Modalidad Virtual (Google Meet)</span>
+                        </div>
+                    </div>
+                    <div class="precio-badge">💳 $50.000 COP</div>
+                    <label class="nota-label">Nota para el profesor (opcional)</label>
+                    <textarea id="notaProfesor" rows="3" placeholder="Ej: Necesito ayuda con integrales..."></textarea>
+                    <button class="btn-reserve" id="btnReservar">
+                        <i class="fas fa-lock"></i>
+                        Reservar y pagar
+                    </button>
+                    <div class="seguro-tag">
+                        <i class="fas fa-shield-alt"></i> Pago 100% seguro · SSL encriptado
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="calendar-container">
-
-        <!-- TABLA -->
-        <div class="calendar-card">
-            <div class="legend">
-                <span><span class="legend-dot" style="background:#dcfce7; border:1px solid #bbf7d0;"></span>Disponible</span>
-                <span><span class="legend-dot" style="background:#dbeafe; border:1px solid #bfdbfe;"></span>Reservado</span>
-                <span><span class="legend-dot" style="background:#eff6ff; border:2px solid var(--primary-blue);"></span>Seleccionado</span>
+    <!-- ===================== RESUMEN ===================== -->
+    <div id="sec-resumen" style="display:none;">
+        <div class="resumen-bienvenida">
+            <div>
+                <h2>¡Buen día, María! 👋</h2>
+                <p>Tienes 2 clases reservadas esta semana y 2 tareas pendientes por entregar.</p>
             </div>
-            <table class="calendar-table">
+            <div class="avatar-grande">ML</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#eff6ff;"><i class="fas fa-calendar-check" style="color:var(--primary-blue);"></i></div>
+                <div class="stat-info">
+                    <div class="stat-num">2</div>
+                    <div class="stat-label">Clases reservadas</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#fef9c3;"><i class="fas fa-tasks" style="color:#ca8a04;"></i></div>
+                <div class="stat-info">
+                    <div class="stat-num">2</div>
+                    <div class="stat-label">Tareas pendientes</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#dcfce7;"><i class="fas fa-star" style="color:#16a34a;"></i></div>
+                <div class="stat-info">
+                    <div class="stat-num">4.1</div>
+                    <div class="stat-label">Promedio general</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon" style="background:#f3e8ff;"><i class="fas fa-trophy" style="color:#7c3aed;"></i></div>
+                <div class="stat-info">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">Logros obtenidos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="resumen-grid">
+            <div class="resumen-card">
+                <h4><i class="fas fa-calendar-check"></i> Próximas clases</h4>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#eff6ff;"><i class="fas fa-calculator" style="color:var(--primary-blue);"></i></div>
+                    <div class="clase-info">
+                        <strong>Matemáticas</strong>
+                        <small>Lun 26 mayo · 08:00 AM · Darwin Rosero</small>
+                    </div>
+                </div>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#fef3c7;"><i class="fas fa-atom" style="color:#d97706;"></i></div>
+                    <div class="clase-info">
+                        <strong>Física</strong>
+                        <small>Jue 29 mayo · 08:00 AM · Darwin Rosero</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resumen-card">
+                <h4><i class="fas fa-tasks"></i> Tareas urgentes</h4>
+                <div class="tarea-mini">
+                    <input type="checkbox" id="t1r">
+                    <label for="t1r">Ejercicios de derivadas — cap. 4</label>
+                    <span class="badge-vence badge-urgente">Hoy</span>
+                </div>
+                <div class="tarea-mini">
+                    <input type="checkbox" id="t2r">
+                    <label for="t2r">Informe de laboratorio de Química</label>
+                    <span class="badge-vence badge-pronto">Mié 28</span>
+                </div>
+            </div>
+
+            <div class="resumen-card">
+                <h4><i class="fas fa-chart-bar"></i> Últimas calificaciones</h4>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#dcfce7;"><span style="font-weight:700; color:#16a34a; font-size:14px;">4.5</span></div>
+                    <div class="clase-info">
+                        <strong>Programación</strong>
+                        <small>Parcial 2 · Excelente</small>
+                    </div>
+                </div>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#dbeafe;"><span style="font-weight:700; color:#1e40af; font-size:14px;">4.0</span></div>
+                    <div class="clase-info">
+                        <strong>Inglés</strong>
+                        <small>Quiz semana 3 · Bueno</small>
+                    </div>
+                </div>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#fef9c3;"><span style="font-weight:700; color:#ca8a04; font-size:14px;">3.5</span></div>
+                    <div class="clase-info">
+                        <strong>Matemáticas</strong>
+                        <small>Taller 3 · Regular</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resumen-card">
+                <h4><i class="fas fa-bell"></i> Notificaciones recientes</h4>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#eff6ff;"><i class="fas fa-check" style="color:var(--primary-blue); font-size:14px;"></i></div>
+                    <div class="clase-info">
+                        <strong>Clase confirmada</strong>
+                        <small>Matemáticas — Lun 26 mayo</small>
+                    </div>
+                </div>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#fef3c7;"><i class="fas fa-exclamation" style="color:#d97706; font-size:14px;"></i></div>
+                    <div class="clase-info">
+                        <strong>Tarea por vencer</strong>
+                        <small>Derivadas — vence hoy</small>
+                    </div>
+                </div>
+                <div class="clase-item-mini">
+                    <div class="clase-dot" style="background:#dcfce7;"><i class="fas fa-star" style="color:#16a34a; font-size:14px;"></i></div>
+                    <div class="clase-info">
+                        <strong>Nueva calificación</strong>
+                        <small>Programación — 4.5</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== MIS CLASES ===================== -->
+    <div id="sec-clases" style="display:none;">
+        <div class="clases-header-top">
+            <div>
+                <h1 style="margin:0 0 6px;">Mis Clases</h1>
+                <p style="color:#64748b; margin:0;">Historial y próximas clases reservadas.</p>
+            </div>
+        </div>
+
+        <div class="tabs-clases">
+            <button class="tab-btn active" onclick="filtrarClases('todas', this)">Todas (4)</button>
+            <button class="tab-btn" onclick="filtrarClases('confirmada', this)">Confirmadas (2)</button>
+            <button class="tab-btn" onclick="filtrarClases('completada', this)">Completadas (2)</button>
+        </div>
+
+        <div class="clases-grid" id="clasesGrid">
+
+            <div class="clase-card" data-estado="confirmada">
+                <div class="clase-card-header">
+                    <div class="clase-icono" style="background:#eff6ff;"><i class="fas fa-calculator" style="color:var(--primary-blue);"></i></div>
+                    <div>
+                        <h3>Matemáticas</h3>
+                        <small>Prof. Darwin Rosero</small>
+                    </div>
+                    <span class="clase-estado estado-confirmada" style="margin-left:auto;"><i class="fas fa-circle" style="font-size:8px;"></i> Confirmada</span>
+                </div>
+                <div class="clase-meta">
+                    <span class="meta-tag"><i class="far fa-calendar"></i> Lun 26 de mayo</span>
+                    <span class="meta-tag"><i class="far fa-clock"></i> 08:00 AM</span>
+                    <span class="meta-tag"><i class="fas fa-video"></i> Google Meet</span>
+                </div>
+                <p style="font-size:13px; color:#64748b; margin:0 0 10px;">Sesión enfocada en derivadas e integrales básicas. Recuerda tener lista la tarea del capítulo 4.</p>
+                <div class="clase-acciones">
+                    <button class="btn-accion"><i class="fas fa-times"></i> Cancelar</button>
+                    <button class="btn-accion primary"><i class="fas fa-video"></i> Unirse</button>
+                </div>
+            </div>
+
+            <div class="clase-card" data-estado="confirmada">
+                <div class="clase-card-header">
+                    <div class="clase-icono" style="background:#fef3c7;"><i class="fas fa-atom" style="color:#d97706;"></i></div>
+                    <div>
+                        <h3>Física</h3>
+                        <small>Prof. Darwin Rosero</small>
+                    </div>
+                    <span class="clase-estado estado-confirmada" style="margin-left:auto;"><i class="fas fa-circle" style="font-size:8px;"></i> Confirmada</span>
+                </div>
+                <div class="clase-meta">
+                    <span class="meta-tag"><i class="far fa-calendar"></i> Jue 29 de mayo</span>
+                    <span class="meta-tag"><i class="far fa-clock"></i> 08:00 AM</span>
+                    <span class="meta-tag"><i class="fas fa-video"></i> Google Meet</span>
+                </div>
+                <p style="font-size:13px; color:#64748b; margin:0 0 10px;">Repaso de cinemática y dinámica. Se revisarán ejercicios de velocidad y aceleración.</p>
+                <div class="clase-acciones">
+                    <button class="btn-accion"><i class="fas fa-times"></i> Cancelar</button>
+                    <button class="btn-accion primary"><i class="fas fa-video"></i> Unirse</button>
+                </div>
+            </div>
+
+            <div class="clase-card" data-estado="completada">
+                <div class="clase-card-header">
+                    <div class="clase-icono" style="background:#f3e8ff;"><i class="fas fa-laptop-code" style="color:#7c3aed;"></i></div>
+                    <div>
+                        <h3>Programación</h3>
+                        <small>Prof. Darwin Rosero</small>
+                    </div>
+                    <span class="clase-estado estado-completada" style="margin-left:auto;"><i class="fas fa-check-circle"></i> Completada</span>
+                </div>
+                <div class="clase-meta">
+                    <span class="meta-tag"><i class="far fa-calendar"></i> Lun 19 de mayo</span>
+                    <span class="meta-tag"><i class="far fa-clock"></i> 11:00 AM</span>
+                    <span class="meta-tag"><i class="fas fa-video"></i> Google Meet</span>
+                </div>
+                <p style="font-size:13px; color:#64748b; margin:0 0 10px;">Introducción a funciones y estructuras de control en Python. Sesión muy productiva.</p>
+                <div class="clase-acciones">
+                    <button class="btn-accion"><i class="fas fa-star"></i> Calificar</button>
+                    <button class="btn-accion"><i class="fas fa-redo"></i> Reagendar</button>
+                </div>
+            </div>
+
+            <div class="clase-card" data-estado="completada">
+                <div class="clase-card-header">
+                    <div class="clase-icono" style="background:#dcfce7;"><i class="fas fa-language" style="color:#16a34a;"></i></div>
+                    <div>
+                        <h3>Inglés</h3>
+                        <small>Prof. Darwin Rosero</small>
+                    </div>
+                    <span class="clase-estado estado-completada" style="margin-left:auto;"><i class="fas fa-check-circle"></i> Completada</span>
+                </div>
+                <div class="clase-meta">
+                    <span class="meta-tag"><i class="far fa-calendar"></i> Mié 14 de mayo</span>
+                    <span class="meta-tag"><i class="far fa-clock"></i> 10:00 AM</span>
+                    <span class="meta-tag"><i class="fas fa-video"></i> Google Meet</span>
+                </div>
+                <p style="font-size:13px; color:#64748b; margin:0 0 10px;">Práctica de conversación y repaso de gramática. Se trabajaron tiempos verbales.</p>
+                <div class="clase-acciones">
+                    <button class="btn-accion"><i class="fas fa-star"></i> Calificar</button>
+                    <button class="btn-accion"><i class="fas fa-redo"></i> Reagendar</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===================== TAREAS PENDIENTES ===================== -->
+    <div id="sec-tareas" style="display:none;">
+        <div style="margin-bottom:24px;">
+            <h1 style="margin:0 0 6px;">Tareas Pendientes</h1>
+            <p style="color:#64748b; margin:0;">Organiza y gestiona tus tareas y compromisos académicos.</p>
+        </div>
+
+        <div class="tareas-layout">
+            <div class="tareas-lista">
+
+                <div class="tarea-card">
+                    <input type="checkbox" class="tarea-check" id="tarea1">
+                    <div class="tarea-contenido">
+                        <h4>Ejercicios de derivadas — Capítulo 4</h4>
+                        <p>Resolver los ejercicios 4.1 al 4.25 del libro de Cálculo de Stewart. Mostrar procedimiento completo.</p>
+                        <div class="tarea-tags">
+                            <span class="tag tag-materia">Matemáticas</span>
+                            <span class="tag tag-urgente">🔴 Urgente</span>
+                            <span class="tarea-vence"><i class="far fa-calendar" style="color:var(--primary-blue);"></i> Vence hoy, 26 mayo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarea-card">
+                    <input type="checkbox" class="tarea-check" id="tarea2">
+                    <div class="tarea-contenido">
+                        <h4>Informe de laboratorio de Química</h4>
+                        <p>Redactar el informe de la práctica de reacciones ácido-base. Incluir procedimiento, resultados y conclusiones. Formato APA.</p>
+                        <div class="tarea-tags">
+                            <span class="tag tag-materia">Química</span>
+                            <span class="tag tag-pronto">🟡 Próximo</span>
+                            <span class="tarea-vence"><i class="far fa-calendar" style="color:var(--primary-blue);"></i> Vence mié 28 mayo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tarea-card" style="opacity:0.55;">
+                    <input type="checkbox" class="tarea-check" id="tarea3" checked>
+                    <div class="tarea-contenido">
+                        <h4 style="text-decoration:line-through; color:#94a3b8;">Lectura unidad 3 — Historia</h4>
+                        <p style="color:#94a3b8;">Leer el capítulo 3 del libro de Historia Contemporánea y hacer resumen.</p>
+                        <div class="tarea-tags">
+                            <span class="tag tag-materia">Historia</span>
+                            <span class="tag tag-ok">✅ Completada</span>
+                            <span class="tarea-vence"><i class="far fa-calendar" style="color:#94a3b8;"></i> Entregada lun 19 mayo</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="tareas-sidebar-card">
+                <h4><i class="fas fa-chart-pie" style="color:var(--primary-blue); margin-right:6px;"></i> Progreso por materia</h4>
+
+                <div class="progreso-materia">
+                    <div class="progreso-materia-top">
+                        <span style="font-size:13px; font-weight:600;">Matemáticas</span>
+                        <span style="font-size:12px; color:#64748b;">1/3</span>
+                    </div>
+                    <div class="progreso-bar"><div class="progreso-fill" style="width:33%; background:#0061ff;"></div></div>
+                </div>
+
+                <div class="progreso-materia">
+                    <div class="progreso-materia-top">
+                        <span style="font-size:13px; font-weight:600;">Química</span>
+                        <span style="font-size:12px; color:#64748b;">0/2</span>
+                    </div>
+                    <div class="progreso-bar"><div class="progreso-fill" style="width:0%; background:#f59e0b;"></div></div>
+                </div>
+
+                <div class="progreso-materia">
+                    <div class="progreso-materia-top">
+                        <span style="font-size:13px; font-weight:600;">Historia</span>
+                        <span style="font-size:12px; color:#64748b;">1/1</span>
+                    </div>
+                    <div class="progreso-bar"><div class="progreso-fill" style="width:100%; background:#16a34a;"></div></div>
+                </div>
+
+                <div class="progreso-materia">
+                    <div class="progreso-materia-top">
+                        <span style="font-size:13px; font-weight:600;">Programación</span>
+                        <span style="font-size:12px; color:#64748b;">2/2</span>
+                    </div>
+                    <div class="progreso-bar"><div class="progreso-fill" style="width:100%; background:#16a34a;"></div></div>
+                </div>
+
+                <hr style="border:none; border-top:1px solid var(--border-color); margin:16px 0;">
+                <h4 style="font-size:13px; margin:0 0 12px;"><i class="fas fa-clock" style="color:#ca8a04; margin-right:6px;"></i> Resumen</h4>
+                <div style="font-size:13px; color:#475569; line-height:1.8;">
+                    <div>📌 <strong>2</strong> tareas pendientes</div>
+                    <div>✅ <strong>1</strong> completada</div>
+                    <div>🔴 <strong>1</strong> vence hoy</div>
+                    <div>📅 <strong>1</strong> vence esta semana</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== CALIFICACIONES ===================== -->
+    <div id="sec-calificaciones" style="display:none;">
+        <div style="margin-bottom:24px;">
+            <h1 style="margin:0 0 6px;">Mis Calificaciones</h1>
+            <p style="color:#64748b; margin:0;">Seguimiento de tu rendimiento académico.</p>
+        </div>
+
+        <div class="cal-stats">
+            <div class="cal-stat-card">
+                <div class="big-num">4.1</div>
+                <div class="big-label">Promedio general</div>
+            </div>
+            <div class="cal-stat-card">
+                <div class="big-num" style="color:#16a34a;">4.5</div>
+                <div class="big-label">Nota más alta</div>
+            </div>
+            <div class="cal-stat-card">
+                <div class="big-num" style="color:#ca8a04;">3.2</div>
+                <div class="big-label">Nota más baja</div>
+            </div>
+        </div>
+
+        <div class="calificaciones-table-card">
+            <h4 style="margin:0 0 16px; font-size:15px;"><i class="fas fa-table" style="color:var(--primary-blue); margin-right:8px;"></i>Detalle por materia</h4>
+            <table class="cal-table">
                 <thead>
                     <tr>
-                        <th>Hora</th>
-                        <th>Lun 26</th>
-                        <th>Mar 27</th>
-                        <th>Mié 28</th>
-                        <th>Jue 29</th>
-                        <th>Vie 30</th>
+                        <th>Materia</th>
+                        <th>Evaluación</th>
+                        <th>Fecha</th>
+                        <th>Nota</th>
+                        <th>Tendencia</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="hour">08:00 AM</td>
-                        <td><div class="slot reserved">Matemáticas<br>Reservado</div></td>
-                        <td><div class="slot available">Matemáticas</div></td>
-                        <td></td>
-                        <td><div class="slot reserved">Física<br>Reservado</div></td>
-                        <td><div class="slot available">Física</div></td>
+                        <td><strong>Matemáticas</strong></td>
+                        <td>Taller 3 — Derivadas</td>
+                        <td>20 mayo 2025</td>
+                        <td><span class="nota-badge nota-regular">3.5</span></td>
+                        <td><span class="trend-down"><i class="fas fa-arrow-down"></i> -0.5</span></td>
+                        <td><span style="color:#ca8a04; font-size:12px; font-weight:600;">Regular</span></td>
                     </tr>
                     <tr>
-                        <td class="hour">09:00 AM</td>
-                        <td></td>
-                        <td><div class="slot available">Química</div></td>
-                        <td><div class="slot available">Química</div></td>
-                        <td></td>
-                        <td><div class="slot available">Química</div></td>
+                        <td><strong>Física</strong></td>
+                        <td>Parcial 1 — Cinemática</td>
+                        <td>15 mayo 2025</td>
+                        <td><span class="nota-badge nota-buena">4.0</span></td>
+                        <td><span class="trend-up"><i class="fas fa-arrow-up"></i> +0.3</span></td>
+                        <td><span style="color:#1e40af; font-size:12px; font-weight:600;">Bueno</span></td>
                     </tr>
                     <tr>
-                        <td class="hour">10:00 AM</td>
-                        <td><div class="slot available">Inglés</div></td>
-                        <td></td>
-                        <td><div class="slot available">Inglés</div></td>
-                        <td><div class="slot available">Inglés</div></td>
-                        <td></td>
+                        <td><strong>Programación</strong></td>
+                        <td>Parcial 2 — Funciones</td>
+                        <td>18 mayo 2025</td>
+                        <td><span class="nota-badge nota-excelente">4.5</span></td>
+                        <td><span class="trend-up"><i class="fas fa-arrow-up"></i> +0.5</span></td>
+                        <td><span style="color:#16a34a; font-size:12px; font-weight:600;">Excelente</span></td>
                     </tr>
                     <tr>
-                        <td class="hour">11:00 AM</td>
-                        <td><div class="slot available">Programación</div></td>
-                        <td><div class="slot available">Programación</div></td>
-                        <td></td>
-                        <td></td>
-                        <td><div class="slot available">Programación</div></td>
+                        <td><strong>Inglés</strong></td>
+                        <td>Quiz semana 3</td>
+                        <td>14 mayo 2025</td>
+                        <td><span class="nota-badge nota-buena">4.0</span></td>
+                        <td><span class="trend-equal"><i class="fas fa-minus"></i> 0.0</span></td>
+                        <td><span style="color:#1e40af; font-size:12px; font-weight:600;">Bueno</span></td>
                     </tr>
                     <tr>
-                        <td class="hour">02:00 PM</td>
-                        <td></td>
-                        <td><div class="slot available">Estadística</div></td>
-                        <td><div class="slot available">Estadística</div></td>
-                        <td><div class="slot available">Estadística</div></td>
-                        <td></td>
+                        <td><strong>Química</strong></td>
+                        <td>Práctica de laboratorio</td>
+                        <td>10 mayo 2025</td>
+                        <td><span class="nota-badge nota-regular">3.2</span></td>
+                        <td><span class="trend-down"><i class="fas fa-arrow-down"></i> -0.8</span></td>
+                        <td><span style="color:#ca8a04; font-size:12px; font-weight:600;">Regular</span></td>
                     </tr>
                     <tr>
-                        <td class="hour">03:00 PM</td>
-                        <td><div class="slot available">Matemáticas</div></td>
-                        <td></td>
-                        <td><div class="slot available">Biología</div></td>
-                        <td></td>
-                        <td><div class="slot available">Biología</div></td>
+                        <td><strong>Historia</strong></td>
+                        <td>Ensayo unidad 2</td>
+                        <td>8 mayo 2025</td>
+                        <td><span class="nota-badge nota-excelente">4.5</span></td>
+                        <td><span class="trend-up"><i class="fas fa-arrow-up"></i> +0.7</span></td>
+                        <td><span style="color:#16a34a; font-size:12px; font-weight:600;">Excelente</span></td>
                     </tr>
                     <tr>
-                        <td class="hour">04:00 PM</td>
-                        <td><div class="slot available">Historia</div></td>
-                        <td><div class="slot available">Historia</div></td>
-                        <td></td>
-                        <td><div class="slot available">Historia</div></td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <td class="hour">05:00 PM</td>
-                        <td></td>
-                        <td><div class="slot available">Física</div></td>
-                        <td><div class="slot available">Matemáticas</div></td>
-                        <td></td>
-                        <td><div class="slot available">Estadística</div></td>
+                        <td><strong>Estadística</strong></td>
+                        <td>Taller 1 — Probabilidad</td>
+                        <td>5 mayo 2025</td>
+                        <td><span class="nota-badge nota-buena">3.8</span></td>
+                        <td><span class="trend-up"><i class="fas fa-arrow-up"></i> +0.1</span></td>
+                        <td><span style="color:#1e40af; font-size:12px; font-weight:600;">Bueno</span></td>
                     </tr>
                 </tbody>
             </table>
         </div>
+    </div>
 
-        <!-- PANEL DERECHO -->
-        <div class="detail-card teacher-card">
-
-            <!-- Estado vacío -->
-            <div class="panel-vacio" id="panelVacio">
-                <i class="fas fa-calendar-check"></i>
-                <h3 style="font-size:15px; color:#64748b; margin:0 0 8px;">Selecciona un horario</h3>
-                <p>Haz clic en cualquier bloque verde disponible para ver los detalles y reservar tu clase.</p>
-            </div>
-
-            <!-- Clase seleccionada (oculto hasta que se haga clic) -->
-            <div class="panel-clase" id="panelClase">
-
-                <h3 style="font-size:15px; margin:0 0 14px; color:var(--text-main);">Clase seleccionada</h3>
-
-                <div class="teacher-info">
-                    <div class="teacher-avatar">DR</div>
-                    <div>
-                        <strong style="font-size:14px;">Darwin Rosero</strong><br>
-                        <small style="color:#64748b;" id="panelMateriaLabel">Profesor</small>
-                    </div>
-                </div>
-
-                <div>
-                    <div class="info-item">
-                        <i class="fas fa-book"></i>
-                        <span id="panelMateria">—</span>
-                    </div>
-                    <div class="info-item">
-                        <i class="far fa-calendar"></i>
-                        <span id="panelFecha">—</span>
-                    </div>
-                    <div class="info-item">
-                        <i class="far fa-clock"></i>
-                        <span id="panelHora">—</span>
-                    </div>
-                    <div class="info-item">
-                        <i class="fas fa-video"></i>
-                        <span>Modalidad Virtual (Google Meet)</span>
-                    </div>
-                </div>
-
-                <div class="precio-badge">
-                    💳 $50.000 COP
-                </div>
-
-                <label class="nota-label">Nota para el profesor (opcional)</label>
-                <textarea id="notaProfesor" rows="3" placeholder="Ej: Necesito ayuda con integrales..."></textarea>
-
-                <button class="btn-reserve" id="btnReservar">
-                    <i class="fas fa-lock"></i>
-                    Reservar y pagar
-                </button>
-
-                <div class="seguro-tag">
-                    <i class="fas fa-shield-alt"></i> Pago 100% seguro · SSL encriptado
-                </div>
-
-            </div>
+    <!-- ===================== MI PERFIL ===================== -->
+    <div id="sec-perfil" style="display:none;">
+        <div style="margin-bottom:24px;">
+            <h1 style="margin:0 0 6px;">Mi Perfil</h1>
+            <p style="color:#64748b; margin:0;">Administra tu información personal y configuración de cuenta.</p>
         </div>
 
+        <div class="perfil-layout">
+
+            <!-- SIDEBAR PERFIL -->
+            <div class="perfil-sidebar-card">
+                <div class="perfil-avatar-grande">ML</div>
+                <div class="perfil-nombre">María López</div>
+                <div class="perfil-rol">Estudiante · Semestre 4</div>
+                <span class="perfil-badge"><i class="fas fa-check-circle"></i> Cuenta activa</span>
+
+                <hr class="perfil-divider">
+
+                <div class="perfil-stat-row">
+                    <div class="perfil-stat">
+                        <div class="num">4</div>
+                        <div class="lbl">Clases</div>
+                    </div>
+                    <div class="perfil-stat">
+                        <div class="num">4.1</div>
+                        <div class="lbl">Promedio</div>
+                    </div>
+                    <div class="perfil-stat">
+                        <div class="num">3</div>
+                        <div class="lbl">Logros</div>
+                    </div>
+                </div>
+
+                <hr class="perfil-divider">
+
+                <div style="text-align:left; font-size:13px; color:#475569; line-height:2;">
+                    <div><i class="fas fa-envelope" style="color:var(--primary-blue); width:18px;"></i> maria.lopez@edu.co</div>
+                    <div><i class="fas fa-phone" style="color:var(--primary-blue); width:18px;"></i> +57 300 456 7890</div>
+                    <div><i class="fas fa-map-marker-alt" style="color:var(--primary-blue); width:18px;"></i> Bogotá, Colombia</div>
+                    <div><i class="fas fa-calendar" style="color:var(--primary-blue); width:18px;"></i> Desde enero 2024</div>
+                </div>
+
+                <hr class="perfil-divider">
+                <button class="btn-cerrar-sesion" onclick="abrirModalCerrarSesion()">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+                </button>
+            </div>
+
+            <!-- MAIN PERFIL -->
+            <div>
+                <div class="perfil-main-card" style="margin-bottom:20px;">
+                    <h4><i class="fas fa-user-edit"></i> Información personal</h4>
+                    <div class="perfil-form-grid">
+                        <div class="form-group">
+                            <label>Nombre</label>
+                            <input type="text" value="María">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellidos</label>
+                            <input type="text" value="López Gómez">
+                        </div>
+                        <div class="form-group">
+                            <label>Correo electrónico</label>
+                            <input type="email" value="maria.lopez@edu.co">
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="tel" value="+57 300 456 7890">
+                        </div>
+                        <div class="form-group">
+                            <label>Ciudad</label>
+                            <input type="text" value="Bogotá, Colombia">
+                        </div>
+                        <div class="form-group">
+                            <label>Semestre actual</label>
+                            <select>
+                                <option>1</option><option>2</option><option>3</option>
+                                <option selected>4</option><option>5</option><option>6</option>
+                            </select>
+                        </div>
+                        <div class="form-group full">
+                            <label>Programa académico</label>
+                            <input type="text" value="Ingeniería de Sistemas">
+                        </div>
+                    </div>
+                    <button class="btn-guardar"><i class="fas fa-save"></i> Guardar cambios</button>
+                </div>
+
+                <div class="perfil-main-card">
+                    <h4><i class="fas fa-trophy"></i> Logros académicos</h4>
+                    <div class="logros-grid">
+                        <div class="logro-card">
+                            <span class="logro-icon">🎯</span>
+                            <div class="logro-nombre">Primera clase</div>
+                            <div class="logro-desc">Reservaste tu primera clase</div>
+                        </div>
+                        <div class="logro-card">
+                            <span class="logro-icon">⭐</span>
+                            <div class="logro-nombre">Nota perfecta</div>
+                            <div class="logro-desc">Obtuviste 4.5 en una evaluación</div>
+                        </div>
+                        <div class="logro-card">
+                            <span class="logro-icon">📚</span>
+                            <div class="logro-nombre">Estudiante activo</div>
+                            <div class="logro-desc">4 clases completadas</div>
+                        </div>
+                        <div class="logro-card bloqueado">
+                            <span class="logro-icon">🏆</span>
+                            <div class="logro-nombre">Top estudiante</div>
+                            <div class="logro-desc">Promedio mayor a 4.5</div>
+                        </div>
+                        <div class="logro-card bloqueado">
+                            <span class="logro-icon">🔥</span>
+                            <div class="logro-nombre">Racha de 7 días</div>
+                            <div class="logro-desc">Estudia 7 días seguidos</div>
+                        </div>
+                        <div class="logro-card bloqueado">
+                            <span class="logro-icon">💎</span>
+                            <div class="logro-nombre">Maestro del saber</div>
+                            <div class="logro-desc">Completa 20 clases</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-</div><!-- /sec-agenda -->
-
-    <!-- SECCIÓN: RESUMEN -->
-    <div id="sec-resumen" style="display:none;"></div>
-
-    <!-- SECCIÓN: MIS CLASES -->
-    <div id="sec-clases" style="display:none;"></div>
-
-    <!-- SECCIÓN: TAREAS PENDIENTES -->
-    <div id="sec-tareas" style="display:none;"></div>
-
-    <!-- SECCIÓN: CALIFICACIONES -->
-    <div id="sec-calificaciones" style="display:none;"></div>
-
-    <!-- SECCIÓN: MI PERFIL -->
-    <div id="sec-perfil" style="display:none;"></div>
 
 </main>
 
-<script src="js/estudiante.js"></script>
+<!-- MODAL CERRAR SESIÓN -->
+<div class="modal-overlay" id="modalCerrarSesion">
+    <div class="modal-box">
+        <span class="modal-icon">👋</span>
+        <h3>¿Cerrar sesión?</h3>
+        <p>¿Seguro que deseas salir de tu cuenta de EduAgenda?</p>
+        <div class="modal-btns">
+            <button class="btn-modal-cancel" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn-modal-confirm" onclick="confirmarCierreSesion()"><i class="fas fa-sign-out-alt"></i> Sí, salir</button>
+        </div>
+    </div>
+</div>
 
+<script src="js/estudiante.js"></script>
+<script>
+    // ============================================================
+    // NAVEGACIÓN
+    // ============================================================
+    function showSection(name) {
+        const sections = ['agenda','resumen','clases','tareas','calificaciones','perfil'];
+        sections.forEach(s => {
+            document.getElementById('sec-' + s).style.display = 'none';
+            document.getElementById('nav-' + s).classList.remove('active');
+        });
+        document.getElementById('sec-' + name).style.display = 'block';
+        document.getElementById('nav-' + name).classList.add('active');
+    }
+
+    // ============================================================
+    // AGENDA: selección de slot
+    // ============================================================
+    const dias = { 0: 'Lun 26 de mayo', 1: 'Mar 27 de mayo', 2: 'Mié 28 de mayo', 3: 'Jue 29 de mayo', 4: 'Vie 30 de mayo' };
+
+    document.querySelectorAll('.slot.available').forEach(slot => {
+        slot.addEventListener('click', function() {
+            document.querySelectorAll('.slot.available').forEach(s => s.classList.remove('seleccionado'));
+            this.classList.add('seleccionado');
+
+            const row = this.closest('tr');
+            const hora = row.querySelector('.hour').textContent.trim();
+            const colIndex = Array.from(row.cells).indexOf(this.closest('td')) - 1;
+            const materia = this.textContent.trim();
+
+            document.getElementById('panelMateria').textContent = materia;
+            document.getElementById('panelMateriaLabel').textContent = 'Profesor de ' + materia;
+            document.getElementById('panelFecha').textContent = dias[colIndex] || '—';
+            document.getElementById('panelHora').textContent = hora + ' — ' + (hora.replace(/(\d+):00/, (_, h) => (parseInt(h)+1).toString().padStart(2,'0') + ':00'));
+
+            document.getElementById('panelVacio').style.display = 'none';
+            document.getElementById('panelClase').classList.add('visible');
+        });
+    });
+
+    document.getElementById('btnReservar').addEventListener('click', function() {
+        const materia = document.getElementById('panelMateria').textContent;
+        const fecha = document.getElementById('panelFecha').textContent;
+        alert('✅ ¡Clase de ' + materia + ' reservada para el ' + fecha + '!\n\nRedirigiendo a pago seguro...');
+    });
+
+    // ============================================================
+    // FILTRO MATERIA
+    // ============================================================
+    document.getElementById('filtroMateria').addEventListener('change', function() {
+        const val = this.value.toLowerCase();
+        document.querySelectorAll('.slot.available').forEach(slot => {
+            const td = slot.closest('td');
+            if (!val || slot.textContent.trim().toLowerCase().includes(val)) {
+                td.style.opacity = '1';
+            } else {
+                td.style.opacity = '0.2';
+            }
+        });
+    });
+
+    // ============================================================
+    // TABS MIS CLASES
+    // ============================================================
+    function filtrarClases(estado, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.clase-card').forEach(card => {
+            if (estado === 'todas' || card.dataset.estado === estado) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    }
+
+    // ============================================================
+    // TAREAS: marcar completada
+    // ============================================================
+    document.querySelectorAll('.tarea-check').forEach(chk => {
+        chk.addEventListener('change', function() {
+            const card = this.closest('.tarea-card');
+            if (this.checked) {
+                card.style.opacity = '0.55';
+                card.querySelector('h4').style.textDecoration = 'line-through';
+                card.querySelector('h4').style.color = '#94a3b8';
+            } else {
+                card.style.opacity = '1';
+                card.querySelector('h4').style.textDecoration = '';
+                card.querySelector('h4').style.color = '';
+            }
+        });
+    });
+
+    // ============================================================
+    // MODAL CERRAR SESIÓN
+    // ============================================================
+    function abrirModalCerrarSesion() {
+        document.getElementById('modalCerrarSesion').classList.add('visible');
+    }
+    function cerrarModal() {
+        document.getElementById('modalCerrarSesion').classList.remove('visible');
+    }
+    function confirmarCierreSesion() {
+        cerrarModal();
+        alert('Sesión cerrada. ¡Hasta pronto, María! 👋');
+    }
+
+    // ============================================================
+    // GUARDAR PERFIL
+    // ============================================================
+    document.querySelector('.btn-guardar') && document.querySelector('.btn-guardar').addEventListener('click', function() {
+        this.innerHTML = '<i class="fas fa-check"></i> ¡Guardado!';
+        this.style.background = '#16a34a';
+        setTimeout(() => {
+            this.innerHTML = '<i class="fas fa-save"></i> Guardar cambios';
+            this.style.background = '';
+        }, 2000);
+    });
+</script>
 </body>
 </html>
