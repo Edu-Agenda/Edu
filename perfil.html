@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil · EduAgenda</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --blue: #0061ff;
+            --blue-dark: #0040cc;
+            --bg: #f8fafc;
+            --border: #e2e8f0;
+            --text: #1e293b;
+            --muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        /* ── TÍTULO ── */
+        .page-header { margin-bottom: 28px; }
+        .page-header h1 { font-size: 24px; margin-bottom: 4px; }
+        .page-header p  { color: var(--muted); font-size: 14px; }
+
+        /* ── LAYOUT ── */
+        .perfil-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 22px;
+            align-items: start;
+        }
+
+        /* ── CARD GENÉRICA ── */
+        .card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 26px;
+        }
+
+        /* ── SIDEBAR AVATAR ── */
+        .avatar-card { text-align: center; }
+
+        .avatar-wrap {
+            position: relative;
+            width: 88px;
+            margin: 0 auto 14px;
+        }
+        .avatar-circle {
+            width: 88px; height: 88px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; font-weight: 800;
+            color: white;
+            letter-spacing: -1px;
+        }
+        .avatar-online {
+            position: absolute; bottom: 4px; right: 4px;
+            width: 16px; height: 16px;
+            background: #22c55e;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .perfil-nombre { font-size: 17px; font-weight: 700; margin-bottom: 3px; }
+        .perfil-rol    { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+
+        .badge-activo {
+            display: inline-flex; align-items: center; gap: 5px;
+            background: #dcfce7; color: #16a34a;
+            font-size: 11px; font-weight: 700;
+            padding: 4px 12px; border-radius: 20px;
+            margin-bottom: 20px;
+        }
+
+        .divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+        .stats-row { display: flex; justify-content: space-around; }
+        .stat { text-align: center; }
+        .stat .n { font-size: 20px; font-weight: 800; }
+        .stat .l { font-size: 11px; color: #94a3b8; margin-top: 1px; }
+
+        .info-list { text-align: left; font-size: 13px; color: #475569; line-height: 2.4; }
+        .info-list i { color: var(--blue); width: 18px; margin-right: 6px; }
+
+        .btn-logout {
+            width: 100%; padding: 11px;
+            border: 1px solid #fecaca; background: white;
+            color: #dc2626; border-radius: 10px;
+            font-size: 13px; font-weight: 700;
+            cursor: pointer; display: flex;
+            align-items: center; justify-content: center;
+            gap: 8px; transition: 0.2s;
+            font-family: inherit; margin-top: 6px;
+        }
+        .btn-logout:hover { background: #fee2e2; }
+
+        /* ── FORMULARIO ── */
+        .card h4 {
+            font-size: 14px; font-weight: 700;
+            margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+        .card h4 i { color: var(--blue); }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 22px;
+        }
+        .form-group label {
+            display: block; font-size: 11px;
+            font-weight: 700; color: var(--muted);
+            text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .form-group input,
+        .form-group select {
+            width: 100%; padding: 10px 13px;
+            border: 1px solid var(--border); border-radius: 9px;
+            font-size: 13px; font-family: inherit;
+            color: var(--text); outline: none;
+            background: white; transition: border-color 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus { border-color: var(--blue); }
+        .form-group.full { grid-column: 1 / -1; }
+
+        /* campo con icono candado = solo lectura */
+        .form-group.readonly input {
+            background: #f8fafc; color: var(--muted); cursor: not-allowed;
+        }
+
+        .btn-save {
+            background: var(--blue); color: white;
+            border: none; padding: 11px 22px;
+            border-radius: 9px; font-size: 13px; font-weight: 700;
+            cursor: pointer; display: flex; align-items: center;
+            gap: 8px; transition: 0.2s; font-family: inherit;
+        }
+        .btn-save:hover { background: var(--blue-dark); transform: translateY(-1px); }
+
+        /* ── LOGROS ── */
+        .logros-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+        .logro {
+            border: 1px solid var(--border);
+            border-radius: 12px; padding: 14px;
+            text-align: center; transition: 0.2s;
+        }
+        .logro:not(.bloq):hover { border-color: var(--blue); background: #eff6ff; }
+        .logro .lic { font-size: 26px; display: block; margin-bottom: 6px; }
+        .logro .ln  { font-size: 12px; font-weight: 700; }
+        .logro .ld  { font-size: 11px; color: #94a3b8; margin-top: 2px; }
+        .logro.bloq { opacity: 0.38; }
+
+        /* ── MODAL ── */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45); backdrop-filter: blur(4px);
+            z-index: 1000; align-items: center; justify-content: center;
+        }
+        .modal-overlay.visible { display: flex; }
+        .modal-box {
+            background: white; border-radius: 20px;
+            padding: 36px 30px; width: 360px;
+            text-align: center; box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+            animation: up .25s ease;
+        }
+        @keyframes up { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
+        .modal-box .mi { font-size: 46px; display: block; margin-bottom: 14px; }
+        .modal-box h3 { margin-bottom: 8px; }
+        .modal-box p  { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+        .modal-btns { display: flex; gap: 10px; }
+        .btn-mc {
+            flex: 1; padding: 11px; border-radius: 10px;
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            font-family: inherit; transition: 0.2s;
+        }
+        .btn-mc.cancel { border: 1px solid var(--border); background: white; color: var(--text); }
+        .btn-mc.cancel:hover { background: #f1f5f9; }
+        .btn-mc.confirm { border: none; background: #dc2626; color: white; }
+        .btn-mc.confirm:hover { background: #b91c1c; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 26px; right: 26px;
+            background: #1e293b; color: white;
+            padding: 12px 20px; border-radius: 10px;
+            font-size: 13px; font-weight: 600;
+            display: flex; align-items: center; gap: 9px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+            transform: translateY(80px); opacity: 0;
+            transition: all 0.3s ease; z-index: 2000;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+        .toast i { color: #4ade80; }
+
+        /* ── SPINNER ── */
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div class="page-header">
+    <h1>Mi Perfil</h1>
+    <p>Administra tu información personal y configuración de cuenta.</p>
+</div>
+
+<div class="perfil-layout">
+
+    <!-- ── TARJETA LATERAL ── -->
+    <div class="card avatar-card">
+        <div class="avatar-wrap">
+            <div class="avatar-circle" id="avatarCircle">—</div>
+            <div class="avatar-online"></div>
+        </div>
+        <div class="perfil-nombre" id="perfilNombre">—</div>
+        <div class="perfil-rol"    id="perfilRol">Estudiante</div>
+        <span class="badge-activo"><i class="fas fa-check-circle"></i> Cuenta activa</span>
+
+        <hr class="divider">
+
+        <div class="stats-row">
+            <div class="stat"><div class="n" id="statClases">—</div><div class="l">Clases</div></div>
+            <div class="stat"><div class="n">4.1</div><div class="l">Promedio</div></div>
+            <div class="stat"><div class="n">3</div><div class="l">Logros</div></div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="info-list">
+            <div><i class="fas fa-envelope"></i><span id="infoEmail">—</span></div>
+            <div><i class="fas fa-phone"></i><span id="infoTel">—</span></div>
+            <div><i class="fas fa-map-marker-alt"></i><span id="infoCiudad">—</span></div>
+            <div><i class="fas fa-calendar-alt"></i>Miembro desde 2024</div>
+        </div>
+
+        <hr class="divider">
+
+        <button class="btn-logout" onclick="abrirModal()">
+            <i class="fas fa-sign-out-alt"></i> Cerrar sesión
+        </button>
+    </div>
+
+    <!-- ── COLUMNA DERECHA ── -->
+    <div>
+
+        <!-- Formulario -->
+        <div class="card" style="margin-bottom:20px;">
+            <h4><i class="fas fa-user-edit"></i> Información personal</h4>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Nombre</label>
+                    <input type="text" id="inNombre" placeholder="Tu nombre">
+                </div>
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    <input type="text" id="inApellidos" placeholder="Tus apellidos">
+                </div>
+
+                <!-- Email de cuenta: solo lectura (viene del login) -->
+                <div class="form-group readonly">
+                    <label><i class="fas fa-lock" style="font-size:10px;margin-right:3px;"></i> Correo de cuenta</label>
+                    <input type="email" id="inEmail" readonly>
+                </div>
+                <div class="form-group">
+                    <label>Teléfono</label>
+                    <input type="tel" id="inTel" placeholder="+57 300 000 0000">
+                </div>
+                <div class="form-group">
+                    <label>Ciudad</label>
+                    <input type="text" id="inCiudad" placeholder="Tu ciudad">
+                </div>
+                <div class="form-group">
+                    <label>Semestre actual</label>
+                    <select id="inSemestre">
+                        <option value="1">1°</option>
+                        <option value="2">2°</option>
+                        <option value="3">3°</option>
+                        <option value="4">4°</option>
+                        <option value="5">5°</option>
+                        <option value="6">6°</option>
+                        <option value="7">7°</option>
+                        <option value="8">8°</option>
+                        <option value="9">9°</option>
+                        <option value="10">10°</option>
+                    </select>
+                </div>
+                <div class="form-group full">
+                    <label>Programa académico</label>
+                    <input type="text" id="inPrograma" placeholder="Ej: Ingeniería de Sistemas">
+                </div>
+            </div>
+
+            <button class="btn-save" onclick="guardarPerfil()">
+                <i class="fas fa-save"></i> Guardar cambios
+            </button>
+        </div>
+
+        <!-- Logros -->
+        <div class="card">
+            <h4><i class="fas fa-trophy"></i> Logros académicos</h4>
+            <div class="logros-grid">
+                <div class="logro">
+                    <span class="lic">🎯</span>
+                    <div class="ln">Primera clase</div>
+                    <div class="ld">Reservaste tu primera clase</div>
+                </div>
+                <div class="logro">
+                    <span class="lic">⭐</span>
+                    <div class="ln">Nota perfecta</div>
+                    <div class="ld">Obtuviste 4.5 en una evaluación</div>
+                </div>
+                <div class="logro">
+                    <span class="lic">📚</span>
+                    <div class="ln">Estudiante activo</div>
+                    <div class="ld">4 clases completadas</div>
+                </div>
+                <div class="logro bloq">
+                    <span class="lic">🏆</span>
+                    <div class="ln">Top estudiante</div>
+                    <div class="ld">Promedio mayor a 4.5</div>
+                </div>
+                <div class="logro bloq">
+                    <span class="lic">🔥</span>
+                    <div class="ln">Racha de 7 días</div>
+                    <div class="ld">Estudia 7 días seguidos</div>
+                </div>
+                <div class="logro bloq">
+                    <span class="lic">💎</span>
+                    <div class="ln">Maestro del saber</div>
+                    <div class="ld">Completa 20 clases</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- ── MODAL CERRAR SESIÓN ── -->
+<div class="modal-overlay" id="modalLogout">
+    <div class="modal-box">
+        <span class="mi">👋</span>
+        <h3>¿Cerrar sesión?</h3>
+        <p id="modalMsg">¿Seguro que deseas salir de tu cuenta?</p>
+        <div class="modal-btns">
+            <button class="btn-mc cancel" onclick="cerrarModal()">Cancelar</button>
+            <button class="btn-mc confirm" onclick="confirmarLogout()">
+                <i class="fas fa-sign-out-alt"></i> Sí, salir
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ── TOAST ── -->
+<div class="toast" id="toast">
+    <i class="fas fa-check-circle"></i>
+    <span id="toastMsg">Guardado</span>
+</div>
+
+<script>
+    const API         = 'http://localhost:3000';
+    const STORAGE_KEY = 'eduagenda_perfil';
+
+    // ─────────────────────────────────────────
+    // DATOS DEL LOGIN (token + nombre + email)
+    // ─────────────────────────────────────────
+    const token         = localStorage.getItem('token')  || '';
+    const nombreLogin   = localStorage.getItem('nombre') || 'Estudiante';
+    const emailLogin    = localStorage.getItem('email')  || '';
+
+    // Si no hay token, redirigir al login
+    // (comentado para previsualización; descomentar en producción)
+    // if (!token) { window.location.href = 'main.html'; }
+
+    // ─────────────────────────────────────────
+    // CARGAR DATOS DINÁMICOS DESDE EL SERVIDOR
+    // ─────────────────────────────────────────
+    async function init() {
+        // 1. Intentar obtener datos reales desde /verificar
+        let nombreReal = nombreLogin;
+        let emailReal  = emailLogin;
+
+        try {
+            const res  = await fetch(`${API}/verificar`, {
+                headers: { 'Authorization': 'Bearer ' + token }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                nombreReal = data.usuario.nombre || nombreLogin;
+                emailReal  = data.usuario.email  || emailLogin;
+                // Actualizar localStorage con datos frescos
+                localStorage.setItem('nombre', nombreReal);
+                localStorage.setItem('email',  emailReal);
+            }
+        } catch (_) {
+            // Sin conexión: usar lo que hay en localStorage
+        }
+
+        // 2. Cargar perfil guardado localmente (campos extra)
+        const guardado = localStorage.getItem(STORAGE_KEY);
+        let extra = {};
+        if (guardado) {
+            try { extra = JSON.parse(guardado); } catch(_) {}
+        }
+
+        // 3. Separar nombre y apellidos
+        const partes     = nombreReal.trim().split(' ');
+        const nombre     = partes[0] || '';
+        const apellidos  = partes.slice(1).join(' ') || '';
+
+        // 4. Rellenar inputs
+        document.getElementById('inNombre').value    = extra.nombre    ?? nombre;
+        document.getElementById('inApellidos').value = extra.apellidos ?? apellidos;
+        document.getElementById('inEmail').value     = emailReal; // siempre del servidor
+        document.getElementById('inTel').value       = extra.tel      || '';
+        document.getElementById('inCiudad').value    = extra.ciudad   || 'Tumaco, Colombia';
+        document.getElementById('inPrograma').value  = extra.programa || '';
+        document.getElementById('inSemestre').value  = extra.semestre || '1';
+
+        // 5. Cargar clases reservadas para el contador
+        cargarContadorClases(nombreReal);
+
+        actualizarVista();
+    }
+
+    // ─────────────────────────────────────────
+    // CONTADOR DE CLASES DESDE LA API
+    // ─────────────────────────────────────────
+    async function cargarContadorClases(nombre) {
+        try {
+            const res      = await fetch(`${API}/api/horarios`);
+            const horarios = await res.json();
+            const misClases = horarios.filter(
+                h => h.estado === 'reservado' && h.estudiante_nombre === nombre
+            );
+            document.getElementById('statClases').textContent = misClases.length;
+        } catch(_) {
+            document.getElementById('statClases').textContent = '—';
+        }
+    }
+
+    // ─────────────────────────────────────────
+    // ACTUALIZAR VISTA LATERAL
+    // ─────────────────────────────────────────
+    function actualizarVista() {
+        const nombre    = document.getElementById('inNombre').value.trim();
+        const apellidos = document.getElementById('inApellidos').value.trim();
+        const email     = document.getElementById('inEmail').value.trim();
+        const tel       = document.getElementById('inTel').value.trim();
+        const ciudad    = document.getElementById('inCiudad').value.trim();
+        const semestre  = document.getElementById('inSemestre').value;
+
+        const nombreCompleto = `${nombre} ${apellidos}`.trim();
+        const iniciales = ((nombre[0]||'') + (apellidos[0]||'')).toUpperCase() || '?';
+
+        document.getElementById('avatarCircle').textContent  = iniciales;
+        document.getElementById('perfilNombre').textContent  = nombreCompleto || '—';
+        document.getElementById('perfilRol').textContent     = `Estudiante · Semestre ${semestre}`;
+        document.getElementById('infoEmail').textContent     = email   || '—';
+        document.getElementById('infoTel').textContent       = tel     || '—';
+        document.getElementById('infoCiudad').textContent    = ciudad  || '—';
+    }
+
+    // ─────────────────────────────────────────
+    // GUARDAR PERFIL (campos extra en localStorage)
+    // ─────────────────────────────────────────
+    function guardarPerfil() {
+        const datos = {
+            nombre   : document.getElementById('inNombre').value.trim(),
+            apellidos: document.getElementById('inApellidos').value.trim(),
+            tel      : document.getElementById('inTel').value.trim(),
+            ciudad   : document.getElementById('inCiudad').value.trim(),
+            programa : document.getElementById('inPrograma').value.trim(),
+            semestre : document.getElementById('inSemestre').value,
+        };
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(datos));
+
+        // Actualizar nombre en localStorage para que el header del layout lo use
+        localStorage.setItem('nombre', `${datos.nombre} ${datos.apellidos}`.trim());
+
+        actualizarVista();
+        toast('✅ Cambios guardados correctamente');
+    }
+
+    // ─────────────────────────────────────────
+    // MODAL LOGOUT
+    // ─────────────────────────────────────────
+    function abrirModal() {
+        const nombre = document.getElementById('inNombre').value.trim() || 'ti';
+        document.getElementById('modalMsg').textContent =
+            `¿Seguro que deseas salir de la cuenta de ${nombre}?`;
+        document.getElementById('modalLogout').classList.add('visible');
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalLogout').classList.remove('visible');
+    }
+
+    function confirmarLogout() {
+        cerrarModal();
+        toast(`¡Hasta pronto! 👋`);
+
+        // Limpiar sesión completamente
+        localStorage.removeItem('token');
+        localStorage.removeItem('nombre');
+        localStorage.removeItem('email');
+        localStorage.removeItem('tipo');
+        localStorage.removeItem('id');
+        // Nota: NO borramos eduagenda_perfil para conservar campos extra
+
+        setTimeout(() => {
+            // Navegar al login — sale de cualquier iframe que exista
+            if (window.top !== window.self) {
+                window.top.location.href = 'main.html';
+            } else {
+                window.location.href = 'main.html';
+            }
+        }, 1600);
+    }
+
+    // Cerrar modal al clic en fondo
+    document.getElementById('modalLogout').addEventListener('click', e => {
+        if (e.target === document.getElementById('modalLogout')) cerrarModal();
+    });
+
+    // ─────────────────────────────────────────
+    // TOAST
+    // ─────────────────────────────────────────
+    let toastTimer = null;
+    function toast(msg) {
+        const el = document.getElementById('toast');
+        document.getElementById('toastMsg').textContent = msg;
+        el.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => el.classList.remove('show'), 3000);
+    }
+
+    // Actualizar vista en tiempo real mientras se escribe
+    ['inNombre','inApellidos','inTel','inCiudad','inSemestre'].forEach(id => {
+        document.getElementById(id).addEventListener('input', actualizarVista);
+    });
+
+    // ─────────────────────────────────────────
+    // INICIAR
+    // ─────────────────────────────────────────
+    init();
+</script>
+</body>
+</html>

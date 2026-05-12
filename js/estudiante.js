@@ -1,22 +1,20 @@
 document.addEventListener('DOMContentLoaded', async () => {
-
     // =========================
     // 1. DATOS GLOBALES Y ESTADO
     // =========================
+    const API_URL = 'http://localhost:3000';
+    const token = localStorage.getItem('token');
     const nombreUsuario = localStorage.getItem('nombre') || 'Estudiante';
+    
+    // Si no hay token, redirigir al login (Seguridad)
+    if (!token && window.location.pathname.includes('estudiante.html')) {
+        window.location.href = 'sesion.html';
+    }
+
     const userName = document.getElementById('userName');
     if (userName) userName.innerText = nombreUsuario;
 
-    // Cargar datos de LocalStorage
-    let misClasesData = JSON.parse(localStorage.getItem('mis_clases') || '[]');
-    
-    let seleccionActual = {
-        profesor: 'Darwin Rosero',
-        materia: '',
-        fecha: '',
-        hora: '',
-        precio: 50000
-    };
+    let seleccionActual = null;
 
     // =========================
     // 2. SISTEMA DE NAVEGACIÓN
@@ -25,9 +23,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         'nav-resumen': 'sec-resumen',
         'nav-agenda': 'sec-agenda',
         'nav-clases': 'sec-clases',
-        'nav-tareas': 'sec-tareas',
-        'nav-calificaciones': 'sec-calificaciones',
-        'nav-perfil': 'sec-perfil',
     };
 
     function mostrarSeccion(navId) {
@@ -42,12 +37,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const secDestino = document.getElementById(secciones[navId]);
         if (secDestino) secDestino.style.display = 'block';
 
-        // Renders automáticos al entrar a la sección
         if (navId === 'nav-resumen') renderResumen();
+        if (navId === 'nav-agenda') cargarAgendaDesdeDB(); // Carga real de la DB
         if (navId === 'nav-clases') renderMisClases();
     }
 
-    // Configurar eventos del menú
     Object.keys(secciones).forEach(id => {
         document.getElementById(id)?.addEventListener('click', (e) => {
             e.preventDefault();
@@ -56,164 +50,121 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // =========================
-    // 3. LÓGICA DE AGENDA (SELECCIÓN)
+    // 3. LÓGICA DE CARGA (API)
     // =========================
-    document.querySelectorAll('.slot.available').forEach(slot => {
-        slot.addEventListener('click', function () {
-            document.querySelectorAll('.slot.available').forEach(s => s.classList.remove('seleccionado'));
-            this.classList.add('seleccionado');
+    async function cargarAgendaDesdeDB() {
+        try {
+            const res = await fetch(`${API_URL}/api/horarios`);
+            const horarios = await res.json();
 
-            const fila = this.closest('tr');
-            const horaStr = fila.querySelector('.hour')?.innerText.trim();
-            const col = this.parentElement.cellIndex;
-            const fecha = document.querySelector(`thead th:nth-child(${col + 1})`)?.innerText.trim();
-            const materia = this.innerText.split('\n')[0].trim();
+            // Limpiar slots existentes antes de repintar
+            document.querySelectorAll('.slot').forEach(s => s.remove());
 
-            seleccionActual = {
-                profesor: 'Darwin Rosero',
-                materia,
-                fecha,
-                hora: `${horaStr} - ${sumarHoras(horaStr, 2)}`,
-                precio: 50000
-            };
+            horarios.forEach(h => {
+                // Formato de ID esperado en el HTML: cell-2026-05-26-08:00
+                const cellId = `cell-${h.fecha}-${h.hora_inicio}`;
+                const celda = document.getElementById(cellId);
 
-            // Actualizar panel lateral
-            document.getElementById('panelVacio').style.display = 'none';
-            const panelClase = document.getElementById('panelClase');
+                if (celda) {
+                    const div = document.createElement('div');
+                    div.className = `slot ${h.estado}`; // 'disponible' o 'reservado'
+                    div.innerHTML = `<b>${h.materia}</b><br><small>${h.profesor_nombre}</small>`;
+                    
+                    if (h.estado === 'disponible') {
+                        div.addEventListener('click', () => prepararSeleccion(h, div));
+                    } else {
+                        div.style.pointerEvents = 'none';
+                        div.innerHTML += '<br><span style="font-size:10px;">[OCUPADO]</span>';
+                    }
+                    celda.appendChild(div);
+                }
+            });
+        } catch (error) {
+            console.error("Error cargando agenda:", error);
+        }
+    }
+
+    function prepararSeleccion(horario, elemento) {
+        // Visual
+        document.querySelectorAll('.slot').forEach(s => s.classList.remove('seleccionado'));
+        elemento.classList.add('seleccionado');
+
+        // Estado
+        seleccionActual = {
+            id: horario.id,
+            profesor: horario.profesor_nombre,
+            materia: horario.materia,
+            fecha: horario.fecha,
+            hora: horario.hora_inicio,
+            precio: 50000
+        };
+
+        // Panel Lateral
+        const panelVacio = document.getElementById('panelVacio');
+        const panelClase = document.getElementById('panelClase');
+        if (panelVacio) panelVacio.style.display = 'none';
+        if (panelClase) {
             panelClase.classList.add('visible');
-            
-            document.getElementById('panelMateria').innerText = materia;
-            document.getElementById('panelMateriaLabel').innerText = `Profesor de ${materia}`;
-            document.getElementById('panelFecha').innerText = fecha;
-            document.getElementById('panelHora').innerText = seleccionActual.hora;
-        });
-    });
+            document.getElementById('panelMateria').innerText = horario.materia;
+            document.getElementById('panelFecha').innerText = horario.fecha;
+            document.getElementById('panelHora').innerText = horario.hora_inicio;
+        }
+    }
 
     // =========================
-    // 4. FLUJO DE RESERVA Y PAGO
+    // 4. FLUJO DE RESERVA
     // =========================
     document.getElementById('btnReservar')?.addEventListener('click', () => {
-        if (!seleccionActual.materia) return alert('Por favor, selecciona un horario primero.');
+        if (!seleccionActual) return alert('Selecciona una clase primero.');
 
-        // 1. Guardar reserva temporal para el proceso de pago
+        // Guardamos en localStorage lo que el archivo pago.html necesitará leer
         localStorage.setItem('reserva_pendiente', JSON.stringify({
             ...seleccionActual,
-            estudiante: nombreUsuario,
-            nota: document.getElementById('notaProfesor')?.value || ''
+            estudiante: nombreUsuario
         }));
 
-        // 2. Redirigir a la página de pago
-        // Nota: Tu pago.html debe procesar esto y luego añadirlo a 'mis_clases'
         window.location.href = 'pago.html';
     });
 
     // =========================
-    // 5. RENDERIZADO DINÁMICO
+    // 5. RENDERIZADO DE MIS CLASES (PAGADAS)
     // =========================
-
-    function renderResumen() {
-        const container = document.getElementById('sec-resumen');
-        if (!container) return;
-
-        container.innerHTML = `
-            <h1>Resumen de Actividad</h1>
-            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:20px; margin-top:20px;">
-                <div class="calendar-card" style="text-align:center;">
-                    <h3 style="color:#64748b;">Clases Activas</h3>
-                    <p style="font-size:32px; font-weight:bold; color:#0061ff; margin:10px 0;">${misClasesData.length}</p>
-                    <small>Próximas sesiones programadas</small>
-                </div>
-                <div class="calendar-card" style="text-align:center;">
-                    <h3 style="color:#64748b;">Tareas</h3>
-                    <p style="font-size:32px; font-weight:bold; color:#16a34a; margin:10px 0;">2</p>
-                    <small>Pendientes para esta semana</small>
-                </div>
-            </div>
-        `;
-    }
-
-    function renderMisClases() {
+    async function renderMisClases() {
         const container = document.getElementById('sec-clases');
         if (!container) return;
 
-        if (misClasesData.length === 0) {
-            container.innerHTML = `<h1>Mis Clases</h1><div class="calendar-card" style="text-align:center; padding:50px;">
-                <i class="fas fa-calendar-alt" style="font-size:40px; color:#cbd5e1; margin-bottom:15px;"></i>
-                <p>No tienes clases pagadas todavía.</p>
-            </div>`;
-            return;
-        }
+        try {
+            const res = await fetch(`${API_URL}/api/horarios`);
+            const todos = await res.json();
+            // Filtramos solo las que pertenecen a este estudiante
+            const misClases = todos.filter(h => h.estudiante_nombre === nombreUsuario);
 
-        container.innerHTML = `<h1 style="margin-bottom:20px;">Mis Clases Pagadas</h1>
-            <div style="display:flex; flex-direction:column; gap:15px;">
-                ${misClasesData.map((clase, index) => `
-                    <div class="calendar-card" style="display:flex; justify-content:space-between; align-items:center; border-left:5px solid #0061ff;">
-                        <div>
-                            <h3 style="margin:0;">${clase.materia}</h3>
-                            <p style="margin:5px 0; color:#64748b; font-size:14px;">
-                                <i class="far fa-calendar"></i> ${clase.fecha} &nbsp; 
-                                <i class="far fa-clock"></i> ${clase.hora}<br>
-                                <i class="fas fa-user-tie"></i> Prof. ${clase.profesor}
-                            </p>
-                        </div>
-                        <button class="btn-cancelar" data-index="${index}" style="background:#fee2e2; color:#ef4444; border:none; padding:10px 15px; border-radius:8px; cursor:pointer; font-weight:bold;">
-                            Cancelar
-                        </button>
-                    </div>
-                `).join('')}
-            </div>`;
-
-        // Eventos para botones de cancelar
-        container.querySelectorAll('.btn-cancelar').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const idx = btn.dataset.index;
-                if (confirm('¿Estás seguro de que deseas cancelar esta clase? El cupo volverá a estar disponible.')) {
-                    const eliminada = misClasesData.splice(idx, 1)[0];
-                    localStorage.setItem('mis_clases', JSON.stringify(misClasesData));
-                    
-                    // Restaurar en la tabla visual si sigue abierta
-                    restaurarHorario(eliminada);
-                    
-                    renderMisClases();
-                    renderResumen();
-                }
-            });
-        });
-    }
-
-    // =========================
-    // 6. UTILIDADES
-    // =========================
-
-    function restaurarHorario(reserva) {
-        document.querySelectorAll('.slot').forEach(slot => {
-            const fila = slot.closest('tr');
-            const horaFila = fila?.querySelector('.hour')?.innerText.trim();
-            const col = slot.parentElement.cellIndex;
-            const fechaCol = document.querySelector(`thead th:nth-child(${col + 1})`)?.innerText.trim();
-            const materiaSlot = slot.innerText.split('\n')[0].trim();
-
-            if (fechaCol === reserva.fecha && materiaSlot === reserva.materia && reserva.hora.startsWith(horaFila)) {
-                slot.classList.remove('reserved');
-                slot.classList.add('available');
-                slot.innerHTML = reserva.materia;
-                slot.style.pointerEvents = 'auto';
+            if (misClases.length === 0) {
+                container.innerHTML = `<h1>Mis Clases</h1><div class="calendar-card" style="text-align:center; padding:50px;">
+                    <p>Aún no tienes clases reservadas.</p>
+                </div>`;
+                return;
             }
-        });
+
+            container.innerHTML = `<h1>Mis Clases Pagadas</h1>
+                <div style="display:flex; flex-direction:column; gap:15px; margin-top:20px;">
+                    ${misClases.map(clase => `
+                        <div class="calendar-card" style="border-left:5px solid #16a34a; display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <h3 style="margin:0;">${clase.materia}</h3>
+                                <p style="color:#64748b; font-size:14px; margin:5px 0;">
+                                    ${clase.fecha} | ${clase.hora_inicio} | Prof. ${clase.profesor_nombre}
+                                </p>
+                            </div>
+                            <span style="color:#16a34a; font-weight:bold;">PAGADO</span>
+                        </div>
+                    `).join('')}
+                </div>`;
+        } catch (e) {
+            container.innerHTML = "<p>Error al cargar tus clases.</p>";
+        }
     }
 
-    function sumarHoras(horaStr, n) {
-        let [tiempo, periodo] = horaStr.split(' ');
-        let [h, m] = tiempo.split(':').map(Number);
-        if (periodo === 'PM' && h !== 12) h += 12;
-        if (periodo === 'AM' && h === 12) h = 0;
-        h += n;
-        const nuevoPeriodo = h >= 12 ? 'PM' : 'AM';
-        h = h % 12 || 12;
-        return `${h}:${m.toString().padStart(2, '0')} ${nuevoPeriodo}`;
-    }
-
-    // Inicio por defecto
+    // Inicio
     mostrarSeccion('nav-agenda');
-
 });

@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Clases</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0061ff;
+            --bg-gray: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-main: #1e293b;
+            --text-muted: #64748b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-gray);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 30px;
+        }
+
+        /* TÍTULO */
+        .page-header {
+            margin-bottom: 25px;
+        }
+        .page-header h1 { font-size: 24px; margin-bottom: 4px; }
+        .page-header p  { color: var(--text-muted); font-size: 14px; }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            background: white;
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            width: fit-content;
+            margin-bottom: 25px;
+        }
+
+        .tab-btn {
+            padding: 8px 20px;
+            border: none;
+            background: none;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.2s;
+            font-family: inherit;
+        }
+        .tab-btn.active {
+            background: var(--primary-blue);
+            color: white;
+        }
+
+        /* GRID */
+        .clases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 18px;
+        }
+
+        /* TARJETA */
+        .card {
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.07);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+
+        .icon-box {
+            width: 44px; height: 44px;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 20px;
+        }
+
+        .status-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .status-confirmada { background: #dcfce7; color: #16a34a; }
+        .status-completada { background: #f1f5f9; color: #64748b; }
+        .status-cancelada  { background: #fee2e2; color: #dc2626; }
+
+        .materia-title { font-size: 16px; font-weight: 700; margin-bottom: 3px; }
+        .profesor-name { color: var(--text-muted); font-size: 13px; margin-bottom: 14px; }
+
+        .meta-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            margin-bottom: 18px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-size: 13px;
+            color: #475569;
+        }
+        .meta-item i { color: var(--primary-blue); width: 15px; flex-shrink: 0; }
+
+        .card-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            transition: 0.2s;
+            font-family: inherit;
+            background: white;
+            color: var(--text-main);
+        }
+        .btn-primary { background: var(--primary-blue); color: white; border: none; }
+        .btn-primary:hover { background: #0052d4; }
+        .btn-danger { color: #dc2626; border-color: #fecaca; }
+        .btn-danger:hover { background: #fee2e2; }
+
+        /* VACÍO */
+        .empty-state {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-muted);
+        }
+        .empty-state i { font-size: 40px; color: #cbd5e1; display: block; margin-bottom: 14px; }
+        .empty-state h3 { font-size: 16px; margin-bottom: 6px; color: #94a3b8; }
+
+        /* LOADING */
+        .loading {
+            grid-column: 1/-1;
+            text-align: center;
+            padding: 50px;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+        .loading i { font-size: 28px; display: block; margin-bottom: 10px;
+            animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.45);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.visible { display: flex; }
+        .modal-box {
+            background: white;
+            padding: 32px;
+            border-radius: 20px;
+            width: 400px;
+            max-width: 95vw;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.2);
+            animation: slideUp 0.25s ease;
+        }
+        @keyframes slideUp {
+            from { opacity:0; transform: translateY(20px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+        .modal-box h3 { margin-bottom: 8px; font-size: 18px; }
+        .modal-box p  { color: var(--text-muted); font-size: 14px; margin-bottom: 18px; }
+        .modal-detalle {
+            text-align: left;
+            background: #f8fafc;
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #475569;
+            line-height: 1.8;
+            border: 1px solid var(--border-color);
+        }
+        .modal-btns { display: flex; gap: 10px; }
+
+        /* SPINNER en botón */
+        .spinner {
+            display: inline-block; width: 15px; height: 15px;
+            border: 2px solid rgba(255,255,255,0.4);
+            border-top-color: white; border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="page-header">
+        <h1>Mis Clases</h1>
+        <p>Gestiona tus próximas clases y accede a tus sesiones.</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="cambiarTab('todas', this)">Todas</button>
+        <button class="tab-btn" onclick="cambiarTab('proximas', this)">Próximas</button>
+        <button class="tab-btn" onclick="cambiarTab('completadas', this)">Completadas</button>
+    </div>
+
+    <div class="clases-grid" id="clasesGrid">
+        <div class="loading"><i class="fas fa-circle-notch"></i>Cargando clases...</div>
+    </div>
+
+    <!-- MODAL CANCELAR -->
+    <div class="modal-overlay" id="modalCancelar">
+        <div class="modal-box">
+            <h3>¿Cancelar clase?</h3>
+            <p>Esta acción liberará el cupo. No podrás deshacerlo.</p>
+            <div class="modal-detalle" id="modalDetalle"></div>
+            <div class="modal-btns">
+                <button class="btn" style="flex:1" onclick="cerrarModal()">
+                    <i class="fas fa-arrow-left"></i> Volver
+                </button>
+                <button class="btn btn-primary" id="btnConfirmarCancelar"
+                        style="flex:1; background:#dc2626; border-color:#dc2626;"
+                        onclick="confirmarCancelacion()">
+                    <i class="fas fa-times-circle"></i> Confirmar
+                </button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    const API           = 'http://localhost:3000';
+    const token         = localStorage.getItem('token');
+    const nombreUsuario = localStorage.getItem('nombre') || 'Estudiante';
+
+    // Horario a cancelar (datos completos)
+    let claseParaCancelar = null;
+    // Tab activa
+    let tabActual = 'todas';
+    // Todos los horarios cargados
+    let todasLasClases = [];
+
+    // ────────────────────────────────────────
+    // CARGAR CLASES DEL ESTUDIANTE
+    // ────────────────────────────────────────
+    async function cargarClases() {
+        const grid = document.getElementById('clasesGrid');
+        grid.innerHTML = `<div class="loading"><i class="fas fa-circle-notch"></i>Cargando clases...</div>`;
+
+        try {
+            const res      = await fetch(`${API}/api/horarios`);
+            const horarios = await res.json();
+
+            // Solo los reservados por este estudiante
+            todasLasClases = horarios.filter(
+                h => h.estado === 'reservado' &&
+                     h.estudiante_nombre === nombreUsuario
+            );
+
+            renderizarClases();
+        } catch (err) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i>
+                    <h3>No se pudo conectar con el servidor</h3>
+                    <p style="font-size:13px;">Asegúrate de que el servidor esté corriendo.</p>
+                </div>`;
+        }
+    }
+
+    // ────────────────────────────────────────
+    // RENDERIZAR SEGÚN TAB
+    // ────────────────────────────────────────
+    function renderizarClases() {
+        const grid = document.getElementById('clasesGrid');
+        const hoy  = new Date();
+        hoy.setHours(0,0,0,0);
+
+        let filtradas = todasLasClases;
+
+        if (tabActual === 'proximas') {
+            filtradas = todasLasClases.filter(h => {
+                const f = new Date(h.fecha + 'T12:00:00');
+                return f >= hoy;
+            });
+        } else if (tabActual === 'completadas') {
+            filtradas = todasLasClases.filter(h => {
+                const f = new Date(h.fecha + 'T12:00:00');
+                return f < hoy;
+            });
+        }
+
+        if (filtradas.length === 0) {
+            grid.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <h3>No tienes clases en esta sección</h3>
+                    <p>Reserva una clase desde la Agenda de Profesores.</p>
+                </div>`;
+            return;
+        }
+
+        grid.innerHTML = filtradas.map(h => crearTarjeta(h)).join('');
+    }
+
+    // ────────────────────────────────────────
+    // CONSTRUIR TARJETA HTML
+    // ────────────────────────────────────────
+    function crearTarjeta(h) {
+        const hoy     = new Date(); hoy.setHours(0,0,0,0);
+        const fechaH  = new Date(h.fecha + 'T12:00:00');
+        const pasada  = fechaH < hoy;
+
+        const statusClass = pasada ? 'status-completada' : 'status-confirmada';
+        const statusText  = pasada ? 'Completada'        : 'Confirmada';
+
+        const colores = {
+            'Matemáticas': '#fef9c3',
+            'Física'     : '#dbeafe',
+            'Química'    : '#fce7f3',
+            'Historia'   : '#dcfce7',
+            'Inglés'     : '#ede9fe',
+        };
+        const emojis = {
+            'Matemáticas': '📐',
+            'Física'     : '⚡',
+            'Química'    : '🧪',
+            'Historia'   : '📚',
+            'Inglés'     : '🌍',
+        };
+        const bg    = colores[h.materia] || '#f1f5f9';
+        const emoji = emojis[h.materia]  || '📖';
+
+        const fechaTexto = formatearFechaLarga(h.fecha);
+        const horaTexto  = formatearHoraAMPM(h.hora_inicio);
+
+        // Botones: si es futura → unirse + cancelar; si es pasada → solo "Ver resumen"
+        const acciones = pasada
+            ? `<button class="btn btn-primary">
+                   <i class="fas fa-file-alt"></i> Ver resumen
+               </button>`
+            : `<button class="btn btn-primary" onclick="unirse('${h.id}')">
+                   <i class="fas fa-video"></i> Unirse
+               </button>
+               <button class="btn btn-danger" onclick="abrirModal(${JSON.stringify(h).replace(/"/g,'&quot;')})">
+                   <i class="fas fa-times"></i> Cancelar
+               </button>`;
+
+        return `
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-box" style="background:${bg}; font-size:22px;">${emoji}</div>
+                <span class="status-tag ${statusClass}">${statusText}</span>
+            </div>
+            <div class="materia-title">${h.materia}</div>
+            <div class="profesor-name">Prof. ${h.profesor_nombre}</div>
+            <div class="meta-list">
+                <div class="meta-item"><i class="far fa-calendar"></i>${fechaTexto}</div>
+                <div class="meta-item"><i class="far fa-clock"></i>${horaTexto}</div>
+                <div class="meta-item"><i class="fas fa-video"></i>Google Meet</div>
+                <div class="meta-item"><i class="fas fa-check-circle" style="color:#16a34a;"></i>Pagado</div>
+            </div>
+            <div class="card-actions">${acciones}</div>
+        </div>`;
+    }
+
+    // ────────────────────────────────────────
+    // CAMBIAR TAB
+    // ────────────────────────────────────────
+    function cambiarTab(tab, btn) {
+        tabActual = tab;
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderizarClases();
+    }
+
+    // ────────────────────────────────────────
+    // MODAL CANCELAR
+    // ────────────────────────────────────────
+    function abrirModal(clase) {
+        claseParaCancelar = clase;
+
+        document.getElementById('modalDetalle').innerHTML =
+            `📚 <strong>Materia:</strong> ${clase.materia}<br>
+             📅 <strong>Fecha:</strong> ${formatearFechaLarga(clase.fecha)}<br>
+             🕐 <strong>Hora:</strong> ${formatearHoraAMPM(clase.hora_inicio)}<br>
+             👨‍🏫 <strong>Profesor:</strong> ${clase.profesor_nombre}`;
+
+        const btn = document.getElementById('btnConfirmarCancelar');
+        btn.disabled  = false;
+        btn.innerHTML = '<i class="fas fa-times-circle"></i> Confirmar';
+
+        document.getElementById('modalCancelar').classList.add('visible');
+    }
+
+    function cerrarModal() {
+        document.getElementById('modalCancelar').classList.remove('visible');
+        claseParaCancelar = null;
+    }
+
+    // ────────────────────────────────────────
+    // CONFIRMAR CANCELACIÓN → /api/cancelar-clase
+    // ────────────────────────────────────────
+    async function confirmarCancelacion() {
+        if (!claseParaCancelar) return;
+
+        const btn = document.getElementById('btnConfirmarCancelar');
+        btn.disabled  = true;
+        btn.innerHTML = '<div class="spinner"></div> Cancelando...';
+
+        try {
+            const res = await fetch(`${API}/api/cancelar-clase`, {
+                method : 'POST',
+                headers: {
+                    'Content-Type' : 'application/json',
+                    'Authorization': 'Bearer ' + token
+                },
+                body: JSON.stringify({
+                    id      : claseParaCancelar.id,
+                    profesor: claseParaCancelar.profesor_nombre,
+                    fecha   : claseParaCancelar.fecha,
+                    hora    : claseParaCancelar.hora_inicio
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                alert('Error: ' + (data.error || 'No se pudo cancelar'));
+                btn.disabled  = false;
+                btn.innerHTML = '<i class="fas fa-times-circle"></i> Confirmar';
+                return;
+            }
+
+            cerrarModal();
+
+            // Quitar de la lista local y re-renderizar
+            todasLasClases = todasLasClases.filter(
+                c => c.id !== claseParaCancelar.id
+            );
+            claseParaCancelar = null;
+            renderizarClases();
+
+        } catch (err) {
+            alert('Error de conexión con el servidor.');
+            btn.disabled  = false;
+            btn.innerHTML = '<i class="fas fa-times-circle"></i> Confirmar';
+        }
+    }
+
+    // ────────────────────────────────────────
+    // UNIRSE A CLASE (placeholder)
+    // ────────────────────────────────────────
+    function unirse(id) {
+        alert('Enlace de Google Meet disponible 15 min antes de la sesión.');
+    }
+
+    // ────────────────────────────────────────
+    // CERRAR MODAL AL HACER CLIC EN FONDO
+    // ────────────────────────────────────────
+    document.getElementById('modalCancelar').addEventListener('click', e => {
+        if (e.target === document.getElementById('modalCancelar')) cerrarModal();
+    });
+
+    // ────────────────────────────────────────
+    // UTILIDADES DE FORMATO
+    // ────────────────────────────────────────
+    function formatearHoraAMPM(hora) {
+        if (!hora) return '—';
+        const [h, m] = hora.split(':');
+        const hNum   = parseInt(h, 10);
+        const sufijo = hNum >= 12 ? 'PM' : 'AM';
+        const h12    = hNum > 12 ? hNum - 12 : hNum === 0 ? 12 : hNum;
+        return `${h12}:${m || '00'} ${sufijo}`;
+    }
+
+    function formatearFechaLarga(fechaISO) {
+        if (!fechaISO) return '—';
+        const d     = new Date(fechaISO + 'T12:00:00');
+        const dias  = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+        const meses = ['enero','febrero','marzo','abril','mayo','junio',
+                       'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+        return `${dias[d.getDay()]} ${d.getDate()} de ${meses[d.getMonth()]}`;
+    }
+
+    // ────────────────────────────────────────
+    // INICIAR
+    // ────────────────────────────────────────
+    cargarClases();
+</script>
+</body>
+</html>

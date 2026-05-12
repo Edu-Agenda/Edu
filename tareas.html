@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Tareas - EduAgenda</title>
+    <link rel="stylesheet" href="style.css"> 
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --success: #22c55e;
+            --danger: #ef4444;
+            --bg: #f8fafc;
+        }
+
+        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
+        
+        .container { max-width: 800px; margin: 0 auto; }
+
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 30px; 
+        }
+
+        .tarea-card {
+            background: white;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.2s;
+            border-left: 6px solid #e2e8f0;
+        }
+
+        .tarea-card:hover { transform: translateY(-2px); }
+
+        .completada { 
+            opacity: 0.7; 
+            background: #f1f5f9;
+            border-left-color: var(--success) !important;
+        }
+        
+        .completada h3 { text-decoration: line-through; color: #64748b; }
+
+        .info h3 { margin: 0 0 5px 0; color: #1e293b; }
+        .info p { margin: 0; color: #64748b; font-size: 0.9rem; }
+
+        .btn-entregar {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-entregar:hover { background: #16a34a; }
+
+        .status-badge {
+            color: var(--success);
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-volver {
+            background: #64748b;
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div>
+                <h1 id="materia-titulo">Tareas de la Materia</h1>
+                <p id="materia-subtitulo">Cargando detalles...</p>
+            </div>
+            <a href="estudiante.html" class="btn-volver">← Volver</a>
+        </header>
+
+        <main id="contenedor-tareas">
+            </main>
+    </div>
+
+    <script>
+        // 1. Obtener parámetros y validar sesión
+        const urlParams = new URLSearchParams(window.location.search);
+        const materiaId = urlParams.get('materiaId');
+        const token = localStorage.getItem('token');
+
+        // Redirección si faltan datos esenciales
+        if (!token) {
+            window.location.href = 'login.html';
+        }
+
+        if (!materiaId) {
+            alert("No se ha seleccionado ninguna materia.");
+            window.location.href = 'estudiante.html';
+        }
+
+        async function cargarTareas() {
+            const contenedor = document.getElementById('contenedor-tareas');
+            
+            try {
+                const res = await fetch(`http://localhost:3000/api/tareas/${materiaId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!res.ok) throw new Error("Error al obtener datos");
+
+                const tareas = await res.json();
+                contenedor.innerHTML = '';
+
+                if (tareas.length === 0) {
+                    contenedor.innerHTML = `
+                        <div style="text-align:center; padding: 50px; color: #64748b;">
+                            <p style="font-size: 1.2rem;">No hay tareas asignadas para esta materia aún. ✨</p>
+                        </div>`;
+                    return;
+                }
+
+                // Actualizar encabezado con la primera tarea si existe
+                document.getElementById('materia-subtitulo').innerText = `Tienes ${tareas.length} tareas en total.`;
+
+                tareas.forEach(tarea => {
+                    const div = document.createElement('div');
+                    const esCompletada = tarea.estado === 'completada';
+                    
+                    div.className = `tarea-card ${esCompletada ? 'completada' : ''}`;
+                    div.innerHTML = `
+                        <div class="info">
+                            <h3>${tarea.descripcion}</h3>
+                            <p>📅 Entrega: <strong>${tarea.fecha_entrega}</strong></p>
+                        </div>
+                        <div class="acciones">
+                            ${!esCompletada 
+                                ? `<button class="btn-entregar" onclick="marcarCompletada(${tarea.id})">Marcar como Realizada</button>`
+                                : `<span class="status-badge">✅ Finalizada</span>`
+                            }
+                        </div>
+                    `;
+                    contenedor.appendChild(div);
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                contenedor.innerHTML = '<p style="color:red;">Error al conectar con el servidor.</p>';
+            }
+        }
+
+        async function marcarCompletada(tareaId) {
+            if (!confirm("¿Confirmas que has terminado esta tarea?")) return;
+
+            try {
+                const res = await fetch(`http://localhost:3000/api/tareas/${tareaId}/completar`, {
+                    method: 'PATCH',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (res.ok) {
+                    cargarTareas(); // Recarga instantánea
+                } else {
+                    alert("No se pudo actualizar el estado de la tarea.");
+                }
+            } catch (error) {
+                alert("Error de conexión.");
+            }
+        }
+
+        // Ejecutar al cargar
+        cargarTareas();
+    </script>
+</body>
+</html>

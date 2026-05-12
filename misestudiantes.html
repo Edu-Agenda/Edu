@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mis Estudiantes - EduAgenda</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root{
+  --blue:#0061ff;
+  --bg:#f4f7fb;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#1f2937;
+}
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:var(--bg);
+  color:var(--text);
+}
+
+/* HEADER */
+.header{
+  background:white;
+  padding:20px 30px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.header h1{
+  margin:0;
+  font-size:22px;
+}
+
+.header small{
+  color:#6b7280;
+}
+
+/* STATS */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:15px;
+  padding:20px 30px;
+}
+
+.card-stat{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:18px;
+}
+
+.card-stat h2{
+  margin:0;
+  font-size:26px;
+  color:var(--blue);
+}
+
+.card-stat span{
+  font-size:13px;
+  color:#6b7280;
+}
+
+/* GRID */
+.container{
+  padding:20px 30px;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:18px;
+}
+
+/* CARD */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  transition:.2s;
+}
+
+.card:hover{
+  transform:translateY(-3px);
+}
+
+.card-top{
+  background:linear-gradient(135deg,#0061ff,#003db8);
+  color:white;
+  padding:18px;
+}
+
+.avatar{
+  width:45px;
+  height:45px;
+  border-radius:50%;
+  background:rgba(255,255,255,.25);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:bold;
+  margin-bottom:10px;
+}
+
+.card-top h3{
+  margin:0;
+}
+
+.card-body{
+  padding:15px;
+}
+
+.row{
+  display:flex;
+  gap:10px;
+  font-size:13px;
+  padding:8px 0;
+  border-bottom:1px solid #f1f5f9;
+}
+
+.row i{
+  color:var(--blue);
+  width:18px;
+}
+
+.badge{
+  margin-top:10px;
+  background:#dcfce7;
+  color:#166534;
+  padding:8px;
+  text-align:center;
+  border-radius:8px;
+  font-size:12px;
+  font-weight:bold;
+}
+
+/* EMPTY */
+.empty{
+  text-align:center;
+  padding:60px;
+  color:#6b7280;
+}
+
+.empty i{
+  font-size:50px;
+  margin-bottom:10px;
+}
+
+/* ERROR */
+.error{
+  text-align:center;
+  padding:60px;
+  color:#b91c1c;
+}
+
+.spinner{
+  animation:spin 1s linear infinite;
+}
+
+@keyframes spin{
+  to{transform:rotate(360deg);}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="header">
+  <div>
+    <h1>Mis Estudiantes</h1>
+    <small>Panel del profesor - reservas activas</small>
+  </div>
+
+  <i class="fas fa-chalkboard-teacher" style="font-size:24px;color:#0061ff"></i>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+
+  <div class="card-stat">
+    <h2 id="total">0</h2>
+    <span>Total reservas</span>
+  </div>
+
+  <div class="card-stat">
+    <h2 id="materias">0</h2>
+    <span>Materias activas</span>
+  </div>
+
+  <div class="card-stat">
+    <h2 id="hoy">0</h2>
+    <span>Clases hoy</span>
+  </div>
+
+</div>
+
+<!-- CONTENT -->
+<div class="container" id="contenedor">
+
+  <div class="empty">
+    <i class="fas fa-spinner spinner"></i>
+    <p>Cargando estudiantes...</p>
+  </div>
+
+</div>
+
+<script>
+
+const API = "http://localhost:3000";
+const token = localStorage.getItem("token");
+
+if(!token){
+  document.getElementById("contenedor").innerHTML = `
+    <div class="error">
+      <i class="fas fa-lock"></i>
+      <h3>No hay sesión activa</h3>
+    </div>
+  `;
+}
+
+/* =========================
+   CARGAR ESTUDIANTES
+========================= */
+
+async function cargar(){
+
+  const cont = document.getElementById("contenedor");
+
+  try{
+
+    const res = await fetch(API + "/api/mis-estudiantes", {
+      headers:{
+        Authorization:"Bearer " + token
+      }
+    });
+
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error(data.error || "Error servidor");
+    }
+
+    if(!data.length){
+      cont.innerHTML = `
+        <div class="empty">
+          <i class="fas fa-user-graduate"></i>
+          <h3>No tienes estudiantes aún</h3>
+          <p>Cuando un estudiante reserve clases aparecerá aquí</p>
+        </div>
+      `;
+      return;
+    }
+
+    // stats
+    document.getElementById("total").innerText = data.length;
+
+    const materias = [...new Set(data.map(e => e.materia))];
+    document.getElementById("materias").innerText = materias.length;
+
+    const hoy = new Date().toISOString().split("T")[0];
+    document.getElementById("hoy").innerText =
+      data.filter(e => e.fecha === hoy).length;
+
+    // cards
+    let html = `<div class="grid">`;
+
+    data.forEach(e => {
+
+      const ini = e.estudiante_nombre
+        .split(" ")
+        .map(x => x[0])
+        .slice(0,2)
+        .join("")
+        .toUpperCase();
+
+      html += `
+        <div class="card">
+
+          <div class="card-top">
+            <div class="avatar">${ini}</div>
+            <h3>${e.estudiante_nombre}</h3>
+            <small>${e.materia}</small>
+          </div>
+
+          <div class="card-body">
+
+            <div class="row">
+              <i class="fas fa-calendar"></i>
+              <span>${e.fecha}</span>
+            </div>
+
+            <div class="row">
+              <i class="fas fa-clock"></i>
+              <span>${e.hora_inicio}</span>
+            </div>
+
+            <div class="row">
+              <i class="fas fa-envelope"></i>
+              <span>${e.email || "Sin correo"}</span>
+            </div>
+
+            <div class="badge">
+              CLASE RESERVADA
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+    });
+
+    html += `</div>`;
+
+    cont.innerHTML = html;
+
+  }catch(err){
+
+    document.getElementById("contenedor").innerHTML = `
+      <div class="error">
+        <i class="fas fa-triangle-exclamation"></i>
+        <h3>Error cargando datos</h3>
+        <p>${err.message}</p>
+      </div>
+    `;
+
+  }
+
+}
+
+cargar();
+
+</script>
+
+</body>
+</html>
