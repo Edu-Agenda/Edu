@@ -1,189 +1,1015 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mis Tareas - EduAgenda</title>
-    <link rel="stylesheet" href="style.css"> 
-    <style>
-        :root {
-            --primary: #4f46e5;
-            --success: #22c55e;
-            --danger: #ef4444;
-            --bg: #f8fafc;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduAgenda — Mis Tareas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F3EE;
+    --surface: #FDFCF9;
+    --border: #E4E0D8;
+    --text: #1C1A17;
+    --muted: #7A7570;
+    --accent: #2B5CE6;
+    --accent-light: #EAF0FF;
+    --danger: #C0392B;
+    --danger-light: #FDF0EE;
+    --success: #1A7F4B;
+    --success-light: #EAF6EF;
+    --warn: #B45309;
+    --warn-light: #FEF3C7;
+  }
 
-        body { font-family: 'Inter', sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        
-        .container { max-width: 800px; margin: 0 auto; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 30px; 
-        }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
 
-        .tarea-card {
-            background: white;
-            padding: 20px;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: transform 0.2s;
-            border-left: 6px solid #e2e8f0;
-        }
+  /* NAV */
+  nav {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 0 5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 62px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
 
-        .tarea-card:hover { transform: translateY(-2px); }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.3rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+  }
 
-        .completada { 
-            opacity: 0.7; 
-            background: #f1f5f9;
-            border-left-color: var(--success) !important;
-        }
-        
-        .completada h3 { text-decoration: line-through; color: #64748b; }
+  .nav-links { display: flex; gap: 2px; }
 
-        .info h3 { margin: 0 0 5px 0; color: #1e293b; }
-        .info p { margin: 0; color: #64748b; font-size: 0.9rem; }
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    padding: 6px 14px;
+    border-radius: 8px;
+    transition: all 0.15s;
+  }
 
-        .btn-entregar {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
+  .nav-links a:hover { background: var(--bg); color: var(--text); }
+  .nav-links a.active { background: var(--accent-light); color: var(--accent); }
 
-        .btn-entregar:hover { background: #16a34a; }
+  /* LAYOUT */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
 
-        .status-badge {
-            color: var(--success);
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 32px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
 
-        .btn-volver {
-            background: #64748b;
-            color: white;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-        }
-    </style>
+  .page-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2rem;
+    letter-spacing: -0.03em;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .page-sub { font-size: 0.875rem; color: var(--muted); margin-top: 6px; }
+
+  /* FILTROS */
+  .filters {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .filter-btn {
+    padding: 7px 16px;
+    border-radius: 99px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .filter-count {
+    background: rgba(255,255,255,0.3);
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 99px;
+  }
+
+  .filter-btn:not(.active) .filter-count {
+    background: var(--bg);
+    color: var(--muted);
+  }
+
+  /* STATS */
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 20px;
+  }
+
+  .stat-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 8px;
+  }
+
+  .stat-val {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--text);
+    line-height: 1;
+  }
+
+  /* GRUPO POR MATERIA */
+  .materia-group {
+    margin-bottom: 28px;
+  }
+
+  .materia-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .materia-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .materia-prof {
+    font-size: 0.72rem;
+    color: var(--muted);
+    padding: 2px 8px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+
+  .materia-sep {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* TARJETA TAREA */
+  .task-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-bottom: 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .task-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--border);
+    transition: background 0.2s;
+  }
+
+  .task-card.pendiente::before { background: var(--warn); }
+  .task-card.completada::before { background: var(--success); }
+  .task-card.vencida::before { background: var(--danger); }
+
+  .task-card:hover {
+    border-color: #D0CABC;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+
+  .task-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .task-desc {
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .task-desc.done {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--border);
+  }
+
+  .task-badges {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 11px;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .badge-pendiente { background: var(--warn-light); color: var(--warn); }
+  .badge-completada { background: var(--success-light); color: var(--success); }
+  .badge-vencida { background: var(--danger-light); color: var(--danger); }
+  .badge-calificada { background: var(--accent-light); color: var(--accent); }
+
+  .date-badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .date-badge.urgente { color: var(--danger); }
+
+  /* ENTREGA EXISTENTE */
+  .entrega-previa {
+    background: var(--success-light);
+    border: 1px solid #A7E6C5;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-top: 10px;
+    font-size: 0.825rem;
+    color: var(--success);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  /* CALIFICACION */
+  .calificacion-box {
+    background: var(--accent-light);
+    border: 1px solid #C0D2FF;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .cal-nota {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .cal-label { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+  .cal-comentario {
+    font-size: 0.825rem;
+    color: var(--text);
+    font-style: italic;
+    flex: 1;
+  }
+
+  /* ACCIONES */
+  .task-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+    flex-wrap: wrap;
+  }
+
+  .btn-entregar {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.825rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: background 0.15s, transform 0.1s;
+  }
+
+  .btn-entregar:hover { background: #2050cc; }
+  .btn-entregar:active { transform: scale(0.98); }
+
+  .btn-completar {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.825rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.15s;
+  }
+
+  .btn-completar:hover { background: var(--success-light); color: var(--success); border-color: #A7E6C5; }
+
+  .btn-reabrir {
+    padding: 8px 18px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: none;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-reabrir:hover { background: var(--bg); color: var(--text); }
+
+  /* EMPTY */
+  .empty-state {
+    text-align: center;
+    padding: 64px 20px;
+    color: var(--muted);
+  }
+
+  .empty-state svg { width: 56px; height: 56px; opacity: 0.25; margin-bottom: 18px; }
+  .empty-state h3 { font-size: 1.1rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .empty-state p { font-size: 0.875rem; }
+
+  /* MODAL ENTREGA */
+  .modal-bg {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(28, 26, 23, 0.45);
+    backdrop-filter: blur(4px);
+    z-index: 500;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-bg.open { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 480px;
+    padding: 30px;
+    position: relative;
+    animation: pop 0.2s ease;
+  }
+
+  @keyframes pop {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: background 0.15s;
+  }
+
+  .modal-close:hover { background: var(--bg); }
+
+  .modal-tag {
+    display: inline-block;
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border-radius: 6px;
+    margin-bottom: 12px;
+  }
+
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.35rem;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+
+  .modal-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 22px; line-height: 1.5; }
+
+  .field { margin-bottom: 18px; }
+
+  .field label {
+    display: block;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 7px;
+  }
+
+  .field textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    resize: vertical;
+    min-height: 120px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .field textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(43,92,230,0.1);
+    background: var(--surface);
+  }
+
+  .char-count {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 22px;
+  }
+
+  .btn-cancel {
+    flex: 0 0 auto;
+    padding: 11px 20px;
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    background: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  .btn-cancel:hover { background: var(--bg); color: var(--text); }
+
+  .btn-submit {
+    flex: 1;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 11px;
+    background: var(--accent);
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+
+  .btn-submit:hover { background: #2050cc; }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  /* TOAST */
+  #toast {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.25s ease;
+    pointer-events: none;
+    max-width: 340px;
+  }
+
+  #toast.show { transform: translateY(0); opacity: 1; }
+  #toast.ok { background: var(--success-light); color: var(--success); border: 1px solid #A7E6C5; }
+  #toast.err { background: var(--danger-light); color: var(--danger); border: 1px solid #F5C6C2; }
+
+  @media (max-width: 640px) {
+    .page-header { flex-direction: column; align-items: flex-start; }
+    .task-top { flex-direction: column; gap: 10px; }
+    .task-badges { flex-direction: row; align-items: center; }
+    .nav-links { display: none; }
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div>
-                <h1 id="materia-titulo">Tareas de la Materia</h1>
-                <p id="materia-subtitulo">Cargando detalles...</p>
-            </div>
-            <a href="estudiante.html" class="btn-volver">← Volver</a>
-        </header>
 
-        <main id="contenedor-tareas">
-            </main>
+<nav>
+  <div class="logo">EduAgenda</div>
+  <div class="nav-links">
+    <a href="estudiante.html">Inicio</a>
+    <a href="reservar.html">Reservar</a>
+    <a href="mis-materias.html">Mis Materias</a>
+    <a href="#" class="active">Tareas</a>
+  </div>
+</nav>
+
+<div class="page">
+
+  <div class="page-header">
+    <div>
+      <h1 class="page-title">Mis Tareas</h1>
+      <p class="page-sub">Revisa las actividades asignadas por tus profesores y entrega a tiempo.</p>
+    </div>
+    <div class="filters">
+      <button class="filter-btn active" data-filtro="todas" onclick="filtrar(this)">
+        Todas <span class="filter-count" id="cnt-todas">0</span>
+      </button>
+      <button class="filter-btn" data-filtro="pendiente" onclick="filtrar(this)">
+        Pendientes <span class="filter-count" id="cnt-pendiente">0</span>
+      </button>
+      <button class="filter-btn" data-filtro="completada" onclick="filtrar(this)">
+        Completadas <span class="filter-count" id="cnt-completada">0</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Total tareas</div>
+      <div class="stat-val" id="statTotal">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Pendientes</div>
+      <div class="stat-val" id="statPendientes">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Completadas</div>
+      <div class="stat-val" id="statCompletadas">—</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Calificadas</div>
+      <div class="stat-val" id="statCalificadas">—</div>
+    </div>
+  </div>
+
+  <div id="contenedor"></div>
+
+</div>
+
+<!-- MODAL ENTREGA -->
+<div class="modal-bg" id="modalBg">
+  <div class="modal">
+    <button class="modal-close" onclick="cerrarModal()" aria-label="Cerrar">
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+    </button>
+
+    <div class="modal-tag">Entregar tarea</div>
+    <div class="modal-title" id="modalTitulo">Entregar actividad</div>
+    <div class="modal-sub" id="modalSub"></div>
+
+    <input type="hidden" id="hidTareaId">
+
+    <div class="field">
+      <label for="entregaDesc">Tu entrega / respuesta</label>
+      <textarea id="entregaDesc" placeholder="Describe lo que hiciste, pega el enlace a tu trabajo, adjunta observaciones…" oninput="actualizarContador()"></textarea>
+      <div class="char-count"><span id="charCount">0</span> caracteres</div>
     </div>
 
-    <script>
-        // 1. Obtener parámetros y validar sesión
-        const urlParams = new URLSearchParams(window.location.search);
-        const materiaId = urlParams.get('materiaId');
-        const token = localStorage.getItem('token');
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
+      <button class="btn-submit" id="btnSubmit" onclick="enviarEntrega()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        Entregar tarea
+      </button>
+    </div>
+  </div>
+</div>
 
-        // Redirección si faltan datos esenciales
-        if (!token) {
-            window.location.href = 'login.html';
-        }
+<div id="toast"></div>
 
-        if (!materiaId) {
-            alert("No se ha seleccionado ninguna materia.");
-            window.location.href = 'estudiante.html';
-        }
+<script>
+  const API = 'http://localhost:3000/api';
+  const token = localStorage.getItem('token');
+  let todasLasTareas = [];
+  let filtroActivo = 'todas';
 
-        async function cargarTareas() {
-            const contenedor = document.getElementById('contenedor-tareas');
-            
-            try {
-                const res = await fetch(`http://localhost:3000/api/tareas/${materiaId}`, {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
+  /* ── CARGA INICIAL ── */
+  async function cargarTareas() {
+    if (!token) { window.location.href = 'login.html'; return; }
 
-                if (!res.ok) throw new Error("Error al obtener datos");
+    const contenedor = document.getElementById('contenedor');
+    contenedor.innerHTML = `
+      <div style="text-align:center;padding:48px;color:var(--muted)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:12px;opacity:0.4"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+        <p>Cargando tareas…</p>
+      </div>`;
 
-                const tareas = await res.json();
-                contenedor.innerHTML = '';
+    try {
+      // Usamos el endpoint que devuelve TODAS las tareas del estudiante (todas las materias, todos los estados)
+      const res = await fetch(`${API}/mis-calificaciones`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
-                if (tareas.length === 0) {
-                    contenedor.innerHTML = `
-                        <div style="text-align:center; padding: 50px; color: #64748b;">
-                            <p style="font-size: 1.2rem;">No hay tareas asignadas para esta materia aún. ✨</p>
-                        </div>`;
-                    return;
-                }
+      if (res.status === 401) { window.location.href = 'login.html'; return; }
+      if (!res.ok) throw new Error();
 
-                // Actualizar encabezado con la primera tarea si existe
-                document.getElementById('materia-subtitulo').innerText = `Tienes ${tareas.length} tareas en total.`;
+      // mis-calificaciones devuelve todas las tareas con estado, entrega, calificación y materia
+      // Completamos con las pendientes que no tienen calificación
+      const calificaciones = await res.json();
 
-                tareas.forEach(tarea => {
-                    const div = document.createElement('div');
-                    const esCompletada = tarea.estado === 'completada';
-                    
-                    div.className = `tarea-card ${esCompletada ? 'completada' : ''}`;
-                    div.innerHTML = `
-                        <div class="info">
-                            <h3>${tarea.descripcion}</h3>
-                            <p>📅 Entrega: <strong>${tarea.fecha_entrega}</strong></p>
-                        </div>
-                        <div class="acciones">
-                            ${!esCompletada 
-                                ? `<button class="btn-entregar" onclick="marcarCompletada(${tarea.id})">Marcar como Realizada</button>`
-                                : `<span class="status-badge">✅ Finalizada</span>`
-                            }
-                        </div>
-                    `;
-                    contenedor.appendChild(div);
-                });
-            } catch (error) {
-                console.error("Error:", error);
-                contenedor.innerHTML = '<p style="color:red;">Error al conectar con el servidor.</p>';
-            }
-        }
+      // También buscamos tareas pendientes del endpoint dedicado
+      const resPend = await fetch(`${API}/tareas-todas-estudiante`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
 
-        async function marcarCompletada(tareaId) {
-            if (!confirm("¿Confirmas que has terminado esta tarea?")) return;
+      let pendientes = [];
+      if (resPend.ok) {
+        pendientes = await resPend.json();
+      }
 
-            try {
-                const res = await fetch(`http://localhost:3000/api/tareas/${tareaId}/completar`, {
-                    method: 'PATCH',
-                    headers: { 
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
+      // Fusionar: mis-calificaciones tiene TODAS (incluye pendientes también)
+      // Usamos mis-calificaciones como fuente principal ya que tiene todos los datos
+      todasLasTareas = calificaciones;
 
-                if (res.ok) {
-                    cargarTareas(); // Recarga instantánea
-                } else {
-                    alert("No se pudo actualizar el estado de la tarea.");
-                }
-            } catch (error) {
-                alert("Error de conexión.");
-            }
-        }
+      actualizarStats();
+      renderTareas(filtroActivo);
+    } catch (err) {
+      contenedor.innerHTML = `
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+          <h3>No se pudo cargar</h3>
+          <p>Verifica tu conexión e intenta de nuevo.</p>
+        </div>`;
+    }
+  }
 
-        // Ejecutar al cargar
-        cargarTareas();
-    </script>
+  /* ── RENDER ── */
+  function renderTareas(filtro) {
+    const contenedor = document.getElementById('contenedor');
+    let tareasFiltradas = todasLasTareas;
+
+    if (filtro !== 'todas') {
+      tareasFiltradas = todasLasTareas.filter(t => {
+        if (filtro === 'pendiente') return t.estado === 'pendiente';
+        if (filtro === 'completada') return t.estado === 'completada';
+        return true;
+      });
+    }
+
+    if (!tareasFiltradas.length) {
+      contenedor.innerHTML = `
+        <div class="empty-state">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M15 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z"/><polyline points="9 12 11 14 15 10"/></svg>
+          <h3>${filtro === 'todas' ? '¡Sin tareas por ahora!' : 'Sin tareas en este filtro'}</h3>
+          <p>${filtro === 'todas' ? 'Tus profesores aún no han asignado actividades.' : 'Prueba con otro filtro.'}</p>
+        </div>`;
+      return;
+    }
+
+    // Agrupar por materia
+    const porMateria = {};
+    tareasFiltradas.forEach(t => {
+      const key = t.materia_nombre || 'Sin materia';
+      if (!porMateria[key]) porMateria[key] = [];
+      porMateria[key].push(t);
+    });
+
+    contenedor.innerHTML = Object.entries(porMateria).map(([materia, tareas]) => `
+      <div class="materia-group">
+        <div class="materia-header">
+          <div class="materia-label">${esc(materia)}</div>
+          <div class="materia-sep"></div>
+          <div style="font-size:0.72rem;color:var(--muted)">${tareas.length} tarea${tareas.length !== 1 ? 's' : ''}</div>
+        </div>
+        ${tareas.map(t => renderTarjeta(t)).join('')}
+      </div>
+    `).join('');
+  }
+
+  function renderTarjeta(t) {
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+    const fechaLimite = new Date(t.fecha_entrega + 'T00:00:00');
+    const diasRestantes = Math.ceil((fechaLimite - hoy) / (1000 * 60 * 60 * 24));
+    const vencida = t.estado === 'pendiente' && diasRestantes < 0;
+
+    let estadoClass = t.estado === 'completada' ? 'completada' : (vencida ? 'vencida' : 'pendiente');
+    let badgeHtml = '';
+
+    if (t.calificacion !== null && t.calificacion !== undefined) {
+      badgeHtml = `<span class="badge badge-calificada">★ ${t.calificacion}/5.0</span>`;
+    } else if (t.estado === 'completada') {
+      badgeHtml = `<span class="badge badge-completada">✓ Completada</span>`;
+    } else if (vencida) {
+      badgeHtml = `<span class="badge badge-vencida">⚠ Vencida</span>`;
+    } else {
+      badgeHtml = `<span class="badge badge-pendiente">⏳ Pendiente</span>`;
+    }
+
+    let fechaHtml = '';
+    if (t.estado !== 'completada') {
+      if (diasRestantes < 0) {
+        fechaHtml = `<div class="date-badge urgente">📅 Venció hace ${Math.abs(diasRestantes)} día${Math.abs(diasRestantes) !== 1 ? 's' : ''}</div>`;
+      } else if (diasRestantes === 0) {
+        fechaHtml = `<div class="date-badge urgente">📅 Vence hoy</div>`;
+      } else if (diasRestantes <= 3) {
+        fechaHtml = `<div class="date-badge urgente">📅 ${diasRestantes} día${diasRestantes !== 1 ? 's' : ''} restante${diasRestantes !== 1 ? 's' : ''}</div>`;
+      } else {
+        fechaHtml = `<div class="date-badge">📅 ${formatFecha(t.fecha_entrega)}</div>`;
+      }
+    } else {
+      fechaHtml = `<div class="date-badge">📅 ${formatFecha(t.fecha_entrega)}</div>`;
+    }
+
+    let entregaHtml = '';
+    if (t.entrega_descripcion) {
+      entregaHtml = `
+        <div class="entrega-previa">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;margin-top:1px"><polyline points="20 6 9 17 4 12"/></svg>
+          <div>
+            <div style="font-weight:600;margin-bottom:2px">Entrega registrada</div>
+            <div style="color:#1a7f4b;opacity:0.85">${esc(t.entrega_descripcion)}</div>
+          </div>
+        </div>`;
+    }
+
+    let calHtml = '';
+    if (t.calificacion !== null && t.calificacion !== undefined) {
+      calHtml = `
+        <div class="calificacion-box">
+          <div>
+            <div class="cal-nota">${t.calificacion}<span style="font-size:1rem;font-family:'DM Sans'">/5.0</span></div>
+            <div class="cal-label">Calificación del profesor</div>
+          </div>
+          ${t.comentario_prof ? `<div class="cal-comentario">"${esc(t.comentario_prof)}"</div>` : ''}
+        </div>`;
+    }
+
+    let accionesHtml = '';
+    if (t.estado === 'pendiente' && !t.entrega_descripcion) {
+      accionesHtml = `
+        <div class="task-actions">
+          <button class="btn-entregar" onclick="abrirEntrega(${t.id}, '${esc(t.descripcion).replace(/'/g,'&apos;')}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            Entregar tarea
+          </button>
+          <button class="btn-completar" onclick="toggleCompletar(${t.id}, 'completar')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Marcar como lista
+          </button>
+        </div>`;
+    } else if (t.estado === 'completada' && !t.entrega_descripcion) {
+      accionesHtml = `
+        <div class="task-actions">
+          <button class="btn-entregar" onclick="abrirEntrega(${t.id}, '${esc(t.descripcion).replace(/'/g,'&apos;')}')">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+            Agregar entrega
+          </button>
+          <button class="btn-reabrir" onclick="toggleCompletar(${t.id}, 'reabrir')">Reabrir</button>
+        </div>`;
+    }
+
+    return `
+      <div class="task-card ${estadoClass}" id="card-${t.id}">
+        <div class="task-top">
+          <div class="task-desc ${t.estado === 'completada' ? 'done' : ''}">${esc(t.descripcion)}</div>
+          <div class="task-badges">
+            ${badgeHtml}
+            ${fechaHtml}
+          </div>
+        </div>
+        ${entregaHtml}
+        ${calHtml}
+        ${accionesHtml}
+      </div>`;
+  }
+
+  /* ── STATS ── */
+  function actualizarStats() {
+    const total = todasLasTareas.length;
+    const pendientes = todasLasTareas.filter(t => t.estado === 'pendiente').length;
+    const completadas = todasLasTareas.filter(t => t.estado === 'completada').length;
+    const calificadas = todasLasTareas.filter(t => t.calificacion !== null && t.calificacion !== undefined).length;
+
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPendientes').textContent = pendientes;
+    document.getElementById('statCompletadas').textContent = completadas;
+    document.getElementById('statCalificadas').textContent = calificadas;
+
+    document.getElementById('cnt-todas').textContent = total;
+    document.getElementById('cnt-pendiente').textContent = pendientes;
+    document.getElementById('cnt-completada').textContent = completadas;
+  }
+
+  /* ── FILTROS ── */
+  function filtrar(btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filtroActivo = btn.dataset.filtro;
+    renderTareas(filtroActivo);
+  }
+
+  /* ── MODAL ENTREGA ── */
+  function abrirEntrega(id, desc) {
+    document.getElementById('hidTareaId').value = id;
+    document.getElementById('modalTitulo').textContent = 'Entregar actividad';
+    document.getElementById('modalSub').textContent = desc.length > 100 ? desc.slice(0,100) + '…' : desc;
+    document.getElementById('entregaDesc').value = '';
+    document.getElementById('charCount').textContent = '0';
+    document.getElementById('modalBg').classList.add('open');
+    document.getElementById('entregaDesc').focus();
+  }
+
+  function cerrarModal() {
+    document.getElementById('modalBg').classList.remove('open');
+  }
+
+  function actualizarContador() {
+    const v = document.getElementById('entregaDesc').value;
+    document.getElementById('charCount').textContent = v.length;
+  }
+
+  /* ── ENVIAR ENTREGA ── */
+  async function enviarEntrega() {
+    const id   = document.getElementById('hidTareaId').value;
+    const desc = document.getElementById('entregaDesc').value.trim();
+
+    if (!desc) { toast('Escribe tu entrega antes de enviar.', false); return; }
+
+    const btn = document.getElementById('btnSubmit');
+    btn.disabled = true;
+    btn.textContent = 'Enviando…';
+
+    try {
+      const res = await fetch(`${API}/tareas/${id}/entregar`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ descripcion: desc })
+      });
+
+      if (res.ok) {
+        toast('¡Tarea entregada exitosamente!', true);
+        cerrarModal();
+        await cargarTareas();
+      } else {
+        const err = await res.json().catch(() => ({}));
+        toast(err.error || 'Error al enviar la entrega.', false);
+      }
+    } catch {
+      toast('No se pudo conectar con el servidor.', false);
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Entregar tarea`;
+    }
+  }
+
+  /* ── COMPLETAR / REABRIR ── */
+  async function toggleCompletar(id, accion) {
+    try {
+      const res = await fetch(`${API}/tareas/${id}/completar`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ accion })
+      });
+
+      if (res.ok) {
+        toast(accion === 'completar' ? '¡Tarea marcada como completada!' : 'Tarea reabierta.', true);
+        await cargarTareas();
+      } else {
+        const err = await res.json().catch(() => ({}));
+        toast(err.error || 'Error al actualizar.', false);
+      }
+    } catch {
+      toast('Error de conexión.', false);
+    }
+  }
+
+  /* ── CERRAR AL CLICK FUERA ── */
+  document.getElementById('modalBg').addEventListener('click', e => {
+    if (e.target === e.currentTarget) cerrarModal();
+  });
+
+  /* ── HELPERS ── */
+  function esc(str) {
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  function formatFecha(fechaStr) {
+    if (!fechaStr) return '';
+    const [y, m, d] = fechaStr.split('-');
+    if (!y || !m || !d) return fechaStr;
+    const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+    return `${d} ${meses[parseInt(m,10)-1]} ${y}`;
+  }
+
+  function toast(msg, ok) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = ok ? 'show ok' : 'show err';
+    clearTimeout(t._to);
+    t._to = setTimeout(() => { t.className = ''; }, 4000);
+  }
+
+  /* ── INIT ── */
+  cargarTareas();
+</script>
+
 </body>
 </html>

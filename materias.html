@@ -6,7 +6,7 @@
 <title>EduAgenda — Mis Materias</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #F5F3EE;
@@ -33,7 +33,6 @@
     min-height: 100vh;
   }
 
-  /* ── NAV ── */
   nav {
     background: var(--surface);
     border-bottom: 1px solid var(--border);
@@ -54,10 +53,7 @@
     letter-spacing: -0.02em;
   }
 
-  .nav-links {
-    display: flex;
-    gap: 2px;
-  }
+  .nav-links { display: flex; gap: 2px; }
 
   .nav-links a {
     text-decoration: none;
@@ -72,14 +68,12 @@
   .nav-links a:hover { background: var(--bg); color: var(--text); }
   .nav-links a.active { background: var(--accent-light); color: var(--accent); }
 
-  /* ── LAYOUT ── */
   .page {
     max-width: 1100px;
     margin: 0 auto;
     padding: 40px 24px 80px;
   }
 
-  /* ── HEADER ── */
   .page-header {
     display: flex;
     justify-content: space-between;
@@ -97,18 +91,9 @@
     line-height: 1.2;
   }
 
-  .page-sub {
-    font-size: 0.875rem;
-    color: var(--muted);
-    margin-top: 6px;
-  }
+  .page-sub { font-size: 0.875rem; color: var(--muted); margin-top: 6px; }
 
-  /* ── SEARCH ── */
-  .search-wrap {
-    position: relative;
-    display: flex;
-    align-items: center;
-  }
+  .search-wrap { position: relative; display: flex; align-items: center; }
 
   .search-wrap svg {
     position: absolute;
@@ -135,7 +120,6 @@
     box-shadow: 0 0 0 3px rgba(43,92,230,0.12);
   }
 
-  /* ── STAT CARDS ── */
   .stats {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -166,7 +150,6 @@
     line-height: 1;
   }
 
-  /* ── TABLE WRAPPER ── */
   .table-wrap {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -174,10 +157,7 @@
     overflow: hidden;
   }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+  table { width: 100%; border-collapse: collapse; }
 
   thead {
     background: var(--bg);
@@ -203,65 +183,19 @@
   }
 
   tr:last-child td { border-bottom: none; }
-
-  tbody tr {
-    transition: background 0.12s;
-  }
-
+  tbody tr { transition: background 0.12s; }
   tbody tr:hover { background: #FAF9F6; }
 
-  .subject-name {
-    font-weight: 600;
-    color: var(--text);
-    font-size: 0.95rem;
-  }
+  .subject-name { font-weight: 600; color: var(--text); font-size: 0.95rem; }
+  .subject-id { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .student-name { font-weight: 500; color: var(--text); }
+  .student-mode { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+  .schedule { font-size: 0.85rem; color: var(--muted); }
 
-  .subject-id {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
+  .prog-label { font-size: 0.8rem; font-weight: 600; color: var(--text); margin-bottom: 5px; }
+  .prog-track { width: 90px; height: 5px; background: var(--border); border-radius: 99px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--accent); border-radius: 99px; transition: width 0.4s ease; }
 
-  .student-name {
-    font-weight: 500;
-    color: var(--text);
-  }
-
-  .student-mode {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 2px;
-  }
-
-  .schedule {
-    font-size: 0.85rem;
-    color: var(--muted);
-  }
-
-  /* progress */
-  .prog-label {
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 5px;
-  }
-
-  .prog-track {
-    width: 90px;
-    height: 5px;
-    background: var(--border);
-    border-radius: 99px;
-    overflow: hidden;
-  }
-
-  .prog-fill {
-    height: 100%;
-    background: var(--accent);
-    border-radius: 99px;
-    transition: width 0.4s ease;
-  }
-
-  /* badge */
   .badge {
     display: inline-flex;
     align-items: center;
@@ -276,7 +210,6 @@
   .badge-ok { background: var(--success-light); color: var(--success); }
   .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-  /* actions */
   .actions { display: flex; align-items: center; gap: 8px; }
 
   .btn-icon {
@@ -297,20 +230,34 @@
   .btn-icon.task:hover { background: var(--accent-light); color: var(--accent); border-color: #C0D2FF; }
   .btn-icon.del:hover { background: var(--danger-light); color: var(--danger); border-color: #F5C6C2; }
 
-  /* empty */
+  /* chip de tareas en botón */
+  .task-chip {
+    position: relative;
+  }
+  .task-chip .chip-count {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+  }
+
   .empty {
     padding: 64px 20px;
     text-align: center;
     color: var(--muted);
   }
 
-  .empty svg {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 16px;
-    opacity: 0.3;
-  }
-
+  .empty svg { width: 48px; height: 48px; margin-bottom: 16px; opacity: 0.3; }
   .empty p { font-size: 0.95rem; }
 
   /* ── TOAST ── */
@@ -330,11 +277,7 @@
     max-width: 320px;
   }
 
-  #toast.show {
-    transform: translateY(0);
-    opacity: 1;
-  }
-
+  #toast.show { transform: translateY(0); opacity: 1; }
   #toast.ok { background: var(--success-light); color: var(--success); border: 1px solid #A7E6C5; }
   #toast.err { background: var(--danger-light); color: var(--danger); border: 1px solid #F5C6C2; }
 
@@ -358,7 +301,9 @@
     border: 1px solid var(--border);
     border-radius: 20px;
     width: 100%;
-    max-width: 480px;
+    max-width: 520px;
+    max-height: 90vh;
+    overflow-y: auto;
     padding: 30px;
     position: relative;
     animation: pop 0.2s ease;
@@ -409,15 +354,9 @@
     margin-bottom: 4px;
   }
 
-  .modal-sub {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
+  .modal-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 24px; }
 
-  .field {
-    margin-bottom: 18px;
-  }
+  .field { margin-bottom: 18px; }
 
   .field label {
     display: block;
@@ -496,27 +435,20 @@
 
   .btn-send:hover { background: #2050cc; }
   .btn-send:active { transform: scale(0.98); }
+  .btn-send:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  /* ── TASKS CHIP ── */
-  .task-count-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: var(--accent-light);
-    color: var(--accent);
-    font-size: 0.72rem;
-    font-weight: 700;
-    padding: 2px 8px;
-    border-radius: 20px;
-    margin-left: 8px;
-    vertical-align: middle;
+  /* ── LISTA DE TAREAS EN MODAL ── */
+  .tasks-list {
+    margin-top: 24px;
+    border-top: 1px solid var(--border);
+    padding-top: 20px;
   }
 
-  /* ── TASKS MODAL SECTION ── */
-  .tasks-list {
-    margin-top: 20px;
-    border-top: 1px solid var(--border);
-    padding-top: 18px;
+  .tasks-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
   }
 
   .tasks-list-title {
@@ -525,7 +457,15 @@
     color: var(--muted);
     text-transform: uppercase;
     letter-spacing: 0.07em;
-    margin-bottom: 12px;
+  }
+
+  .tasks-count-badge {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 20px;
   }
 
   .task-item {
@@ -540,12 +480,27 @@
     gap: 10px;
   }
 
+  .task-item-left { flex: 1; }
+
   .task-desc {
     font-size: 0.875rem;
     color: var(--text);
     line-height: 1.4;
-    flex: 1;
   }
+
+  .task-estado {
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-top: 5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 6px;
+  }
+
+  .estado-pendiente { background: var(--warn-light); color: var(--warn); }
+  .estado-completada { background: var(--success-light); color: var(--success); }
 
   .task-date {
     font-size: 0.75rem;
@@ -558,11 +513,57 @@
     flex-shrink: 0;
   }
 
+  .task-delete-btn {
+    width: 26px;
+    height: 26px;
+    border-radius: 7px;
+    border: 1px solid var(--border);
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+
+  .task-delete-btn:hover {
+    background: var(--danger-light);
+    color: var(--danger);
+    border-color: #F5C6C2;
+  }
+
   .no-tasks {
     font-size: 0.85rem;
     color: var(--muted);
     text-align: center;
-    padding: 12px;
+    padding: 16px;
+    background: var(--bg);
+    border-radius: 10px;
+    border: 1px dashed var(--border);
+  }
+
+  .loading-dots {
+    display: inline-flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .loading-dots span {
+    width: 5px;
+    height: 5px;
+    background: var(--muted);
+    border-radius: 50%;
+    animation: blink 1.2s infinite;
+  }
+
+  .loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes blink {
+    0%, 80%, 100% { opacity: 0.2; }
+    40% { opacity: 1; }
   }
 
   @media (max-width: 700px) {
@@ -645,7 +646,7 @@
       <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
 
-    <div class="modal-tag">Nueva tarea</div>
+    <div class="modal-tag">Gestión de Tareas</div>
     <div class="modal-title" id="modalTitulo">Asignar tarea</div>
     <div class="modal-sub" id="modalSub"></div>
 
@@ -663,16 +664,23 @@
 
     <div class="modal-actions">
       <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-      <button class="btn-send" onclick="enviarTarea()">
+      <button class="btn-send" id="btnEnviar" onclick="enviarTarea()">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-        Enviar tarea al estudiante
+        Asignar tarea
       </button>
     </div>
 
-    <!-- Tareas existentes de esta materia -->
-    <div class="tasks-list" id="tareasExistentes" style="display:none">
-      <div class="tasks-list-title">Tareas ya asignadas</div>
-      <div id="listaTareas"></div>
+    <!-- Tareas existentes -->
+    <div class="tasks-list" id="tareasExistentes">
+      <div class="tasks-list-header">
+        <div class="tasks-list-title">Tareas asignadas</div>
+        <div class="tasks-count-badge" id="tareasCountBadge">0</div>
+      </div>
+      <div id="listaTareas">
+        <div class="no-tasks">
+          <div class="loading-dots"><span></span><span></span><span></span></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -680,28 +688,70 @@
 <div id="toast"></div>
 
 <script>
-  const API = 'http://localhost:3000/api';
+  const API = '/api';
   const token = localStorage.getItem('token');
   let todasMaterias = [];
-  let totalTareas = 0;
+  let materiaIdActual = null;
 
-  /* ──────────── CARGA INICIAL ──────────── */
+  /* ── CARGA INICIAL ── */
   async function cargarMaterias() {
-    if (!token) { window.location.href = 'login.html'; return; }
+    if (!token) { window.location.href = 'sesion.html'; return; }
     try {
       const res = await fetch(`${API}/materias`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
-      if (!res.ok) throw new Error();
+
+      // Mostrar error detallado en pantalla
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({ error: `HTTP ${res.status}` }));
+        mostrarError(`Error ${res.status}: ${body.error || 'Desconocido'}`);
+        if (res.status === 401) setTimeout(() => window.location.href = 'sesion.html', 2000);
+        return;
+      }
+
       todasMaterias = await res.json();
       renderTabla(todasMaterias);
       actualizarStats(todasMaterias);
-    } catch {
-      toast('No se pudo conectar con el servidor.', false);
+      await contarTotalTareas();
+    } catch (err) {
+      console.error('Error cargando materias:', err);
+      mostrarError(`No se pudo conectar: ${err.message}. ¿Está corriendo el servidor en el puerto 3000?`);
     }
   }
 
-  /* ──────────── RENDER TABLA ──────────── */
+  function mostrarError(msg) {
+    const empty = document.getElementById('emptyState');
+    empty.style.display = 'block';
+    empty.innerHTML = `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--danger)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <p style="color:var(--danger);font-weight:600;margin-bottom:8px">Error de conexión</p>
+      <p style="font-size:0.82rem;max-width:400px;margin:0 auto">${msg}</p>
+      <p style="font-size:0.75rem;margin-top:12px;color:var(--muted)">
+        Token: ${token ? '✅ existe' : '❌ no hay'} &nbsp;|&nbsp;
+        Tipo: ${localStorage.getItem('tipo') || '(vacío)'} &nbsp;|&nbsp;
+        Nombre: ${localStorage.getItem('nombre') || '(vacío)'}
+      </p>
+      <button onclick="cargarMaterias()" style="margin-top:16px;padding:8px 20px;border-radius:10px;border:1px solid var(--border);background:var(--surface);cursor:pointer;font-family:inherit;font-size:0.875rem">
+        Reintentar
+      </button>`;
+  }
+
+  /* ── CONTAR TOTAL TAREAS DEL PROFESOR ── */
+  async function contarTotalTareas() {
+    try {
+      const res = await fetch(`${API}/tareas-profesor/todas`, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        document.getElementById('cntTareas').textContent = data.length;
+      }
+    } catch {
+      document.getElementById('cntTareas').textContent = '—';
+    }
+  }
+
+  /* ── RENDER TABLA ── */
   function renderTabla(data) {
     const tbody = document.getElementById('tBody');
     const empty = document.getElementById('emptyState');
@@ -717,7 +767,6 @@
       const prog = m.progreso || 0;
       const tr = document.createElement('tr');
       tr.dataset.search = (m.nombre + ' ' + m.estudiante_nombre).toLowerCase();
-
       tr.innerHTML = `
         <td>
           <div class="subject-name">${esc(m.nombre)}</div>
@@ -730,7 +779,7 @@
         <td>
           <span class="schedule">
             <svg style="vertical-align:-3px;margin-right:4px" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            ${esc(m.horario || 'Pendiente')}
+            ${esc(m.horario || 'Por definir')}
           </span>
         </td>
         <td>
@@ -740,7 +789,8 @@
         <td><span class="badge badge-ok"><span class="badge-dot"></span>Confirmada</span></td>
         <td>
           <div class="actions">
-            <button class="btn-icon task" title="Asignar tarea" onclick="abrirModal(${m.id}, '${esc(m.nombre)}', '${esc(m.estudiante_nombre)}')">
+            <button class="btn-icon task task-chip" title="Tareas de esta materia"
+              onclick="abrirModal(${m.id}, '${esc(m.nombre)}', '${esc(m.estudiante_nombre)}')">
               <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="4" rx="1"/><path d="M15 2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8z"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
             </button>
             <button class="btn-icon del" title="Eliminar materia" onclick="eliminarMateria(${m.id})">
@@ -752,80 +802,92 @@
     });
   }
 
-  /* ──────────── STATS ──────────── */
+  /* ── STATS ── */
   function actualizarStats(data) {
     document.getElementById('cntMaterias').textContent = data.length;
     const uniq = new Set(data.map(m => m.estudiante_nombre)).size;
     document.getElementById('cntEst').textContent = uniq;
   }
 
-  /* ──────────── MODAL ──────────── */
+  /* ── MODAL ── */
   async function abrirModal(id, nombre, alumno) {
+    materiaIdActual = id;
     document.getElementById('hidId').value = id;
     document.getElementById('modalTitulo').textContent = nombre;
-    document.getElementById('modalSub').textContent = 'Estudiante: ' + alumno;
+    document.getElementById('modalSub').textContent = `Estudiante: ${alumno}`;
     document.getElementById('desc').value = '';
     document.getElementById('fechaEntrega').value = '';
     document.getElementById('modalBg').classList.add('open');
     document.getElementById('desc').focus();
-
-    // Cargar tareas existentes de esta materia
     await cargarTareasModal(id);
   }
 
   async function cargarTareasModal(materiaId) {
-    const contenedor = document.getElementById('tareasExistentes');
     const lista = document.getElementById('listaTareas');
-    lista.innerHTML = '<div class="no-tasks" style="color:var(--muted);font-size:0.8rem">Cargando…</div>';
-    contenedor.style.display = 'block';
+    const countBadge = document.getElementById('tareasCountBadge');
+
+    lista.innerHTML = `<div class="no-tasks"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
 
     try {
-      const res = await fetch(`${API}/tareas/${materiaId}`, {
+      const res = await fetch(`${API}/tareas-profesor/${materiaId}`, {
         headers: { 'Authorization': `Bearer ${token}` }
       });
 
       if (!res.ok) {
-        // El endpoint puede no existir aún, ocultamos la sección sin error
-        contenedor.style.display = 'none';
+        lista.innerHTML = '<div class="no-tasks">No se pudieron cargar las tareas.</div>';
         return;
       }
 
       const tareas = await res.json();
-      totalTareas = tareas.length;
-      document.getElementById('cntTareas').textContent = totalTareas;
+      countBadge.textContent = tareas.length;
 
       if (!tareas.length) {
-        lista.innerHTML = '<div class="no-tasks">Ninguna tarea asignada aún.</div>';
+        lista.innerHTML = '<div class="no-tasks">Aún no has asignado tareas para esta materia.</div>';
         return;
       }
 
-      lista.innerHTML = tareas.map(t => `
-        <div class="task-item">
-          <div class="task-desc">${esc(t.descripcion)}</div>
-          <div class="task-date">${formatFecha(t.fecha_entrega)}</div>
-        </div>`).join('');
+      lista.innerHTML = tareas.map(t => {
+        const estadoClass = t.estado === 'completada' ? 'estado-completada' : 'estado-pendiente';
+        const estadoLabel = t.estado === 'completada' ? '✓ Completada' : '⏳ Pendiente';
+        return `
+          <div class="task-item" id="task-${t.id}">
+            <div class="task-item-left">
+              <div class="task-desc">${esc(t.descripcion)}</div>
+              <span class="task-estado ${estadoClass}">${estadoLabel}</span>
+              ${t.entrega_descripcion ? `<div style="font-size:0.75rem;color:var(--success);margin-top:4px">📎 Entrega: ${esc(t.entrega_descripcion.slice(0,60))}${t.entrega_descripcion.length > 60 ? '…' : ''}</div>` : ''}
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0">
+              <div class="task-date">${formatFecha(t.fecha_entrega)}</div>
+              <button class="task-delete-btn" title="Eliminar tarea" onclick="eliminarTarea(${t.id}, ${materiaId})">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+              </button>
+            </div>
+          </div>`;
+      }).join('');
 
-    } catch {
-      contenedor.style.display = 'none';
+    } catch (err) {
+      lista.innerHTML = '<div class="no-tasks">Error al cargar las tareas.</div>';
     }
   }
 
   function cerrarModal() {
     document.getElementById('modalBg').classList.remove('open');
+    materiaIdActual = null;
+    contarTotalTareas(); // refrescar contador global
   }
 
-  /* ──────────── ENVIAR TAREA ──────────── */
+  /* ── ENVIAR TAREA ── */
   async function enviarTarea() {
-    const id   = document.getElementById('hidId').value;
-    const desc = document.getElementById('desc').value.trim();
+    const id    = document.getElementById('hidId').value;
+    const desc  = document.getElementById('desc').value.trim();
     const fecha = document.getElementById('fechaEntrega').value;
 
-    if (!desc) { toast('Escribe una descripción para la tarea.', false); return; }
+    if (!desc)  { toast('Escribe una descripción para la tarea.', false); return; }
     if (!fecha) { toast('Selecciona una fecha de entrega.', false); return; }
 
-    const btn = document.querySelector('.btn-send');
+    const btn = document.getElementById('btnEnviar');
     btn.disabled = true;
-    btn.textContent = 'Enviando…';
+    btn.textContent = 'Guardando…';
 
     try {
       const res = await fetch(`${API}/tareas`, {
@@ -839,26 +901,45 @@
 
       if (res.ok) {
         toast('¡Tarea asignada al estudiante!', true);
-        // Recargar tareas en el modal
-        await cargarTareasModal(id);
         document.getElementById('desc').value = '';
         document.getElementById('fechaEntrega').value = '';
+        await cargarTareasModal(id); // recargar lista
+        await contarTotalTareas();   // actualizar stat global
       } else {
         const err = await res.json().catch(() => ({}));
         toast(err.error || 'Error al guardar la tarea.', false);
       }
-
     } catch {
       toast('No se pudo conectar con el servidor.', false);
     } finally {
       btn.disabled = false;
-      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Enviar tarea al estudiante`;
+      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg> Asignar tarea`;
     }
   }
 
-  /* ──────────── ELIMINAR MATERIA ──────────── */
+  /* ── ELIMINAR TAREA ── */
+  async function eliminarTarea(tareaId, materiaId) {
+    if (!confirm('¿Eliminar esta tarea? El estudiante ya no la verá.')) return;
+    try {
+      const res = await fetch(`${API}/tareas/${tareaId}`, {
+        method: 'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        toast('Tarea eliminada.', true);
+        await cargarTareasModal(materiaId);
+        await contarTotalTareas();
+      } else {
+        toast('No se pudo eliminar la tarea.', false);
+      }
+    } catch {
+      toast('Error de conexión.', false);
+    }
+  }
+
+  /* ── ELIMINAR MATERIA ── */
   async function eliminarMateria(id) {
-    if (!confirm('¿Eliminar esta materia de tu lista activa?')) return;
+    if (!confirm('¿Eliminar esta materia de tu lista activa? También se eliminarán sus tareas.')) return;
     try {
       const res = await fetch(`${API}/materias/${id}`, {
         method: 'DELETE',
@@ -875,7 +956,7 @@
     }
   }
 
-  /* ──────────── BUSCADOR ──────────── */
+  /* ── BUSCADOR ── */
   document.getElementById('buscar').addEventListener('input', e => {
     const q = e.target.value.toLowerCase().trim();
     document.querySelectorAll('#tBody tr').forEach(tr => {
@@ -883,12 +964,17 @@
     });
   });
 
-  /* ──────────── CERRAR MODAL AL CLICK FUERA ──────────── */
+  /* ── CERRAR MODAL FUERA ── */
   document.getElementById('modalBg').addEventListener('click', e => {
     if (e.target === e.currentTarget) cerrarModal();
   });
 
-  /* ──────────── HELPERS ──────────── */
+  /* ── ENTER en textarea ── */
+  document.getElementById('desc').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && e.ctrlKey) enviarTarea();
+  });
+
+  /* ── HELPERS ── */
   function esc(str) {
     const d = document.createElement('div');
     d.textContent = str || '';
@@ -911,15 +997,18 @@
     t._to = setTimeout(() => { t.className = ''; }, 3500);
   }
 
-  /* ──────────── INIT ──────────── */
-  cargarMaterias();
+  /* ── INIT ── */
+  // Diagnóstico rápido en consola
+  console.log('🔑 Token:', token ? token.slice(0,30) + '…' : 'NO HAY TOKEN');
+  console.log('👤 Tipo:', localStorage.getItem('tipo'));
+  console.log('📛 Nombre:', localStorage.getItem('nombre'));
 
-  // Contador de tareas: intentamos obtenerlas si el endpoint GET /api/tareas existe
-  // Si no existe, el counter queda en 0
-  fetch(`${API}/tareas/stats`, { headers: { 'Authorization': `Bearer ${token}` } })
-    .then(r => r.ok ? r.json() : null)
-    .then(d => { if (d && d.total !== undefined) document.getElementById('cntTareas').textContent = d.total; })
-    .catch(() => document.getElementById('cntTareas').textContent = '—');
+  if (!token) {
+    toast('No hay sesión activa. Redirigiendo…', false);
+    setTimeout(() => window.location.href = 'sesion.html', 1500);
+  } else {
+    cargarMaterias();
+  }
 </script>
 
 </body>

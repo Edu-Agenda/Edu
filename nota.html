@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAgenda — Mis Notas</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --ink:       #0f172a;
+            --ink-soft:  #475569;
+            --ink-ghost: #94a3b8;
+            --bg:        #f8fafc;
+            --surface:   #ffffff;
+            --border:    #e2e8f0;
+            --accent:    #4f46e5;
+            --accent-bg: #eef2ff;
+            --green:     #059669;
+            --green-bg:  #d1fae5;
+            --amber:     #b45309;
+            --amber-bg:  #fef3c7;
+            --radius:    12px;
+            --radius-sm: 8px;
+        }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        /* ── NAV ── */
+        nav {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 2rem;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--ink-soft);
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: color 0.15s;
+        }
+
+        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+
+        .user-chip {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--accent-bg);
+            border: 1px solid #c7d2fe;
+            padding: 5px 14px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+
+        /* ── LAYOUT ── */
+        .page {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        .page-header {
+            margin-bottom: 1.75rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+        }
+
+        .page-header p {
+            color: var(--ink-soft);
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        /* ── RESUMEN ── */
+        .summary-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .summary-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .s-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .s-icon.promedio  { background: #ede9fe; color: #7c3aed; }
+        .s-icon.entregadas { background: var(--green-bg); color: var(--green); }
+        .s-icon.pendientes { background: var(--amber-bg); color: var(--amber); }
+
+        .s-num {
+            font-size: 1.6rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .s-label {
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+            margin-top: 3px;
+            font-weight: 500;
+        }
+
+        /* ── FILTRO ── */
+        .filter-bar {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .filter-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            flex: 1;
+            min-width: 160px;
+        }
+
+        .filter-item label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--ink-soft);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .filter-item select {
+            padding: 0.55rem 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.875rem;
+            color: var(--ink);
+            background: var(--bg);
+            outline: none;
+        }
+
+        .filter-item select:focus { border-color: var(--accent); }
+
+        /* ── CARDS DE NOTAS ── */
+        .notas-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .nota-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 1.1rem 1.25rem;
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 1rem;
+            transition: box-shadow 0.15s;
+        }
+
+        .nota-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+        .nota-card.sin-calificar {
+            border-left: 3px solid var(--amber);
+        }
+
+        .nota-card.calificada {
+            border-left: 3px solid var(--green);
+        }
+
+        .nota-card.pendiente {
+            border-left: 3px solid #cbd5e1;
+        }
+
+        .nota-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nota-materia {
+            display: inline-block;
+            background: var(--accent-bg);
+            color: var(--accent);
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-family: 'DM Mono', monospace;
+            width: fit-content;
+            margin-bottom: 2px;
+        }
+
+        .nota-titulo {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .nota-entrega {
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+            margin-top: 2px;
+        }
+
+        .nota-comentario {
+            margin-top: 8px;
+            background: #f8fafc;
+            border-left: 3px solid #c7d2fe;
+            padding: 7px 10px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+            font-style: italic;
+        }
+
+        .nota-right {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            min-width: 80px;
+        }
+
+        .nota-valor {
+            font-size: 2rem;
+            font-weight: 700;
+            font-family: 'DM Mono', monospace;
+            letter-spacing: -2px;
+            line-height: 1;
+        }
+
+        .nota-valor.alta   { color: var(--green); }
+        .nota-valor.media  { color: #d97706; }
+        .nota-valor.baja   { color: #dc2626; }
+        .nota-valor.vacia  { color: var(--ink-ghost); font-size: 1.1rem; letter-spacing: 0; }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .badge-calificada  { background: var(--green-bg); color: var(--green); }
+        .badge-entregada   { background: var(--amber-bg); color: var(--amber); }
+        .badge-pendiente   { background: #f1f5f9; color: var(--ink-ghost); }
+
+        /* ── ESTADO VACÍO ── */
+        .empty {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--ink-ghost);
+        }
+
+        .empty i { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+        .empty p { font-size: 0.9rem; }
+
+        /* ── CARGANDO ── */
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 640px) {
+            .summary-row { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+            .nota-card { grid-template-columns: 1fr; }
+            .nota-right { flex-direction: row; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo">EduAgenda</div>
+    <div class="nav-links">
+        <a href="estudiante.html">Dashboard</a>
+        <a href="tareas.html">Mis Tareas</a>
+        <a href="notas.html" class="active">Mis Notas</a>
+        <div class="user-chip">
+            <i class="fa-solid fa-circle-user"></i>
+            <span id="userNameDisplay">Cargando...</span>
+        </div>
+    </div>
+</nav>
+
+<div class="page">
+
+    <div class="page-header">
+        <h1>Mis Notas</h1>
+        <p>Aquí ves solo tus calificaciones y comentarios del profesor</p>
+    </div>
+
+    <!-- Resumen -->
+    <div class="summary-row">
+        <div class="summary-card">
+            <div class="s-icon promedio"><i class="fa-solid fa-star"></i></div>
+            <div>
+                <div class="s-num" id="sPromedio">—</div>
+                <div class="s-label">Promedio general</div>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="s-icon entregadas"><i class="fa-solid fa-circle-check"></i></div>
+            <div>
+                <div class="s-num" id="sCalificadas">—</div>
+                <div class="s-label">Calificadas</div>
+            </div>
+        </div>
+        <div class="summary-card">
+            <div class="s-icon pendientes"><i class="fa-solid fa-clock"></i></div>
+            <div>
+                <div class="s-num" id="sPendientes">—</div>
+                <div class="s-label">Sin calificar</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtro -->
+    <div class="filter-bar">
+        <div class="filter-item">
+            <label><i class="fa-solid fa-book"></i> &nbsp;Materia</label>
+            <select id="filtroMateria">
+                <option value="">Todas las materias</option>
+            </select>
+        </div>
+        <div class="filter-item">
+            <label><i class="fa-solid fa-filter"></i> &nbsp;Estado</label>
+            <select id="filtroEstado">
+                <option value="todas">Todas</option>
+                <option value="calificada">Calificadas</option>
+                <option value="entregada">Entregadas (sin nota)</option>
+                <option value="pendiente">Pendientes</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Lista de notas -->
+    <div class="notas-grid" id="notasGrid">
+        <div class="loading">
+            <i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Cargando notas...
+        </div>
+    </div>
+
+</div>
+
+<script>
+'use strict';
+
+const token = localStorage.getItem('token');
+
+if (!token) window.location.href = 'sesion.html';
+
+const grid          = document.getElementById('notasGrid');
+const filtroMateria = document.getElementById('filtroMateria');
+const filtroEstado  = document.getElementById('filtroEstado');
+const sPromedio     = document.getElementById('sPromedio');
+const sCalificadas  = document.getElementById('sCalificadas');
+const sPendientes   = document.getElementById('sPendientes');
+const userDisplay   = document.getElementById('userNameDisplay');
+
+let todasLasNotas = [];
+
+// ── Init ──────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', async () => {
+    mostrarNombre();
+    await cargarNotas();
+    conectarFiltros();
+});
+
+// ── Nombre del estudiante ─────────────────────────────────
+function mostrarNombre() {
+    try {
+        const p = JSON.parse(atob(token.split('.')[1]));
+        if (userDisplay) userDisplay.textContent = p.nombre || 'Estudiante';
+    } catch(_) {
+        if (userDisplay) userDisplay.textContent = 'Estudiante';
+    }
+}
+
+// ── Cargar calificaciones desde el servidor ───────────────
+async function cargarNotas() {
+    grid.innerHTML = `<div class="loading"><i class="fa-solid fa-spinner fa-spin"></i> &nbsp;Cargando...</div>`;
+
+    try {
+        const res = await fetch('/api/mis-calificaciones', {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) {
+            const err = await res.json().catch(() => ({}));
+            throw new Error(err.error || `HTTP ${res.status}`);
+        }
+
+        todasLasNotas = await res.json();
+        poblarFiltroMaterias();
+        aplicarFiltros();
+
+    } catch (e) {
+        console.error('Error cargando notas:', e);
+        grid.innerHTML = `
+            <div class="empty">
+                <i class="fa-solid fa-triangle-exclamation" style="color:#dc2626;"></i>
+                <p>No se pudieron cargar las notas.<br><small>${esc(e.message)}</small></p>
+            </div>`;
+    }
+}
+
+// ── Poblar select de materias con las únicas que aparecen ─
+function poblarFiltroMaterias() {
+    const materias = [...new Set(todasLasNotas.map(n => n.materia_nombre).filter(Boolean))];
+    filtroMateria.innerHTML = '<option value="">Todas las materias</option>';
+    materias.sort().forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        opt.textContent = m;
+        filtroMateria.appendChild(opt);
+    });
+}
+
+// ── Filtrar y renderizar ──────────────────────────────────
+function aplicarFiltros() {
+    let lista = [...todasLasNotas];
+
+    const materia = filtroMateria.value;
+    if (materia) lista = lista.filter(n => n.materia_nombre === materia);
+
+    const estado = filtroEstado.value;
+    if (estado === 'calificada') {
+        lista = lista.filter(n => n.calificacion !== null && n.calificacion !== '');
+    } else if (estado === 'entregada') {
+        lista = lista.filter(n => n.estado === 'completada' && (n.calificacion === null || n.calificacion === ''));
+    } else if (estado === 'pendiente') {
+        lista = lista.filter(n => n.estado !== 'completada');
+    }
+
+    actualizarResumen(lista);
+    renderNotas(lista);
+}
+
+// ── Resumen ───────────────────────────────────────────────
+function actualizarResumen(lista) {
+    const calificadas = lista.filter(n => n.calificacion !== null && n.calificacion !== '');
+    const promedio = calificadas.length
+        ? (calificadas.reduce((sum, n) => sum + parseFloat(n.calificacion), 0) / calificadas.length).toFixed(1)
+        : '—';
+
+    sPromedio.textContent   = promedio;
+    sCalificadas.textContent = calificadas.length;
+    sPendientes.textContent  = lista.filter(n => n.calificacion === null || n.calificacion === '').length;
+}
+
+// ── Render de cards ───────────────────────────────────────
+function renderNotas(lista) {
+    if (!lista.length) {
+        grid.innerHTML = `
+            <div class="empty">
+                <i class="fa-regular fa-folder-open"></i>
+                <p>No hay tareas que mostrar con estos filtros.</p>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = lista.map(n => {
+        const tieneNota   = n.calificacion !== null && n.calificacion !== '';
+        const entregada   = n.estado === 'completada';
+        const nota        = tieneNota ? parseFloat(n.calificacion) : null;
+
+        // Clase de color según nota
+        let notaClass = 'vacia';
+        let notaTexto = '—';
+        if (nota !== null) {
+            notaTexto  = nota.toFixed(1);
+            notaClass  = nota >= 3.5 ? 'alta' : nota >= 2.5 ? 'media' : 'baja';
+        }
+
+        // Badge de estado
+        let badge = '';
+        if (tieneNota) {
+            badge = `<span class="badge badge-calificada"><i class="fa-solid fa-star"></i> Calificada</span>`;
+        } else if (entregada) {
+            badge = `<span class="badge badge-entregada"><i class="fa-solid fa-clock"></i> Esperando nota</span>`;
+        } else {
+            badge = `<span class="badge badge-pendiente"><i class="fa-solid fa-minus"></i> Pendiente</span>`;
+        }
+
+        // Clase del borde izquierdo
+        const cardClass = tieneNota ? 'calificada' : entregada ? 'sin-calificar' : 'pendiente';
+
+        // Entrega
+        const entregaInfo = n.entrega_descripcion
+            ? `<div class="nota-entrega"><i class="fa-solid fa-file-lines" style="margin-right:4px;color:#94a3b8;"></i>${esc(n.entrega_descripcion)}</div>`
+            : '';
+
+        // Comentario del profesor
+        const comentario = n.comentario_prof
+            ? `<div class="nota-comentario"><i class="fa-solid fa-quote-left" style="margin-right:6px;opacity:.4;"></i>${esc(n.comentario_prof)}</div>`
+            : '';
+
+        // Fecha de entrega
+        const fechaEntrega = n.entrega_fecha
+            ? `<span class="nota-entrega"><i class="fa-regular fa-calendar-check" style="margin-right:4px;"></i>Entregada: ${fmtFecha(n.entrega_fecha)}</span>`
+            : '';
+
+        return `
+        <div class="nota-card ${cardClass}">
+            <div class="nota-meta">
+                <span class="nota-materia">${esc(n.materia_nombre || 'Sin materia')}</span>
+                <span class="nota-titulo">${esc(n.descripcion)}</span>
+                ${fechaEntrega}
+                ${entregaInfo}
+                ${comentario}
+            </div>
+            <div class="nota-right">
+                <div class="nota-valor ${notaClass}">${notaTexto}</div>
+                ${badge}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ── Helpers ───────────────────────────────────────────────
+function esc(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
+function fmtFecha(f) {
+    if (!f) return '';
+    const d = new Date(f);
+    if (isNaN(d)) return f;
+    return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+
+function conectarFiltros() {
+    filtroMateria.addEventListener('change', aplicarFiltros);
+    filtroEstado.addEventListener('change', aplicarFiltros);
+}
+</script>
+
+</body>
+</html>
