@@ -1,3 +1,7 @@
+require('dotenv').config(); // Esto lee el archivo .env
+
+const PORT = process.env.PORT || 3000;
+const JWT_SECRET = process.env.JWT_SECRET;
 const express = require('express');
 const Database = require('better-sqlite3');
 const bcrypt = require('bcrypt');
@@ -17,7 +21,7 @@ app.use(express.static(__dirname));
 
 const db = new Database('./edu.db');
 
-const JWT_SECRET = 'clave_secreta_eduagenda_2024';
+
 const ADMIN_EMAIL = 'admin@eduagenda.com';
 const ADMIN_PASSWORD = 'Admin1234';
 
@@ -802,7 +806,7 @@ app.use((req, res) => {
 // SERVIDOR
 // ==========================================
 
-const PORT = 3000;
+
 
 app.listen(PORT, () => {
     console.log(`\n🚀 Servidor EduAgenda corriendo en http://localhost:${PORT}\n`);
