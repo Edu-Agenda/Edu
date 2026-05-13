@@ -1,0 +1,46 @@
+{
+  "tests": {
+    "passed": 41,
+    "failed": 0,
+    "total": 41
+  },
+  "api": {
+    "success": 3,
+    "failed": 0
+  },
+  "actions": [
+    {
+      "action": "registro",
+      "nombre": "Robot Estudiante",
+      "tipo": "estudiante",
+      "status": "failed"
+    },
+    {
+      "action": "registro",
+      "nombre": "Robot Profesor",
+      "tipo": "profesor",
+      "status": "failed"
+    },
+    {
+      "action": "crear_horario",
+      "materia": "Robótica",
+      "status": "success"
+    },
+    {
+      "action": "reserva",
+      "materia": "Robótica",
+      "estudiante": "Robot Estudiante",
+      "status": "success"
+    },
+    {
+      "action": "crear_tarea",
+      "descripcion": "Construir un robot seguidor de línea",
+      "status": "success"
+    },
+    {
+      "action": "entregar_tarea",
+      "tareaId": 12,
+      "status": "success"
+    }
+  ]
+}
