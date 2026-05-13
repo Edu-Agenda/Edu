@@ -1,934 +1,227 @@
+<!-- Documento HTML5 -->
 <!DOCTYPE html>
+
+<!-- Idioma principal del sistema -->
 <html lang="es">
+
 <head>
+
+    <!-- Configuración de caracteres -->
     <meta charset="UTF-8">
+
+    <!-- Diseño responsive para celulares y tablets -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Título que aparece en la pestaña del navegador -->
     <title>Agenda del Profesor · EduAgenda</title>
+
+    <!-- Librería de iconos Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
+
+        /* =====================================================
+           VARIABLES GLOBALES DEL SISTEMA
+           Colores reutilizables en toda la interfaz
+        ====================================================== */
         :root {
             --blue: #0061ff;
             --blue-dark: #0040cc;
             --bg: #f5f7fb;
             --border: #dbe3ef;
             --text: #1e293b;
-            --muted: #64748b;
-            --green: #22c55e;
-            --orange: #f59e0b;
-            --red: #ef4444;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* =====================================================
+           CONFIGURACIÓN GENERAL
+        ====================================================== */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
+        /* =====================================================
+           ESTILOS DEL BODY
+           Define fuente y color principal del sistema
+        ====================================================== */
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Inter', sans-serif;
             background: var(--bg);
             color: var(--text);
-            min-height: 100vh;
         }
 
-        /* ── NAVBAR ── */
+        /* =====================================================
+           NAVBAR PRINCIPAL
+           Barra superior de navegación
+        ====================================================== */
         nav {
             background: white;
             padding: 14px 6%;
-            border-bottom: 1px solid var(--border);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky; top: 0; z-index: 100;
         }
 
+        /* Logo del sistema */
         .logo {
             font-size: 1.2rem;
-            font-weight: 800;
+            font-weight: bold;
             color: var(--blue);
-            display: flex; align-items: center; gap: 8px;
         }
 
-        .nav-links {
-            display: flex; gap: 28px; align-items: center;
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: var(--muted);
-            font-size: 14px;
-            font-weight: 500;
-            transition: color .2s;
-        }
-        .nav-links a:hover { color: var(--text); }
-        .nav-links a.active {
-            color: var(--blue);
-            border-bottom: 2px solid var(--blue);
-            padding-bottom: 4px;
-            font-weight: 700;
-        }
-
-        .profile-chip {
-            display: flex; align-items: center; gap: 10px;
-            background: #f1f5f9; padding: 6px 14px 6px 6px;
-            border-radius: 30px;
-        }
-        .profile-avatar {
-            width: 34px; height: 34px;
-            background: linear-gradient(135deg, var(--blue), var(--blue-dark));
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            color: white; font-weight: 800; font-size: 13px;
-        }
-        .profile-chip span { font-size: 13px; font-weight: 600; }
-
-        /* ── CONTENIDO ── */
-        .container { max-width: 1280px; margin: 36px auto; padding: 0 24px; }
-
-        .top-section {
-            display: flex; justify-content: space-between;
-            align-items: center; margin-bottom: 28px;
-            flex-wrap: wrap; gap: 16px;
-        }
-        .top-section h1 { font-size: 26px; font-weight: 800; }
-        .top-section p  { color: var(--muted); font-size: 14px; margin-top: 3px; }
-
-        .btn-new {
-            background: var(--blue); color: white;
-            border: none; padding: 11px 20px;
-            border-radius: 10px; cursor: pointer;
-            font-weight: 700; font-size: 14px;
-            display: flex; align-items: center; gap: 9px;
-            transition: .2s; font-family: inherit;
-        }
-        .btn-new:hover { background: var(--blue-dark); transform: translateY(-1px); }
-
-        /* ── STATS ── */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px; margin-bottom: 28px;
-        }
-        .stat-card {
-            background: white;
-            border-radius: 14px;
-            padding: 22px 20px;
-            border: 1px solid var(--border);
-            transition: .2s;
-        }
-        .stat-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-        .stat-card h3  { color: var(--muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
-        .stat-card .n  { font-size: 28px; font-weight: 800; }
-        .stat-card .ic { font-size: 20px; float: right; margin-top: -2px; }
-
-        /* ── FILTROS ── */
-        .filters {
-            background: white;
-            padding: 16px 20px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            display: flex; gap: 14px; flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 24px;
-        }
-        .filters label { font-size: 12px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 4px; }
-        .filter-group { display: flex; flex-direction: column; }
-        .filters input,
-        .filters select {
-            padding: 9px 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            outline: none;
-            font-size: 13px;
-            font-family: inherit;
-            color: var(--text);
-            background: white;
-            transition: border-color .2s;
-            min-width: 150px;
-        }
-        .filters input:focus,
-        .filters select:focus { border-color: var(--blue); }
-
-        .btn-refresh {
-            margin-left: auto;
-            padding: 9px 16px;
-            border: 1px solid var(--border);
-            background: white; border-radius: 8px;
-            font-size: 13px; font-weight: 600;
-            cursor: pointer; display: flex; align-items: center; gap: 7px;
-            transition: .2s; font-family: inherit; color: var(--muted);
-            align-self: flex-end;
-        }
-        .btn-refresh:hover { background: #f1f5f9; color: var(--text); }
-        .btn-refresh.spinning i { animation: spin 0.7s linear infinite; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ── TABLA ── */
-        .table-wrap {
-            background: white;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            overflow: hidden;
-            margin-bottom: 20px;
-        }
-
-        .table-wrap table { width: 100%; border-collapse: collapse; min-width: 800px; }
-
-        .table-scroll { overflow-x: auto; }
-
-        table th {
-            background: #f8fafc;
-            padding: 14px 16px;
-            text-align: left;
-            color: var(--muted);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: .5px;
-            border-bottom: 1px solid var(--border);
-        }
-        table td {
-            padding: 15px 16px;
-            border-top: 1px solid #f1f5f9;
-            font-size: 13px;
-            vertical-align: middle;
-        }
-        table tr:hover td { background: #fafcff; }
-
-        /* Status pills */
-        .pill {
-            padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center; gap: 5px;
-            white-space: nowrap;
-        }
-        .pill-green  { background: #dcfce7; color: #16a34a; }
-        .pill-blue   { background: #dbeafe; color: #1d4ed8; }
-        .pill-orange { background: #fef3c7; color: #b45309; }
-        .pill-gray   { background: #f1f5f9; color: #475569; }
-
-        /* Estudiante chip */
-        .est-chip {
-            display: flex; align-items: center; gap: 9px;
-        }
-        .est-avatar {
-            width: 30px; height: 30px;
-            border-radius: 50%;
-            background: #e2e8f0;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 11px; font-weight: 800; color: var(--muted);
-            flex-shrink: 0;
-        }
-
-        /* Acciones */
-        .acciones { display: flex; gap: 12px; }
-        .acciones button {
-            border: none; background: none; cursor: pointer;
-            font-size: 14px; padding: 4px;
-            border-radius: 6px; transition: .15s;
-        }
-        .acciones .btn-ver   { color: #0f172a; }
-        .acciones .btn-edit  { color: var(--blue); }
-        .acciones .btn-del   { color: var(--red); }
-        .acciones button:hover { background: #f1f5f9; transform: scale(1.1); }
-
-        /* Empty / Loading */
-        .empty-row td {
-            text-align: center;
-            padding: 60px 20px;
-            color: #94a3b8;
-        }
-        .empty-row i { font-size: 36px; display: block; margin-bottom: 12px; color: #cbd5e1; }
-        .empty-row p { margin-top: 4px; font-size: 13px; }
-
-        /* ── MODAL ── */
-        .modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(15,23,42,.55); backdrop-filter: blur(4px);
-            z-index: 999; justify-content: center; align-items: center; padding: 20px;
-        }
-        .modal.active { display: flex; }
-        .modal-box {
-            background: white; width: 100%; max-width: 480px;
-            border-radius: 20px; overflow: hidden;
-            animation: up .25s ease;
-            border: 1px solid var(--border);
-        }
-        @keyframes up { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-
-        .modal-head {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border);
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .modal-head h2 { font-size: 16px; font-weight: 700; }
-        .modal-close { font-size: 22px; cursor: pointer; color: var(--muted); line-height: 1; }
-        .modal-close:hover { color: var(--red); }
-
-        .modal-body { padding: 24px; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-        .fg { margin-bottom: 16px; }
-        .fg label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
-        .fg input, .fg select, .fg textarea {
-            width: 100%; padding: 10px 13px;
-            border: 1px solid var(--border); border-radius: 9px;
-            font-size: 13px; font-family: inherit;
-            outline: none; transition: border-color .2s;
-        }
-        .fg input:focus, .fg select:focus { border-color: var(--blue); }
-        .fg.full { grid-column: 1/-1; }
-
-        .modal-foot {
-            display: flex; justify-content: flex-end;
-            gap: 12px; padding: 16px 24px;
-            border-top: 1px solid var(--border);
-        }
-        .btn-cancel-m {
-            padding: 10px 18px; border: 1px solid var(--border);
-            background: white; border-radius: 9px;
-            font-size: 13px; font-weight: 600;
-            cursor: pointer; font-family: inherit;
-            transition: .2s;
-        }
-        .btn-cancel-m:hover { background: #f1f5f9; }
-        .btn-save-m {
-            padding: 10px 22px; border: none;
-            background: var(--blue); color: white;
-            border-radius: 9px; font-size: 13px; font-weight: 700;
-            cursor: pointer; font-family: inherit; transition: .2s;
-            display: flex; align-items: center; gap: 7px;
-        }
-        .btn-save-m:hover { background: var(--blue-dark); }
-
-        /* ── DETAIL DRAWER ── */
-        .drawer-overlay {
-            display: none; position: fixed; inset: 0;
-            background: rgba(15,23,42,.4); backdrop-filter: blur(3px);
-            z-index: 998;
-        }
-        .drawer-overlay.open { display: block; }
-        .drawer {
-            position: fixed; top: 0; right: -420px;
-            width: 400px; height: 100vh;
-            background: white; z-index: 999;
-            box-shadow: -10px 0 40px rgba(0,0,0,.12);
-            transition: right .3s ease;
-            overflow-y: auto; padding: 28px;
-        }
-        .drawer.open { right: 0; }
-        .drawer-close {
-            float: right; font-size: 22px;
-            cursor: pointer; color: var(--muted); line-height: 1;
-        }
-        .drawer-close:hover { color: var(--red); }
-        .drawer h3 { font-size: 17px; margin-bottom: 20px; clear: both; padding-top: 4px; }
-        .drawer-row {
-            display: flex; align-items: flex-start; gap: 12px;
-            padding: 12px 0; border-bottom: 1px solid #f1f5f9;
-            font-size: 13px;
-        }
-        .drawer-row:last-child { border-bottom: none; }
-        .drawer-row i { color: var(--blue); width: 18px; flex-shrink: 0; margin-top: 1px; }
-        .drawer-row .dl { font-size: 11px; color: var(--muted); font-weight: 700; text-transform: uppercase; }
-        .drawer-row .dv { font-weight: 600; }
-
-        /* ── TOAST ── */
-        .toast {
-            position: fixed; bottom: 24px; right: 24px;
-            background: #1e293b; color: white;
-            padding: 12px 18px; border-radius: 10px;
-            font-size: 13px; font-weight: 600;
-            display: flex; align-items: center; gap: 9px;
-            box-shadow: 0 8px 24px rgba(0,0,0,.18);
-            transform: translateY(80px); opacity: 0;
-            transition: all .3s; z-index: 3000;
-        }
-        .toast.show { transform: translateY(0); opacity: 1; }
-        .toast i { color: #4ade80; }
-
-        /* ── PAGINACIÓN ── */
-        .pagination { display: flex; justify-content: flex-end; gap: 8px; margin-top: 8px; }
-        .btn-page {
-            padding: 7px 12px; border: 1px solid var(--border);
-            background: white; border-radius: 7px;
-            cursor: pointer; font-size: 13px; font-weight: 600; transition: .15s;
-        }
-        .btn-page:hover { background: #f1f5f9; }
-        .btn-page.active { background: var(--blue); color: white; border-color: var(--blue); }
-
-        @media (max-width:900px) {
-            .stats-grid { grid-template-columns: repeat(2,1fr); }
-            nav { padding: 12px 4%; }
-        }
     </style>
+
 </head>
+
 <body>
 
-<!-- ── NAVBAR ── -->
+<!-- =====================================================
+     BARRA DE NAVEGACIÓN
+===================================================== -->
 <nav>
-    <div class="logo"><i class="fas fa-graduation-cap"></i> EduAgenda</div>
-    <div class="nav-links">
-        <a href="profesor.html">Inicio</a>
-        <a href="agenda.html" class="active">Agenda</a>
-        <a href="calificaciones.html">Calificaciones</a>
-        <a href="configuracion.html">Configuración</a>
-        <div class="profile-chip">
-            <div class="profile-avatar" id="navAvatar">?</div>
-            <span id="navNombre">Cargando...</span>
-        </div>
+
+    <!-- Logo del sistema -->
+    <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        EduAgenda
     </div>
+
+    <!-- Menú principal -->
+    <div class="nav-links">
+
+        <!-- Enlace hacia inicio -->
+        <a href="profesor.html">Inicio</a>
+
+        <!-- Página actual -->
+        <a href="agenda.html" class="active">Agenda</a>
+
+    </div>
+
 </nav>
 
-<!-- ── CONTENIDO ── -->
+<!-- =====================================================
+     CONTENIDO PRINCIPAL
+===================================================== -->
 <div class="container">
 
+    <!-- Encabezado de la agenda -->
     <div class="top-section">
-        <div>
-            <h1>Agenda de Clases</h1>
-            <p id="subTitle">Clases reservadas por tus estudiantes</p>
-        </div>
+
+        <!-- Título principal -->
+        <h1>Agenda de Clases</h1>
+
+        <!-- Botón para abrir modal -->
         <button class="btn-new" onclick="abrirModalNuevo()">
-            <i class="fas fa-plus"></i> Nuevo Horario
+
+            <!-- Icono -->
+            <i class="fas fa-plus"></i>
+
+            <!-- Texto -->
+            Nuevo Horario
+
         </button>
-    </div>
 
-    <!-- STATS -->
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Clases hoy</h3>
-            <span class="ic">📅</span>
-            <div class="n" id="statHoy">—</div>
-        </div>
-        <div class="stat-card">
-            <h3>Reservadas</h3>
-            <span class="ic">✅</span>
-            <div class="n" id="statReservadas">—</div>
-        </div>
-        <div class="stat-card">
-            <h3>Disponibles</h3>
-            <span class="ic">🟢</span>
-            <div class="n" id="statDisponibles">—</div>
-        </div>
-        <div class="stat-card">
-            <h3>Estudiantes únicos</h3>
-            <span class="ic">👥</span>
-            <div class="n" id="statEstudiantes">—</div>
-        </div>
     </div>
-
-    <!-- FILTROS -->
-    <div class="filters">
-        <div class="filter-group">
-            <label>Fecha</label>
-            <input type="date" id="filtroFecha">
-        </div>
-        <div class="filter-group">
-            <label>Materia</label>
-            <select id="filtroMateria">
-                <option value="">Todas las materias</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label>Estado</label>
-            <select id="filtroEstado">
-                <option value="">Todos</option>
-                <option value="reservado">Reservados</option>
-                <option value="disponible">Disponibles</option>
-            </select>
-        </div>
-        <button class="btn-refresh" id="btnRefresh" onclick="cargarAgenda()">
-            <i class="fas fa-sync-alt"></i> Actualizar
-        </button>
-    </div>
-
-    <!-- TABLA -->
-    <div class="table-wrap">
-        <div class="table-scroll">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Estudiante</th>
-                        <th>Materia</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Modalidad</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                </thead>
-                <tbody id="tablaBody">
-                    <tr class="empty-row">
-                        <td colspan="7">
-                            <i class="fas fa-circle-notch" style="animation:spin 1s linear infinite;"></i>
-                            <p>Cargando horarios...</p>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div class="pagination" id="paginacion"></div>
 
 </div>
-
-<!-- ── MODAL NUEVO HORARIO ── -->
-<div class="modal" id="modalForm">
-    <div class="modal-box">
-        <div class="modal-head">
-            <h2 id="modalTitle">Nuevo Horario</h2>
-            <span class="modal-close" onclick="cerrarModal()">×</span>
-        </div>
-        <div class="modal-body">
-            <div class="form-row">
-                <div class="fg">
-                    <label>Materia</label>
-                    <select id="mMateria">
-                        <option value="Matemáticas">Matemáticas</option>
-                        <option value="Física">Física</option>
-                        <option value="Química">Química</option>
-                        <option value="Historia">Historia</option>
-                        <option value="Inglés">Inglés</option>
-                        <option value="Ciencias">Ciencias</option>
-                        <option value="Programación">Programación</option>
-                    </select>
-                </div>
-                <div class="fg">
-                    <label>Fecha</label>
-                    <input type="date" id="mFecha">
-                </div>
-                <div class="fg full">
-                    <label>Hora de inicio</label>
-                    <input type="time" id="mHora">
-                </div>
-            </div>
-        </div>
-        <div class="modal-foot">
-            <button class="btn-cancel-m" onclick="cerrarModal()">Cancelar</button>
-            <button class="btn-save-m" onclick="guardarHorario()">
-                <i class="fas fa-save"></i> Publicar horario
-            </button>
-        </div>
-    </div>
-</div>
-
-<!-- ── DRAWER DETALLE ── -->
-<div class="drawer-overlay" id="drawerOverlay" onclick="cerrarDrawer()"></div>
-<div class="drawer" id="drawer">
-    <span class="drawer-close" onclick="cerrarDrawer()">×</span>
-    <h3><i class="fas fa-info-circle" style="color:var(--blue);margin-right:8px;"></i>Detalle de clase</h3>
-    <div id="drawerContent"></div>
-</div>
-
-<!-- ── TOAST ── -->
-<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg">OK</span></div>
 
 <script>
+
+    /* =====================================================
+       URL PRINCIPAL DEL BACKEND
+       Servidor donde se realizan las peticiones
+    ====================================================== */
     const API = 'http://localhost:3000';
 
-    // ── AUTH ──────────────────────────────────────
-    const token         = localStorage.getItem('token')  || '';
-    const nombreLogin   = localStorage.getItem('nombre') || 'Profesor';
-    const emailLogin    = localStorage.getItem('email')  || '';
+    /* =====================================================
+       TOKEN DE AUTENTICACIÓN
+       Se obtiene desde LocalStorage
+    ====================================================== */
+    const token = localStorage.getItem('token') || '';
 
-    // Nombre del profesor (para filtrar los horarios que le pertenecen)
-    let nombreProfesor = nombreLogin;
-
-    // Datos crudos y filtrados
-    let todosLosHorarios = [];
-    let filtrados        = [];
-
-    // Paginación
-    const POR_PAGINA = 10;
-    let paginaActual = 1;
-
-    // ── NAVBAR ───────────────────────────────────
-    (function initNav() {
-        const partes   = nombreLogin.trim().split(' ');
-        const iniciales = ((partes[0]||'')[0] + (partes[1]||'')[0]).toUpperCase();
-        document.getElementById('navAvatar').textContent  = iniciales || '?';
-        document.getElementById('navNombre').textContent  = partes.slice(0,2).join(' ');
-    })();
-
-    // ── VERIFICAR SESIÓN Y OBTENER NOMBRE REAL ──
+    /* =====================================================
+       FUNCIÓN: verificarSesion()
+       Verifica si el usuario tiene sesión iniciada
+    ====================================================== */
     async function verificarSesion() {
-        if (!token) return;
-        try {
-            const res  = await fetch(`${API}/verificar`, {
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            if (res.ok) {
-                const data = await res.json();
-                nombreProfesor = data.usuario.nombre || nombreLogin;
-                localStorage.setItem('nombre', nombreProfesor);
 
-                const partes   = nombreProfesor.trim().split(' ');
-                const iniciales = ((partes[0]||'')[0] + (partes[1]||'')[0]).toUpperCase();
-                document.getElementById('navAvatar').textContent = iniciales || '?';
-                document.getElementById('navNombre').textContent = partes.slice(0,2).join(' ');
-                document.getElementById('subTitle').textContent  =
-                    `Clases publicadas y reservadas · ${nombreProfesor}`;
+        // Si no existe token, termina la función
+        if (!token) return;
+
+        try {
+
+            // Petición al servidor para validar sesión
+            const res = await fetch(`${API}/verificar`, {
+
+                // Envío del token JWT
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+
+            });
+
+            // Si la respuesta es correcta
+            if (res.ok) {
+
+                // Convertir respuesta a JSON
+                const data = await res.json();
+
+                // Mostrar usuario en consola
+                console.log(data);
+
             }
-        } catch(_) {}
+
+        } catch(error) {
+
+            // Mostrar error en consola
+            console.error(error);
+
+        }
+
     }
 
-    // ── CARGAR HORARIOS ──────────────────────────
+    /* =====================================================
+       FUNCIÓN: cargarAgenda()
+       Obtiene los horarios desde la API
+    ====================================================== */
     async function cargarAgenda() {
-        const btn = document.getElementById('btnRefresh');
-        btn.classList.add('spinning');
-
-        mostrarLoading();
 
         try {
-            const res      = await fetch(`${API}/api/horarios`);
+
+            // Consumir endpoint de horarios
+            const res = await fetch(`${API}/api/horarios`);
+
+            // Convertir respuesta a JSON
             const horarios = await res.json();
 
-            // Filtrar solo los horarios de ESTE profesor
-            todosLosHorarios = horarios.filter(
-                h => h.profesor_nombre === nombreProfesor
-            );
+            // Mostrar horarios en consola
+            console.log(horarios);
 
-            llenarFiltroMaterias();
-            actualizarStats();
-            aplicarFiltros();
+        } catch(error) {
 
-        } catch(err) {
-            document.getElementById('tablaBody').innerHTML = `
-                <tr class="empty-row">
-                    <td colspan="7">
-                        <i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i>
-                        <p>No se pudo conectar con el servidor.</p>
-                    </td>
-                </tr>`;
+            // Error de conexión
+            console.error(error);
+
         }
 
-        btn.classList.remove('spinning');
     }
 
-    function mostrarLoading() {
-        document.getElementById('tablaBody').innerHTML = `
-            <tr class="empty-row">
-                <td colspan="7">
-                    <i class="fas fa-circle-notch" style="animation:spin 1s linear infinite;"></i>
-                    <p>Cargando horarios...</p>
-                </td>
-            </tr>`;
-    }
-
-    // ── LLENAR FILTRO DE MATERIAS ─────────────────
-    function llenarFiltroMaterias() {
-        const sel      = document.getElementById('filtroMateria');
-        const materias = [...new Set(todosLosHorarios.map(h => h.materia))];
-        // Conservar selección actual
-        const current  = sel.value;
-        sel.innerHTML  = `<option value="">Todas las materias</option>`;
-        materias.forEach(m => {
-            const o = document.createElement('option');
-            o.value = m; o.textContent = m;
-            if (m === current) o.selected = true;
-            sel.appendChild(o);
-        });
-    }
-
-    // ── ESTADÍSTICAS ─────────────────────────────
-    function actualizarStats() {
-        const hoy        = new Date().toISOString().split('T')[0];
-        const hoy_count  = todosLosHorarios.filter(h => h.fecha === hoy).length;
-        const reservadas = todosLosHorarios.filter(h => h.estado === 'reservado').length;
-        const disponibles= todosLosHorarios.filter(h => h.estado === 'disponible').length;
-        const estudiantes= new Set(
-            todosLosHorarios
-                .filter(h => h.estudiante_nombre)
-                .map(h => h.estudiante_nombre)
-        ).size;
-
-        document.getElementById('statHoy').textContent         = hoy_count;
-        document.getElementById('statReservadas').textContent  = reservadas;
-        document.getElementById('statDisponibles').textContent = disponibles;
-        document.getElementById('statEstudiantes').textContent = estudiantes;
-    }
-
-    // ── APLICAR FILTROS ──────────────────────────
-    function aplicarFiltros() {
-        const fecha   = document.getElementById('filtroFecha').value;
-        const materia = document.getElementById('filtroMateria').value;
-        const estado  = document.getElementById('filtroEstado').value;
-
-        filtrados = todosLosHorarios.filter(h => {
-            if (fecha   && h.fecha   !== fecha)   return false;
-            if (materia && h.materia !== materia) return false;
-            if (estado  && h.estado  !== estado)  return false;
-            return true;
-        });
-
-        paginaActual = 1;
-        renderTabla();
-        renderPaginacion();
-    }
-
-    // ── RENDERIZAR TABLA ─────────────────────────
-    function renderTabla() {
-        const tbody = document.getElementById('tablaBody');
-
-        if (filtrados.length === 0) {
-            tbody.innerHTML = `
-                <tr class="empty-row">
-                    <td colspan="7">
-                        <i class="fas fa-calendar-times"></i>
-                        <p>No hay horarios que coincidan con los filtros.</p>
-                    </td>
-                </tr>`;
-            return;
-        }
-
-        const inicio = (paginaActual - 1) * POR_PAGINA;
-        const pagina = filtrados.slice(inicio, inicio + POR_PAGINA);
-
-        tbody.innerHTML = pagina.map(h => {
-            const reservado  = h.estado === 'reservado';
-            const estudiante = h.estudiante_nombre || '—';
-            const iniciales  = reservado
-                ? estudiante.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase()
-                : '';
-
-            const pill = reservado
-                ? `<span class="pill pill-green"><i class="fas fa-check-circle"></i> Reservado</span>`
-                : `<span class="pill pill-blue"><i class="fas fa-circle"></i> Disponible</span>`;
-
-            const estCell = reservado
-                ? `<div class="est-chip">
-                       <div class="est-avatar">${iniciales}</div>
-                       <span>${estudiante}</span>
-                   </div>`
-                : `<span style="color:#94a3b8;font-size:12px;">Sin reservar</span>`;
-
-            return `
-            <tr data-id="${h.id}">
-                <td>${estCell}</td>
-                <td><strong>${h.materia}</strong></td>
-                <td>${formatFechaCorta(h.fecha)}</td>
-                <td>${formatHora(h.hora_inicio)}</td>
-                <td><span class="pill pill-gray"><i class="fas fa-video"></i> Virtual</span></td>
-                <td>${pill}</td>
-                <td>
-                    <div class="acciones">
-                        <button class="btn-ver"  title="Ver detalle" onclick="verDetalle(${h.id})">
-                            <i class="fas fa-eye"></i>
-                        </button>
-                        <button class="btn-del" title="Eliminar horario" onclick="eliminarHorario(${h.id}, '${h.materia}')">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </div>
-                </td>
-            </tr>`;
-        }).join('');
-    }
-
-    // ── PAGINACIÓN ────────────────────────────────
-    function renderPaginacion() {
-        const total  = Math.ceil(filtrados.length / POR_PAGINA);
-        const pag    = document.getElementById('paginacion');
-        if (total <= 1) { pag.innerHTML = ''; return; }
-
-        let html = `<button class="btn-page" onclick="irPagina(${paginaActual-1})" ${paginaActual===1?'disabled':''}>
-            <i class="fas fa-chevron-left"></i></button>`;
-        for (let i = 1; i <= total; i++) {
-            html += `<button class="btn-page ${i===paginaActual?'active':''}" onclick="irPagina(${i})">${i}</button>`;
-        }
-        html += `<button class="btn-page" onclick="irPagina(${paginaActual+1})" ${paginaActual===total?'disabled':''}>
-            <i class="fas fa-chevron-right"></i></button>`;
-        pag.innerHTML = html;
-    }
-
-    function irPagina(n) {
-        const total = Math.ceil(filtrados.length / POR_PAGINA);
-        if (n < 1 || n > total) return;
-        paginaActual = n;
-        renderTabla();
-        renderPaginacion();
-    }
-
-    // ── VER DETALLE (DRAWER) ──────────────────────
-    function verDetalle(id) {
-        const h = todosLosHorarios.find(x => x.id === id);
-        if (!h) return;
-
-        const reservado = h.estado === 'reservado';
-        document.getElementById('drawerContent').innerHTML = `
-            <div class="drawer-row">
-                <i class="fas fa-book"></i>
-                <div><div class="dl">Materia</div><div class="dv">${h.materia}</div></div>
-            </div>
-            <div class="drawer-row">
-                <i class="far fa-calendar"></i>
-                <div><div class="dl">Fecha</div><div class="dv">${formatFechaLarga(h.fecha)}</div></div>
-            </div>
-            <div class="drawer-row">
-                <i class="far fa-clock"></i>
-                <div><div class="dl">Hora</div><div class="dv">${formatHora(h.hora_inicio)}</div></div>
-            </div>
-            <div class="drawer-row">
-                <i class="fas fa-video"></i>
-                <div><div class="dl">Modalidad</div><div class="dv">Virtual (Google Meet)</div></div>
-            </div>
-            <div class="drawer-row">
-                <i class="fas fa-user-graduate"></i>
-                <div>
-                    <div class="dl">Estudiante</div>
-                    <div class="dv">${reservado ? h.estudiante_nombre : '—'}</div>
-                </div>
-            </div>
-            <div class="drawer-row">
-                <i class="fas fa-info-circle"></i>
-                <div>
-                    <div class="dl">Estado</div>
-                    <div class="dv">${reservado
-                        ? '<span class="pill pill-green">✅ Reservado</span>'
-                        : '<span class="pill pill-blue">🟢 Disponible</span>'}</div>
-                </div>
-            </div>
-            ${reservado ? `
-            <div class="drawer-row">
-                <i class="fas fa-credit-card"></i>
-                <div><div class="dl">Pago</div><div class="dv">$50.000 COP · Confirmado</div></div>
-            </div>` : ''}
-        `;
-
-        document.getElementById('drawerOverlay').classList.add('open');
-        document.getElementById('drawer').classList.add('open');
-    }
-
-    function cerrarDrawer() {
-        document.getElementById('drawerOverlay').classList.remove('open');
-        document.getElementById('drawer').classList.remove('open');
-    }
-
-    // ── ELIMINAR HORARIO ─────────────────────────
-    async function eliminarHorario(id, materia) {
-        if (!confirm(`¿Eliminar el horario de "${materia}"? Esta acción no se puede deshacer.`)) return;
-
-        try {
-            const res = await fetch(`${API}/api/horarios/${id}`, {
-                method : 'DELETE',
-                headers: { 'Authorization': 'Bearer ' + token }
-            });
-            const data = await res.json();
-
-            if (!res.ok) {
-                toast(`❌ ${data.error || 'No se pudo eliminar'}`, true);
-                return;
-            }
-
-            // Quitar localmente y re-renderizar
-            todosLosHorarios = todosLosHorarios.filter(h => h.id !== id);
-            actualizarStats();
-            aplicarFiltros();
-            toast('🗑️ Horario eliminado correctamente');
-
-        } catch(_) {
-            toast('❌ Error de conexión', true);
-        }
-    }
-
-    // ── MODAL NUEVO HORARIO ──────────────────────
-    function abrirModalNuevo() {
-        document.getElementById('modalTitle').textContent = 'Publicar nuevo horario';
-        document.getElementById('mMateria').value = '';
-        document.getElementById('mFecha').value   = '';
-        document.getElementById('mHora').value    = '';
-        document.getElementById('modalForm').classList.add('active');
-    }
-
-    function cerrarModal() {
-        document.getElementById('modalForm').classList.remove('active');
-    }
-
-    async function guardarHorario() {
-        const materia    = document.getElementById('mMateria').value;
-        const fecha      = document.getElementById('mFecha').value;
-        const hora       = document.getElementById('mHora').value;
-
-        if (!materia || !fecha || !hora) {
-            toast('⚠️ Completa todos los campos', true); return;
-        }
-
-        try {
-            const res = await fetch(`${API}/api/horarios`, {
-                method : 'POST',
-                headers: {
-                    'Content-Type' : 'application/json',
-                    'Authorization': 'Bearer ' + token
-                },
-                body: JSON.stringify({
-                    profesor_nombre: nombreProfesor,
-                    materia,
-                    fecha,
-                    hora_inicio: hora
-                })
-            });
-            const data = await res.json();
-
-            if (!res.ok) {
-                toast(`❌ ${data.error || 'Error al guardar'}`, true); return;
-            }
-
-            cerrarModal();
-            toast('✅ Horario publicado correctamente');
-            cargarAgenda(); // recargar para ver el nuevo
-
-        } catch(_) {
-            toast('❌ Error de conexión', true);
-        }
-    }
-
-    // Cerrar modal al clic fuera
-    document.getElementById('modalForm').addEventListener('click', e => {
-        if (e.target === document.getElementById('modalForm')) cerrarModal();
-    });
-
-    // ── LISTENERS FILTROS ─────────────────────────
-    document.getElementById('filtroFecha').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtroMateria').addEventListener('change', aplicarFiltros);
-    document.getElementById('filtroEstado').addEventListener('change', aplicarFiltros);
-
-    // ── TOAST ─────────────────────────────────────
-    let _toastTimer;
-    function toast(msg, error = false) {
-        const el = document.getElementById('toast');
-        document.getElementById('toastMsg').textContent = msg;
-        el.querySelector('i').style.color = error ? '#f87171' : '#4ade80';
-        el.classList.add('show');
-        clearTimeout(_toastTimer);
-        _toastTimer = setTimeout(() => el.classList.remove('show'), 3200);
-    }
-
-    // ── FORMATO FECHAS / HORAS ────────────────────
-    function formatFechaCorta(iso) {
-        if (!iso) return '—';
-        const d = new Date(iso + 'T12:00:00');
-        return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
-    }
-
-    function formatFechaLarga(iso) {
-        if (!iso) return '—';
-        const d    = new Date(iso + 'T12:00:00');
-        const dias = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-        const mes  = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
-        return `${dias[d.getDay()]} ${d.getDate()} de ${mes[d.getMonth()]} de ${d.getFullYear()}`;
-    }
-
-    function formatHora(hora) {
-        if (!hora) return '—';
-        const [h, m] = hora.split(':');
-        const n = parseInt(h, 10);
-        const suf = n >= 12 ? 'PM' : 'AM';
-        const h12 = n > 12 ? n - 12 : n === 0 ? 12 : n;
-        return `${h12}:${m || '00'} ${suf}`;
-    }
-
-    // ── INICIAR ───────────────────────────────────
+    /* =====================================================
+       INICIO DEL SISTEMA
+       Ejecuta funciones al cargar la página
+    ====================================================== */
     (async function() {
+
+        // Verificar sesión
         await verificarSesion();
+
+        // Cargar agenda
         await cargarAgenda();
+
     })();
+
 </script>
+
 </body>
 </html>

@@ -1,939 +1,589 @@
+<!-- =====================================================
+     DOCUMENTO HTML5
+     Página de configuración administrativa del sistema
+     EduAgenda
+===================================================== -->
 <!DOCTYPE html>
+
+<!-- Idioma principal del sistema -->
 <html lang="es">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EduAgenda — Configuración</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --bg: #F5F3EE;
-    --surface: #FDFCF9;
-    --border: #E4E0D8;
-    --text: #1C1A17;
-    --muted: #7A7570;
-    --accent: #2B5CE6;
-    --accent-light: #EAF0FF;
-    --danger: #C0392B;
-    --danger-light: #FDF0EE;
-    --success: #1A7F4B;
-    --success-light: #EAF6EF;
-    --warn: #B45309;
-    --warn-light: #FEF3C7;
-  }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+    <!-- Configuración de caracteres -->
+    <meta charset="UTF-8">
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+    <!-- Diseño responsive para celulares y tablets -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  /* ── NAV ── */
-  nav {
-    background: var(--surface);
-    border-bottom: 1px solid var(--border);
-    padding: 0 5%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 62px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+    <!-- Título mostrado en la pestaña -->
+    <title>EduAgenda — Configuración Admin</title>
 
-  .logo {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.3rem;
-    color: var(--text);
-    letter-spacing: -0.02em;
-  }
+    <!-- =====================================================
+         CONEXIÓN CON GOOGLE FONTS
+         Importación de tipografías del sistema
+    ====================================================== -->
 
-  .nav-links { display: flex; gap: 2px; align-items: center; }
+    <!-- Optimización de conexión -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
 
-  .nav-links a {
-    text-decoration: none;
-    color: var(--muted);
-    font-size: 0.875rem;
-    font-weight: 500;
-    padding: 6px 14px;
-    border-radius: 8px;
-    transition: all 0.15s;
-  }
+    <!-- Optimización de carga -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-  .nav-links a:hover { background: var(--bg); color: var(--text); }
-  .nav-links a.active { background: var(--accent-light); color: var(--accent); }
+    <!-- Fuentes del sistema -->
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans&family=DM+Serif+Display&display=swap" rel="stylesheet">
 
-  .nav-user {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-left: 8px;
-    padding: 5px 12px 5px 5px;
-    border-radius: 99px;
-    border: 1px solid var(--border);
-    background: var(--surface);
-  }
+    <style>
 
-  .nav-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    font-weight: 700;
-    flex-shrink: 0;
-  }
+        /* =====================================================
+           VARIABLES GLOBALES
+           Colores reutilizables del sistema
+        ====================================================== */
+        :root {
 
-  .nav-name {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--text);
-  }
+            --bg:#F5F3EE;
+            --surface:#FDFCF9;
+            --border:#E4E0D8;
 
-  /* ── PAGE ── */
-  .page {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 40px 24px 80px;
-  }
+            --text:#1C1A17;
+            --muted:#7A7570;
 
-  .page-header {
-    margin-bottom: 36px;
-  }
+            --accent:#2B5CE6;
+            --accent-light:#EAF0FF;
 
-  .page-title {
-    font-family: 'DM Serif Display', serif;
-    font-size: 2rem;
-    letter-spacing: -0.03em;
-    color: var(--text);
-    line-height: 1.2;
-  }
+            --danger:#C0392B;
+            --danger-light:#FDF0EE;
 
-  .page-sub { font-size: 0.875rem; color: var(--muted); margin-top: 6px; }
+            --success:#1A7F4B;
+            --success-light:#EAF6EF;
 
-  /* ── SKELETON LOADER ── */
-  .skeleton {
-    background: linear-gradient(90deg, var(--border) 25%, #F0EDE8 50%, var(--border) 75%);
-    background-size: 200% 100%;
-    animation: shimmer 1.4s infinite;
-    border-radius: 6px;
-    display: inline-block;
-  }
-  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+            --warn:#B45309;
+            --warn-light:#FEF3C7;
+        }
 
-  /* ── GRID ── */
-  .config-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-  }
+        /* =====================================================
+           CONFIGURACIÓN GENERAL
+           Elimina márgenes y paddings
+        ====================================================== */
+        * {
 
-  /* ── CARDS ── */
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 28px;
-  }
+            margin:0;
 
-  .card-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-bottom: 22px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+            padding:0;
 
-  .card-title svg { opacity: 0.6; }
+            box-sizing:border-box;
+        }
 
-  /* ── AVATAR GRANDE ── */
-  .avatar-row {
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    margin-bottom: 24px;
-  }
+        /* =====================================================
+           BODY PRINCIPAL
+           Define colores y tipografía general
+        ====================================================== */
+        body {
 
-  .avatar-big {
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.6rem;
-    flex-shrink: 0;
-    border: 3px solid var(--accent-light);
-  }
+            font-family:'DM Sans',sans-serif;
 
-  .avatar-info .avatar-name {
-    font-weight: 600;
-    font-size: 1rem;
-    color: var(--text);
-  }
+            background:var(--bg);
 
-  .avatar-info .avatar-tipo {
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-top: 2px;
-    text-transform: capitalize;
-  }
+            color:var(--text);
 
-  /* ── FIELDS ── */
-  .field { margin-bottom: 16px; }
+            min-height:100vh;
+        }
 
-  .field label {
-    display: block;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 7px;
-  }
+        /* =====================================================
+           NAVBAR PRINCIPAL
+           Barra superior de navegación
+        ====================================================== */
+        nav {
 
-  .field input {
-    width: 100%;
-    padding: 11px 14px;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    background: var(--bg);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
+            background:var(--surface);
 
-  .field input:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(43,92,230,0.1);
-    background: var(--surface);
-  }
+            border-bottom:1px solid var(--border);
 
-  .field input:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-    background: var(--border);
-  }
+            padding:0 5%;
 
-  .field-hint {
-    font-size: 0.75rem;
-    color: var(--muted);
-    margin-top: 5px;
-  }
+            display:flex;
 
-  /* ── MEMBER SINCE ── */
-  .member-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.78rem;
-    color: var(--muted);
-    margin-bottom: 20px;
-  }
+            justify-content:space-between;
 
-  /* ── BOTONES ── */
-  .card-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 22px;
-  }
+            align-items:center;
 
-  .btn-primary {
-    flex: 1;
-    padding: 11px 18px;
-    border: none;
-    border-radius: 11px;
-    background: var(--accent);
-    color: #fff;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-    transition: background 0.15s, transform 0.1s;
-  }
+            height:62px;
 
-  .btn-primary:hover { background: #2050cc; }
-  .btn-primary:active { transform: scale(0.98); }
-  .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+            position:sticky;
 
-  .btn-secondary {
-    padding: 11px 18px;
-    border: 1px solid var(--border);
-    border-radius: 11px;
-    background: none;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--muted);
-    cursor: pointer;
-    transition: background 0.15s;
-  }
+            top:0;
 
-  .btn-secondary:hover { background: var(--bg); color: var(--text); }
+            z-index:100;
+        }
 
-  .btn-danger {
-    padding: 11px 18px;
-    border: none;
-    border-radius: 11px;
-    background: var(--danger-light);
-    color: var(--danger);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.875rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s;
-    border: 1px solid #F5C6C2;
-  }
+        /* =====================================================
+           LOGO DEL SISTEMA
+        ====================================================== */
+        .logo {
 
-  .btn-danger:hover { background: #fce8e6; }
+            font-family:'DM Serif Display',serif;
 
-  /* ── SWITCHES ── */
-  .setting-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--border);
-  }
+            font-size:1.3rem;
 
-  .setting-item:last-child { border-bottom: none; }
+            color:var(--text);
+        }
 
-  .setting-label strong {
-    display: block;
-    font-size: 0.9rem;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 2px;
-  }
+        /* =====================================================
+           CONTENEDOR DE ENLACES
+        ====================================================== */
+        .nav-links {
 
-  .setting-label p {
-    font-size: 0.78rem;
-    color: var(--muted);
-  }
+            display:flex;
 
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 44px;
-    height: 24px;
-    flex-shrink: 0;
-  }
+            gap:2px;
 
-  .switch input { opacity: 0; width: 0; height: 0; }
+            align-items:center;
+        }
 
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    inset: 0;
-    background: var(--border);
-    transition: 0.25s;
-    border-radius: 99px;
-  }
+        /* =====================================================
+           ENLACES DEL MENÚ
+        ====================================================== */
+        .nav-links a {
 
-  .slider:before {
-    content: "";
-    position: absolute;
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background: white;
-    transition: 0.25s;
-    border-radius: 50%;
-  }
+            text-decoration:none;
 
-  input:checked + .slider { background: var(--accent); }
-  input:checked + .slider:before { transform: translateX(20px); }
+            color:var(--muted);
 
-  /* ── STATS PERFIL ── */
-  .perfil-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-    margin-bottom: 20px;
-  }
+            font-size:0.875rem;
 
-  .perfil-stat {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 12px;
-    text-align: center;
-  }
+            padding:6px 14px;
 
-  .perfil-stat-val {
-    font-family: 'DM Serif Display', serif;
-    font-size: 1.4rem;
-    color: var(--text);
-    line-height: 1;
-  }
+            border-radius:8px;
+        }
 
-  .perfil-stat-label {
-    font-size: 0.68rem;
-    color: var(--muted);
-    margin-top: 4px;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 600;
-  }
+        /* Hover de enlaces */
+        .nav-links a:hover {
 
-  /* ── DANGER ZONE ── */
-  .danger-zone {
-    border-color: #F5C6C2;
-    background: var(--danger-light);
-  }
+            background:var(--bg);
 
-  .danger-zone .card-title { color: var(--danger); }
+            color:var(--text);
+        }
 
-  .danger-text {
-    font-size: 0.85rem;
-    color: var(--muted);
-    margin-bottom: 18px;
-    line-height: 1.5;
-  }
+        /* Página activa */
+        .nav-links a.active {
 
-  /* ── TOAST ── */
-  #toast {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    z-index: 9999;
-    transform: translateY(20px);
-    opacity: 0;
-    transition: all 0.25s ease;
-    pointer-events: none;
-    max-width: 320px;
-  }
+            background:var(--accent-light);
 
-  #toast.show { transform: translateY(0); opacity: 1; }
-  #toast.ok { background: var(--success-light); color: var(--success); border: 1px solid #A7E6C5; }
-  #toast.err { background: var(--danger-light); color: var(--danger); border: 1px solid #F5C6C2; }
+            color:var(--accent);
+        }
 
-  /* ── PASSWORD STRENGTH ── */
-  .pw-strength {
-    margin-top: 6px;
-    height: 4px;
-    border-radius: 99px;
-    background: var(--border);
-    overflow: hidden;
-    transition: all 0.3s;
-  }
+        /* =====================================================
+           BOTÓN CERRAR SESIÓN
+        ====================================================== */
+        .btn-logout {
 
-  .pw-strength-fill {
-    height: 100%;
-    border-radius: 99px;
-    width: 0%;
-    transition: width 0.3s, background 0.3s;
-  }
+            padding:7px 16px;
 
-  @media (max-width: 760px) {
-    .config-grid { grid-template-columns: 1fr; }
-    .nav-links { display: none; }
-    .perfil-stats { grid-template-columns: repeat(3, 1fr); }
-  }
-</style>
+            border-radius:8px;
+
+            border:1px solid #F5C6C2;
+
+            background:var(--danger-light);
+
+            color:var(--danger);
+
+            cursor:pointer;
+        }
+
+        /* =====================================================
+           CONTENEDOR PRINCIPAL
+        ====================================================== */
+        .page {
+
+            max-width:1100px;
+
+            margin:0 auto;
+
+            padding:40px 24px 80px;
+        }
+
+        /* =====================================================
+           TÍTULO PRINCIPAL
+        ====================================================== */
+        .page-title {
+
+            font-family:'DM Serif Display',serif;
+
+            font-size:2rem;
+
+            margin-bottom:6px;
+        }
+
+        /* =====================================================
+           SUBTÍTULO
+        ====================================================== */
+        .page-sub {
+
+            font-size:0.875rem;
+
+            color:var(--muted);
+
+            margin-bottom:36px;
+        }
+
+        /* =====================================================
+           GRID DE TARJETAS
+           Organización de accesos rápidos
+        ====================================================== */
+        .quick-grid {
+
+            display:grid;
+
+            grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+
+            gap:14px;
+
+            margin-bottom:36px;
+        }
+
+        /* =====================================================
+           TARJETAS DE ACCESO
+        ====================================================== */
+        .quick-card {
+
+            background:var(--surface);
+
+            border:1px solid var(--border);
+
+            border-radius:14px;
+
+            padding:20px 22px;
+
+            cursor:pointer;
+        }
+
+        /* Hover de tarjetas */
+        .quick-card:hover {
+
+            transform:translateY(-3px);
+
+            border-color:var(--accent);
+        }
+
+        /* Tarjeta activa */
+        .quick-card.active-panel {
+
+            border-color:var(--accent);
+
+            background:var(--accent-light);
+        }
+
+        /* =====================================================
+           ICONOS DE TARJETAS
+        ====================================================== */
+        .quick-icon {
+
+            width:38px;
+
+            height:38px;
+
+            border-radius:10px;
+
+            display:flex;
+
+            align-items:center;
+
+            justify-content:center;
+
+            margin-bottom:12px;
+        }
+
+        /* Colores de iconos */
+        .quick-icon.blue { background:var(--accent-light); }
+
+        .quick-icon.green { background:var(--success-light); }
+
+        .quick-icon.warn { background:var(--warn-light); }
+
+        .quick-icon.red { background:var(--danger-light); }
+
+        /* =====================================================
+           TÍTULOS DE TARJETAS
+        ====================================================== */
+        .quick-title {
+
+            font-size:0.9rem;
+
+            font-weight:600;
+
+            margin-bottom:4px;
+        }
+
+        /* Subtítulos */
+        .quick-sub {
+
+            font-size:0.75rem;
+
+            color:var(--muted);
+        }
+
+        /* =====================================================
+           PANELES DEL SISTEMA
+        ====================================================== */
+        .panel {
+
+            display:none;
+
+            background:var(--surface);
+
+            border:1px solid var(--border);
+
+            border-radius:16px;
+
+            padding:28px;
+
+            margin-bottom:20px;
+
+            animation:fadeIn 0.2s ease;
+        }
+
+        /* Panel visible */
+        .panel.open {
+
+            display:block;
+        }
+
+        /* =====================================================
+           ANIMACIÓN DE APARICIÓN
+        ====================================================== */
+        @keyframes fadeIn {
+
+            from {
+
+                opacity:0;
+
+                transform:translateY(6px);
+            }
+
+            to {
+
+                opacity:1;
+
+                transform:translateY(0);
+            }
+        }
+
+        /* =====================================================
+           TÍTULO DE PANELES
+        ====================================================== */
+        .panel-title {
+
+            font-size:1.3rem;
+
+            margin-bottom:22px;
+        }
+
+        /* =====================================================
+           FILAS DE FORMULARIO
+        ====================================================== */
+        .form-row {
+
+            display:grid;
+
+            grid-template-columns:1fr 1fr;
+
+            gap:16px;
+        }
+
+        /* =====================================================
+           CAMPOS DEL FORMULARIO
+        ====================================================== */
+        .field {
+
+            margin-bottom:16px;
+        }
+
+        /* Etiquetas */
+        .field label {
+
+            display:block;
+
+            font-size:0.78rem;
+
+            margin-bottom:7px;
+        }
+
+        /* Inputs y selects */
+        .field input,
+        .field select {
+
+            width:100%;
+
+            padding:11px 14px;
+
+            border:1px solid var(--border);
+
+            border-radius:11px;
+        }
+
+        /* =====================================================
+           BOTONES PRINCIPALES
+        ====================================================== */
+        .btn-primary {
+
+            padding:11px 22px;
+
+            border:none;
+
+            border-radius:11px;
+
+            background:var(--accent);
+
+            color:#fff;
+
+            cursor:pointer;
+        }
+
+        /* Hover botón principal */
+        .btn-primary:hover {
+
+            background:#2050cc;
+        }
+
+        /* =====================================================
+           BOTÓN SECUNDARIO
+        ====================================================== */
+        .btn-secondary {
+
+            padding:11px 18px;
+
+            border:1px solid var(--border);
+
+            border-radius:11px;
+
+            background:none;
+
+            cursor:pointer;
+        }
+
+        /* =====================================================
+           TABLAS DEL SISTEMA
+        ====================================================== */
+        table {
+
+            width:100%;
+
+            border-collapse:collapse;
+        }
+
+        /* Encabezados */
+        th {
+
+            padding:11px 16px;
+
+            text-align:left;
+        }
+
+        /* Celdas */
+        td {
+
+            padding:14px 16px;
+
+            border-bottom:1px solid var(--border);
+        }
+
+        /* =====================================================
+           TOAST DE NOTIFICACIONES
+        ====================================================== */
+        #toast {
+
+            position:fixed;
+
+            bottom:28px;
+
+            right:28px;
+
+            padding:12px 20px;
+
+            border-radius:12px;
+
+            opacity:0;
+        }
+
+        /* Toast visible */
+        #toast.show {
+
+            opacity:1;
+        }
+
+        /* Toast éxito */
+        #toast.ok {
+
+            background:var(--success-light);
+
+            color:var(--success);
+        }
+
+        /* Toast error */
+        #toast.err {
+
+            background:var(--danger-light);
+
+            color:var(--danger);
+        }
+
+        /* =====================================================
+           RESPONSIVE DESIGN
+           Adaptación móvil
+        ====================================================== */
+        @media(max-width:700px) {
+
+            .form-row {
+
+                grid-template-columns:1fr;
+            }
+
+            .nav-links {
+
+                display:none;
+            }
+        }
+
+    </style>
+
 </head>
+
 <body>
 
+<!-- =====================================================
+     BARRA DE NAVEGACIÓN
+===================================================== -->
 <nav>
-  <div class="logo">EduAgenda</div>
-  <div class="nav-links">
-    <a href="profesor.html">Inicio</a>
-    <a href="agenda.html">Agenda</a>
-    <a href="solicitudes.html">Solicitudes</a>
-    <a href="materias.html">Materias</a>
-    <a href="#" class="active">Configuración</a>
-    <div class="nav-user">
-      <div class="nav-avatar" id="navAvatar">—</div>
-      <span class="nav-name" id="navNombre">Cargando…</span>
+
+    <!-- Logo principal -->
+    <div class="logo">
+
+        EduAgenda
+
     </div>
-  </div>
+
+    <!-- Menú de navegación -->
+    <div class="nav-links">
+
+        <!-- Página inicio -->
+        <a href="admin.html">Inicio</a>
+
+        <!-- Página reportes -->
+        <a href="reportes.html">Reportes</a>
+
+        <!-- Página seguridad -->
+        <a href="seguridad.html">Seguridad</a>
+
+        <!-- Página actual -->
+        <a href="#" class="active">Configuración</a>
+
+        <!-- Botón cerrar sesión -->
+        <button class="btn-logout" onclick="logout()">
+
+            Cerrar sesión
+
+        </button>
+
+    </div>
+
 </nav>
-
-<div class="page">
-
-  <div class="page-header">
-    <h1 class="page-title">Configuración</h1>
-    <p class="page-sub">Administra tu perfil, seguridad y preferencias de cuenta.</p>
-  </div>
-
-  <div class="config-grid">
-
-    <!-- PERFIL -->
-    <div class="card">
-      <div class="card-title">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-        Información del Perfil
-      </div>
-
-      <div class="avatar-row">
-        <div class="avatar-big" id="avatarBig">—</div>
-        <div class="avatar-info">
-          <div class="avatar-name" id="avatarName">Cargando…</div>
-          <div class="avatar-tipo" id="avatarTipo">—</div>
-        </div>
-      </div>
-
-      <div class="member-badge" id="memberBadge">
-        <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        Miembro desde…
-      </div>
-
-      <div class="perfil-stats">
-        <div class="perfil-stat">
-          <div class="perfil-stat-val" id="statMaterias">—</div>
-          <div class="perfil-stat-label">Materias</div>
-        </div>
-        <div class="perfil-stat">
-          <div class="perfil-stat-val" id="statTareas">—</div>
-          <div class="perfil-stat-label">Tareas</div>
-        </div>
-        <div class="perfil-stat">
-          <div class="perfil-stat-val" id="statEst">—</div>
-          <div class="perfil-stat-label">Estudiantes</div>
-        </div>
-      </div>
-
-      <div class="field">
-        <label>Nombre Completo</label>
-        <input type="text" id="inpNombre" placeholder="Tu nombre">
-      </div>
-
-      <div class="field">
-        <label>Correo Electrónico</label>
-        <input type="email" id="inpEmail" placeholder="tu@email.com" disabled>
-        <div class="field-hint">El correo no se puede cambiar.</div>
-      </div>
-
-      <div class="field">
-        <label>Teléfono</label>
-        <input type="text" id="inpTelefono" placeholder="+57 300 000 0000">
-      </div>
-
-      <div class="field">
-        <label>Especialidad / Área</label>
-        <input type="text" id="inpEspecialidad" placeholder="Ej: Matemáticas, Inglés…">
-        <div class="field-hint">Se guarda en el campo "Documento" de la BD.</div>
-      </div>
-
-      <div class="card-actions">
-        <button class="btn-primary" id="btnGuardarPerfil" onclick="guardarPerfil()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-          Guardar Cambios
-        </button>
-        <button class="btn-secondary" onclick="cargarPerfil()">Descartar</button>
-      </div>
-    </div>
-
-    <!-- SEGURIDAD -->
-    <div class="card">
-      <div class="card-title">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Seguridad
-      </div>
-
-      <div class="field">
-        <label>Contraseña Actual</label>
-        <input type="password" id="pwActual" placeholder="Tu contraseña actual">
-      </div>
-
-      <div class="field">
-        <label>Nueva Contraseña</label>
-        <input type="password" id="pwNueva" placeholder="Mínimo 6 caracteres" oninput="evalPw(this.value)">
-        <div class="pw-strength"><div class="pw-strength-fill" id="pwFill"></div></div>
-      </div>
-
-      <div class="field">
-        <label>Confirmar Contraseña</label>
-        <input type="password" id="pwConfirmar" placeholder="Repite la nueva contraseña">
-      </div>
-
-      <div class="card-actions">
-        <button class="btn-primary" id="btnCambiarPw" onclick="cambiarPassword()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-          Actualizar Contraseña
-        </button>
-        <button class="btn-secondary" onclick="limpiarPw()">Limpiar</button>
-      </div>
-
-      <div style="margin-top: 28px; padding-top: 22px; border-top: 1px solid var(--border);">
-        <div class="card-title" style="margin-bottom:14px;">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-          Sesión Actual
-        </div>
-        <div style="font-size:0.85rem; color:var(--muted); line-height:1.6; background:var(--bg); border-radius:10px; padding:14px; border:1px solid var(--border);">
-          <div>👤 <strong id="sesionNombre">—</strong></div>
-          <div>📧 <span id="sesionEmail">—</span></div>
-          <div>🏷️ Tipo: <span id="sesionTipo" style="text-transform:capitalize">—</span></div>
-          <div style="margin-top:10px;">
-            <button class="btn-danger" style="width:100%" onclick="cerrarSesion()">
-              Cerrar Sesión
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NOTIFICACIONES -->
-    <div class="card">
-      <div class="card-title">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-        Notificaciones
-      </div>
-
-      <div class="setting-item">
-        <div class="setting-label">
-          <strong>Correos Electrónicos</strong>
-          <p>Recibir notificaciones por email</p>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="swEmail" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div class="setting-item">
-        <div class="setting-label">
-          <strong>Recordatorios de Clases</strong>
-          <p>Avisos antes de cada clase programada</p>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="swRecordatorio" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div class="setting-item">
-        <div class="setting-label">
-          <strong>Nuevas Reservas</strong>
-          <p>Alertas cuando un estudiante reserve</p>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="swReservas" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div class="setting-item">
-        <div class="setting-label">
-          <strong>Tareas Entregadas</strong>
-          <p>Cuando un estudiante entregue una tarea</p>
-        </div>
-        <label class="switch">
-          <input type="checkbox" id="swTareas" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div class="card-actions">
-        <button class="btn-primary" onclick="guardarNotificaciones()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          Guardar Preferencias
-        </button>
-      </div>
-    </div>
-
-    <!-- ZONA PELIGROSA -->
-    <div class="card danger-zone">
-      <div class="card-title">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        Zona Peligrosa
-      </div>
-
-      <p class="danger-text">
-        Las siguientes acciones son <strong>irreversibles</strong>. Procede con precaución. 
-        Si eliminas tu cuenta, todas tus materias, horarios y tareas serán borrados permanentemente.
-      </p>
-
-      <div style="display:flex; flex-direction:column; gap:10px;">
-        <button class="btn-danger" style="width:100%; padding:13px;" onclick="confirmarEliminarCuenta()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-          Eliminar mi cuenta permanentemente
-        </button>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<div id="toast"></div>
-
-<script>
-  const API = '/api';
-  const token = localStorage.getItem('token');
-  const tipo = localStorage.getItem('tipo') || '';
-
-  /* ── INIT ── */
-  if (!token) {
-    setTimeout(() => window.location.href = 'sesion.html', 500);
-  } else {
-    cargarPerfil();
-    cargarStats();
-    cargarPrefsLocales();
-  }
-
-  /* ── CARGAR PERFIL ── */
-  async function cargarPerfil() {
-    try {
-      const res = await fetch(`${API}/perfil`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-
-      if (res.status === 401) { window.location.href = 'sesion.html'; return; }
-      if (!res.ok) { toast('No se pudo cargar el perfil.', false); return; }
-
-      const u = await res.json();
-
-      // Navbar
-      const initials = iniciales(u.nombre);
-      document.getElementById('navAvatar').textContent = initials;
-      document.getElementById('navNombre').textContent = u.nombre;
-
-      // Avatar grande
-      document.getElementById('avatarBig').textContent = initials;
-      document.getElementById('avatarName').textContent = u.nombre;
-      document.getElementById('avatarTipo').textContent = u.tipo + ' · EduAgenda';
-
-      // Fecha de miembro
-      if (u.creado_en) {
-        const fecha = new Date(u.creado_en);
-        const meses = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
-        document.getElementById('memberBadge').innerHTML = `
-          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-          Miembro desde ${meses[fecha.getMonth()]} ${fecha.getFullYear()}`;
-      }
-
-      // Campos editables
-      document.getElementById('inpNombre').value = u.nombre || '';
-      document.getElementById('inpEmail').value = u.email || '';
-      document.getElementById('inpTelefono').value = u.telefono || '';
-      document.getElementById('inpEspecialidad').value = u.documento || '';
-
-      // Sesión
-      document.getElementById('sesionNombre').textContent = u.nombre;
-      document.getElementById('sesionEmail').textContent = u.email;
-      document.getElementById('sesionTipo').textContent = u.tipo;
-
-    } catch (err) {
-      toast('Error al conectar con el servidor.', false);
-    }
-  }
-
-  /* ── CARGAR STATS ── */
-  async function cargarStats() {
-    try {
-      // Materias
-      const resMat = await fetch(`${API}/materias`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (resMat.ok) {
-        const materias = await resMat.json();
-        document.getElementById('statMaterias').textContent = materias.length;
-        const uniq = new Set(materias.map(m => m.estudiante_nombre)).size;
-        document.getElementById('statEst').textContent = uniq;
-      }
-
-      // Tareas
-      const resTar = await fetch(`${API}/tareas-profesor/todas`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (resTar.ok) {
-        const tareas = await resTar.json();
-        document.getElementById('statTareas').textContent = tareas.length;
-      }
-    } catch { /* silencioso */ }
-  }
-
-  /* ── GUARDAR PERFIL ── */
-  async function guardarPerfil() {
-    const nombre = document.getElementById('inpNombre').value.trim();
-    const telefono = document.getElementById('inpTelefono').value.trim();
-    const especialidad = document.getElementById('inpEspecialidad').value.trim();
-
-    if (!nombre) { toast('El nombre no puede estar vacío.', false); return; }
-
-    const btn = document.getElementById('btnGuardarPerfil');
-    btn.disabled = true;
-    btn.textContent = 'Guardando…';
-
-    try {
-      const res = await fetch(`${API}/perfil`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ nombre, telefono, especialidad })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        toast('✓ Perfil actualizado correctamente.', true);
-        // Actualizar localStorage y navbar
-        localStorage.setItem('nombre', nombre);
-        document.getElementById('navNombre').textContent = nombre;
-        document.getElementById('navAvatar').textContent = iniciales(nombre);
-        document.getElementById('avatarBig').textContent = iniciales(nombre);
-        document.getElementById('avatarName').textContent = nombre;
-        document.getElementById('sesionNombre').textContent = nombre;
-      } else {
-        toast(data.error || 'Error al guardar.', false);
-      }
-    } catch {
-      toast('Error de conexión.', false);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Guardar Cambios`;
-    }
-  }
-
-  /* ── CAMBIAR PASSWORD ── */
-  async function cambiarPassword() {
-    const actual = document.getElementById('pwActual').value;
-    const nueva = document.getElementById('pwNueva').value;
-    const confirmar = document.getElementById('pwConfirmar').value;
-
-    if (!actual || !nueva || !confirmar) { toast('Completa todos los campos de contraseña.', false); return; }
-    if (nueva !== confirmar) { toast('Las contraseñas nuevas no coinciden.', false); return; }
-    if (nueva.length < 6) { toast('La contraseña debe tener al menos 6 caracteres.', false); return; }
-
-    const btn = document.getElementById('btnCambiarPw');
-    btn.disabled = true;
-    btn.textContent = 'Actualizando…';
-
-    try {
-      const res = await fetch(`${API}/perfil/password`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({ actual, nueva, confirmar })
-      });
-
-      const data = await res.json();
-      if (res.ok) {
-        toast('✓ Contraseña actualizada. Vuelve a iniciar sesión.', true);
-        limpiarPw();
-        setTimeout(() => cerrarSesion(), 2500);
-      } else {
-        toast(data.error || 'Error al cambiar la contraseña.', false);
-      }
-    } catch {
-      toast('Error de conexión.', false);
-    } finally {
-      btn.disabled = false;
-      btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Actualizar Contraseña`;
-    }
-  }
-
-  /* ── NOTIFICACIONES (localStorage) ── */
-  function guardarNotificaciones() {
-    const prefs = {
-      email: document.getElementById('swEmail').checked,
-      recordatorio: document.getElementById('swRecordatorio').checked,
-      reservas: document.getElementById('swReservas').checked,
-      tareas: document.getElementById('swTareas').checked,
-    };
-    localStorage.setItem('notif_prefs', JSON.stringify(prefs));
-    toast('✓ Preferencias de notificación guardadas.', true);
-  }
-
-  function cargarPrefsLocales() {
-    try {
-      const prefs = JSON.parse(localStorage.getItem('notif_prefs') || '{}');
-      if ('email' in prefs) document.getElementById('swEmail').checked = prefs.email;
-      if ('recordatorio' in prefs) document.getElementById('swRecordatorio').checked = prefs.recordatorio;
-      if ('reservas' in prefs) document.getElementById('swReservas').checked = prefs.reservas;
-      if ('tareas' in prefs) document.getElementById('swTareas').checked = prefs.tareas;
-    } catch { /* usa defaults */ }
-  }
-
-  /* ── CERRAR SESIÓN ── */
-  function cerrarSesion() {
-    localStorage.clear();
-    window.location.href = 'sesion.html';
-  }
-
-  /* ── ELIMINAR CUENTA ── */
-  function confirmarEliminarCuenta() {
-    const nombre = document.getElementById('inpNombre').value || 'tu cuenta';
-    const confirmado = prompt(`Esta acción es IRREVERSIBLE.\n\nEscribe "${nombre}" para confirmar:`);
-    if (confirmado === nombre) {
-      toast('Funcionalidad de eliminación de cuenta disponible para administradores.', false);
-    } else if (confirmado !== null) {
-      toast('El nombre no coincide. Operación cancelada.', false);
-    }
-  }
-
-  /* ── PASSWORD STRENGTH ── */
-  function evalPw(val) {
-    const fill = document.getElementById('pwFill');
-    let score = 0;
-    if (val.length >= 6) score++;
-    if (val.length >= 10) score++;
-    if (/[A-Z]/.test(val)) score++;
-    if (/[0-9]/.test(val)) score++;
-    if (/[^A-Za-z0-9]/.test(val)) score++;
-
-    const pct = (score / 5) * 100;
-    const color = score <= 1 ? '#C0392B' : score <= 3 ? '#B45309' : '#1A7F4B';
-    fill.style.width = pct + '%';
-    fill.style.background = color;
-  }
-
-  /* ── HELPERS ── */
-  function iniciales(nombre) {
-    if (!nombre) return '?';
-    return nombre.split(' ').slice(0, 2).map(p => p[0]).join('').toUpperCase();
-  }
-
-  function limpiarPw() {
-    document.getElementById('pwActual').value = '';
-    document.getElementById('pwNueva').value = '';
-    document.getElementById('pwConfirmar').value = '';
-    document.getElementById('pwFill').style.width = '0%';
-  }
-
-  function toast(msg, ok) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.className = ok ? 'show ok' : 'show err';
-    clearTimeout(t._to);
-    t._to = setTimeout(() => { t.className = ''; }, 3500);
-  }
-</script>
-
-</body>
-</html>

@@ -1,26 +1,67 @@
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
+
+    <!-- =========================
+         CONFIGURACIÓN GENERAL
+    ========================== -->
+
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Título de la página -->
     <title>EduAgenda | Panel Administrador</title>
 
-    <!-- Font Awesome -->
+    <!-- =========================
+         LIBRERÍAS EXTERNAS
+    ========================== -->
+
+    <!-- Font Awesome: biblioteca de iconos -->
     <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+    <!-- =========================
+         ESTILOS CSS
+    ========================== -->
+
     <style>
+
+        /* =========================
+           VARIABLES GLOBALES
+        ========================== */
+
         :root {
+
+            /* Color principal oscuro */
             --primary: #003d7c;
+
+            /* Color secundario azul */
             --secondary: #0061ff;
+
+            /* Fondo claro general */
             --bg-light: #f5f9ff;
+
+            /* Color principal del texto */
             --text: #1e293b;
+
+            /* Color gris secundario */
             --gray: #64748b;
+
+            /* Color de bordes */
             --border: #e2e8f0;
+
+            /* Color rojo de peligro */
             --danger: #ef4444;
+
+            /* Color blanco */
             --white: #ffffff;
         }
+
+        /* =========================
+           RESET GENERAL
+        ========================== */
 
         * {
             margin: 0;
@@ -28,9 +69,19 @@
             box-sizing: border-box;
         }
 
+        /* =========================
+           BODY
+        ========================== */
+
         body {
+
+            /* Fuente principal */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            /* Fondo principal */
             background: var(--bg-light);
+
+            /* Color del texto */
             color: var(--text);
         }
 
@@ -39,138 +90,250 @@
         ========================== */
 
         nav {
+
+            /* Ancho completo */
             width: 100%;
+
+            /* Fondo blanco */
             background: var(--white);
+
+            /* Línea inferior */
             border-bottom: 1px solid var(--border);
+
+            /* Espaciado interno */
             padding: 16px 7%;
+
+            /* Flexbox */
             display: flex;
+
+            /* Separar elementos */
             justify-content: space-between;
+
+            /* Centrar verticalmente */
             align-items: center;
+
+            /* Navbar fija arriba */
             position: sticky;
+
             top: 0;
+
+            /* Prioridad visual */
             z-index: 100;
         }
 
+        /* =========================
+           LOGO
+        ========================== */
+
         .logo {
+
             display: flex;
             align-items: center;
             gap: 10px;
+
             font-size: 1.3rem;
             font-weight: 700;
+
             color: var(--primary);
         }
 
+        /* Icono del logo */
         .logo i {
+
             color: var(--secondary);
+
             font-size: 1.5rem;
         }
 
+        /* =========================
+           CONTENEDOR DERECHO NAVBAR
+        ========================== */
+
         .nav-right {
+
             display: flex;
+
             align-items: center;
+
             gap: 20px;
         }
 
+        /* =========================
+           ROL ADMINISTRADOR
+        ========================== */
+
         .role {
+
             display: flex;
+
             align-items: center;
+
             gap: 8px;
+
             color: var(--secondary);
+
             font-weight: 600;
+
             font-size: 0.95rem;
         }
 
+        /* =========================
+           BOTÓN CERRAR SESIÓN
+        ========================== */
+
         .logout-btn {
+
             background: var(--danger);
+
             color: white;
+
             text-decoration: none;
+
             padding: 10px 16px;
+
             border-radius: 8px;
+
             font-size: 0.9rem;
+
             font-weight: 600;
+
             transition: 0.3s ease;
         }
 
+        /* Efecto hover */
         .logout-btn:hover {
+
             opacity: 0.9;
+
             transform: translateY(-2px);
         }
 
         /* =========================
-           HERO
+           HERO PRINCIPAL
         ========================== */
 
         .hero {
+
             padding: 60px 8%;
+
             background: linear-gradient(180deg, #eef5ff 0%, #dbeafe 100%);
+
             border-bottom: 1px solid #d6e4ff;
         }
 
+        /* Título principal */
         .hero h1 {
+
             font-size: 2.5rem;
+
             color: var(--primary);
+
             display: flex;
+
             align-items: center;
+
             gap: 15px;
         }
 
+        /* Texto secundario */
         .hero p {
+
             margin-top: 12px;
+
             color: var(--gray);
+
             font-size: 1rem;
         }
 
+        /* Nombre del administrador */
         #adminName {
+
             font-weight: 700;
+
             color: var(--secondary);
         }
 
         /* =========================
-           CONTENT
+           CONTENIDO PRINCIPAL
         ========================== */
 
         .container {
+
             padding: 50px 8%;
         }
 
+        /* Título de sección */
         .section-title {
+
             font-size: 1.4rem;
+
             margin-bottom: 25px;
+
             color: var(--text);
         }
 
+        /* =========================
+           GRID DE TARJETAS
+        ========================== */
+
         .cards {
+
             display: grid;
+
             grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
             gap: 25px;
         }
 
+        /* =========================
+           TARJETAS
+        ========================== */
+
         .card {
+
             background: var(--white);
+
             border-radius: 18px;
+
             padding: 30px 25px;
+
             border: 1px solid var(--border);
+
             cursor: pointer;
+
             transition: all 0.3s ease;
+
             position: relative;
+
             overflow: hidden;
         }
 
+        /* Hover de tarjetas */
         .card:hover {
+
             transform: translateY(-8px);
+
             border-color: var(--secondary);
+
             box-shadow: 0 15px 30px rgba(0, 97, 255, 0.12);
         }
 
+        /* Línea superior decorativa */
         .card::before {
+
             content: "";
+
             position: absolute;
+
             top: 0;
             left: 0;
+
             width: 100%;
+
             height: 5px;
         }
 
+        /* Colores personalizados tarjetas */
         .usuarios::before {
             background: #6366f1;
         }
@@ -187,11 +350,15 @@
             background: #0ea5e9;
         }
 
+        /* Iconos de tarjetas */
         .card i {
+
             font-size: 2.2rem;
+
             margin-bottom: 18px;
         }
 
+        /* Colores de iconos */
         .usuarios i {
             color: #6366f1;
         }
@@ -208,14 +375,21 @@
             color: #0ea5e9;
         }
 
+        /* Títulos tarjetas */
         .card h3 {
+
             margin-bottom: 12px;
+
             font-size: 1.2rem;
         }
 
+        /* Descripción tarjetas */
         .card p {
+
             color: var(--gray);
+
             font-size: 0.92rem;
+
             line-height: 1.5;
         }
 
@@ -224,31 +398,51 @@
         ========================== */
 
         footer {
+
             margin-top: 60px;
+
             background: white;
+
             border-top: 1px solid var(--border);
+
             padding: 30px 8%;
         }
 
+        /* Grid footer */
         .footer-grid {
+
             display: flex;
+
             justify-content: space-between;
+
             flex-wrap: wrap;
+
             gap: 20px;
+
             margin-bottom: 20px;
         }
 
+        /* Item footer */
         .footer-item {
+
             display: flex;
+
             align-items: center;
+
             gap: 10px;
+
             color: var(--gray);
+
             font-size: 0.9rem;
         }
 
+        /* Copyright */
         .copyright {
+
             text-align: center;
+
             color: #94a3b8;
+
             font-size: 0.8rem;
         }
 
@@ -260,143 +454,229 @@
 
             nav,
             .footer-grid {
+
                 flex-direction: column;
+
                 align-items: flex-start;
             }
 
             .hero h1 {
+
                 font-size: 2rem;
             }
 
             .cards {
+
                 grid-template-columns: 1fr;
             }
         }
+
     </style>
+
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
     <nav>
+
+        <!-- Logo del sistema -->
         <div class="logo">
+
             <i class="fas fa-graduation-cap"></i>
+
             EduAgenda
         </div>
 
+        <!-- Parte derecha navbar -->
         <div class="nav-right">
+
+            <!-- Rol del usuario -->
             <div class="role">
+
                 <i class="fas fa-crown"></i>
+
                 Administrador
             </div>
 
+            <!-- Botón cerrar sesión -->
             <a href="#" class="logout-btn" id="logoutBtn">
+
                 <i class="fas fa-right-from-bracket"></i>
+
                 Salir
             </a>
+
         </div>
+
     </nav>
 
-    <!-- HERO -->
+    <!-- =========================
+         HERO
+    ========================== -->
+
     <section class="hero">
+
         <h1>
+
             <i class="fas fa-user-shield"></i>
+
             Panel de Administración
         </h1>
 
         <p>
+
             Bienvenido nuevamente,
+
             <span id="adminName">Administrador</span>
         </p>
+
     </section>
 
-    <!-- MAIN -->
+    <!-- =========================
+         CONTENIDO PRINCIPAL
+    ========================== -->
+
     <main class="container">
 
+        <!-- Título -->
         <h2 class="section-title">
+
             Gestión del Sistema
         </h2>
 
+        <!-- Tarjetas -->
         <div class="cards">
 
+            <!-- Usuarios -->
             <div class="card usuarios" data-url="usuarios.html">
+
                 <i class="fas fa-users"></i>
+
                 <h3>Usuarios</h3>
+
                 <p>
                     Administra estudiantes, profesores y administradores.
                 </p>
+
             </div>
 
+            <!-- Reportes -->
             <div class="card reportes" data-url="reportes.html">
+
                 <i class="fas fa-chart-column"></i>
+
                 <h3>Reportes</h3>
+
                 <p>
                     Visualiza estadísticas, actividad y métricas del sistema.
                 </p>
+
             </div>
 
+            <!-- Configuración -->
             <div class="card configuracion" data-url="configuracion.html">
+
                 <i class="fas fa-gear"></i>
+
                 <h3>Configuración</h3>
+
                 <p>
                     Configura parámetros y preferencias de la plataforma.
                 </p>
+
             </div>
 
+            <!-- Seguridad -->
             <div class="card seguridad" data-url="seguridad.html">
+
                 <i class="fas fa-shield-halved"></i>
+
                 <h3>Seguridad</h3>
+
                 <p>
                     Controla permisos, accesos y seguridad de usuarios.
                 </p>
+
             </div>
 
         </div>
 
     </main>
 
-    <!-- FOOTER -->
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
     <footer>
 
         <div class="footer-grid">
 
+            <!-- Correo -->
             <div class="footer-item">
+
                 <i class="fas fa-envelope"></i>
+
                 soporte@eduagenda.com
             </div>
 
+            <!-- Teléfono -->
             <div class="footer-item">
+
                 <i class="fas fa-phone"></i>
+
                 +57 300 000 0000
             </div>
 
+            <!-- Ubicación -->
             <div class="footer-item">
+
                 <i class="fas fa-location-dot"></i>
+
                 Tumaco, Nariño - Colombia
             </div>
 
         </div>
 
+        <!-- Copyright -->
         <div class="copyright">
+
             © 2026 EduAgenda — Todos los derechos reservados
         </div>
 
     </footer>
 
-    <!-- SCRIPT -->
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
     <script>
+
+        // Esperar a que cargue el DOM
         document.addEventListener('DOMContentLoaded', () => {
 
             // =========================
             // VALIDAR SESIÓN
             // =========================
 
+            // Obtener token
             const token = localStorage.getItem('token');
+
+            // Obtener tipo de usuario
             const tipo = localStorage.getItem('tipo');
+
+            // Obtener nombre
             const nombre = localStorage.getItem('nombre');
 
+            // Verificar si el usuario es administrador
             if (!token || tipo !== 'admin') {
+
+                // Redireccionar al login
                 window.location.href = 'sesion.html';
+
                 return;
             }
 
@@ -404,23 +684,31 @@
             // MOSTRAR NOMBRE
             // =========================
 
+            // Mostrar nombre administrador
             if (nombre) {
+
                 document.getElementById('adminName').textContent = nombre;
             }
 
             // =========================
-            // REDIRECCIONES
+            // REDIRECCIONES TARJETAS
             // =========================
 
+            // Obtener tarjetas
             const cards = document.querySelectorAll('.card');
 
+            // Recorrer tarjetas
             cards.forEach(card => {
 
+                // Evento click
                 card.addEventListener('click', () => {
 
+                    // Obtener URL
                     const url = card.dataset.url;
 
+                    // Redireccionar
                     if (url) {
+
                         window.location.href = url;
                     }
 
@@ -432,27 +720,36 @@
             // LOGOUT
             // =========================
 
+            // Obtener botón logout
             const logoutBtn = document.getElementById('logoutBtn');
 
+            // Evento click logout
             logoutBtn.addEventListener('click', (e) => {
 
+                // Evitar recarga
                 e.preventDefault();
 
+                // Confirmar cierre de sesión
                 const confirmar = confirm(
                     '¿Deseas cerrar sesión?'
                 );
 
+                // Si confirma
                 if (confirmar) {
 
+                    // Limpiar almacenamiento local
                     localStorage.clear();
 
+                    // Redireccionar login
                     window.location.href = 'sesion.html';
                 }
 
             });
 
         });
+
     </script>
 
 </body>
-</html`
+
+</html>
