@@ -1,0 +1,6 @@
+projectKey=Edu
+serverUrl=http://localhost:9000
+serverVersion=26.3.0.120487
+dashboardUrl=http://localhost:9000/dashboard?id=Edu
+ceTaskId=5967597e-81d4-4ec5-8e87-1082787fdfd9
+ceTaskUrl=http://localhost:9000/api/ce/task?id=5967597e-81d4-4ec5-8e87-1082787fdfd9

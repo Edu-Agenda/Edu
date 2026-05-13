@@ -1,7 +1,7 @@
-require('dotenv').config(); // Esto lee el archivo .env
+require('dotenv').config();
 
 const PORT = process.env.PORT || 3000;
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'clave_secreta_eduagenda_2024';
 const express = require('express');
 const Database = require('better-sqlite3');
 const bcrypt = require('bcrypt');
@@ -16,64 +16,78 @@ app.use(cors());
 app.use(express.static(__dirname));
 
 // ==========================================
-// BASE DE DATOS
+// BASE DE DATOS - MODIFICADA PARA PRUEBAS
 // ==========================================
 
-const db = new Database('./edu.db');
+// Función para crear base de datos (en memoria para pruebas)
+function createDatabase(dbPath) {
+    const db = new Database(dbPath || './edu.db');
+    db.pragma('foreign_keys = ON');
+    
+    db.exec(`
+        CREATE TABLE IF NOT EXISTS usuarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            documento TEXT,
+            email TEXT UNIQUE NOT NULL,
+            telefono TEXT,
+            password TEXT NOT NULL,
+            tipo TEXT NOT NULL CHECK(tipo IN ('estudiante','profesor','admin')),
+            creado_en TEXT DEFAULT (datetime('now','localtime'))
+        );
 
+        CREATE TABLE IF NOT EXISTS horarios (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            profesor_nombre TEXT NOT NULL,
+            materia TEXT NOT NULL,
+            fecha TEXT NOT NULL,
+            hora_inicio TEXT NOT NULL,
+            estado TEXT DEFAULT 'disponible',
+            estudiante_nombre TEXT DEFAULT NULL
+        );
+
+        CREATE TABLE IF NOT EXISTS materias (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT NOT NULL,
+            estudiante_nombre TEXT NOT NULL,
+            profesor_nombre TEXT NOT NULL,
+            horario TEXT,
+            modalidad TEXT DEFAULT 'Virtual',
+            progreso INTEGER DEFAULT 0,
+            estado TEXT DEFAULT 'Activa'
+        );
+
+        CREATE TABLE IF NOT EXISTS tareas (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            materia_id INTEGER NOT NULL,
+            descripcion TEXT NOT NULL,
+            fecha_entrega TEXT NOT NULL,
+            estado TEXT DEFAULT 'pendiente',
+            creado_en TEXT DEFAULT (datetime('now','localtime')),
+            completada_en TEXT,
+            entrega_descripcion TEXT,
+            entrega_fecha TEXT,
+            calificacion REAL,
+            comentario_prof TEXT,
+            FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE
+        );
+    `);
+    
+    return db;
+}
+
+// Usar BD en memoria para pruebas, real para producción
+let db;
+if (process.env.NODE_ENV === 'test') {
+    db = createDatabase(':memory:');
+    console.log('🧪 Usando base de datos en memoria para pruebas');
+} else {
+    db = createDatabase('./edu.db');
+    console.log('✅ Base de datos EduAgenda lista.');
+}
 
 const ADMIN_EMAIL = 'admin@eduagenda.com';
 const ADMIN_PASSWORD = 'Admin1234';
-
-db.exec(`
-  CREATE TABLE IF NOT EXISTS usuarios (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre TEXT NOT NULL,
-    documento TEXT,
-    email TEXT UNIQUE NOT NULL,
-    telefono TEXT,
-    password TEXT NOT NULL,
-    tipo TEXT NOT NULL CHECK(tipo IN ('estudiante','profesor','admin')),
-    creado_en TEXT DEFAULT (datetime('now','localtime'))
-  );
-
-  CREATE TABLE IF NOT EXISTS horarios (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    profesor_nombre TEXT NOT NULL,
-    materia TEXT NOT NULL,
-    fecha TEXT NOT NULL,
-    hora_inicio TEXT NOT NULL,
-    estado TEXT DEFAULT 'disponible',
-    estudiante_nombre TEXT DEFAULT NULL
-  );
-
-  CREATE TABLE IF NOT EXISTS materias (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nombre TEXT NOT NULL,
-    estudiante_nombre TEXT NOT NULL,
-    profesor_nombre TEXT NOT NULL,
-    horario TEXT,
-    modalidad TEXT DEFAULT 'Virtual',
-    progreso INTEGER DEFAULT 0,
-    estado TEXT DEFAULT 'Activa'
-  );
-
-  CREATE TABLE IF NOT EXISTS tareas (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    materia_id INTEGER NOT NULL,
-    descripcion TEXT NOT NULL,
-    fecha_entrega TEXT NOT NULL,
-    estado TEXT DEFAULT 'pendiente',
-    completada_en TEXT,
-    entrega_descripcion TEXT,
-    entrega_fecha TEXT,
-    calificacion REAL,
-    comentario_prof TEXT,
-    FOREIGN KEY (materia_id) REFERENCES materias(id) ON DELETE CASCADE
-  );
-`);
-
-console.log('✅ Base de datos EduAgenda lista.');
 
 // ==========================================
 // MIDDLEWARE TOKEN
@@ -93,8 +107,7 @@ function verificarToken(req, res, next) {
 }
 
 // ==========================================
-// DIAGNÓSTICO PÚBLICO (solo para desarrollo)
-// Visita: http://localhost:3000/api/debug
+// DIAGNÓSTICO PÚBLICO
 // ==========================================
 
 app.get('/api/debug', (req, res) => {
@@ -308,8 +321,8 @@ app.post('/confirmar-pago', verificarToken, (req, res) => {
 
         if (!existeMateria) {
             db.prepare(`
-                INSERT INTO materias (nombre, estudiante_nombre, profesor_nombre, horario)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO materias (nombre, estudiante_nombre, profesor_nombre, horario, modalidad)
+                VALUES (?, ?, ?, ?, 'Virtual')
             `).run(materia, estudiante, profesorLimpio, `${fechaLimpia} ${horaLimpia}`);
         }
 
@@ -416,9 +429,7 @@ app.get('/api/mis-estudiantes', verificarToken, (req, res) => {
 app.get('/api/materias', verificarToken, (req, res) => {
     try {
         const profesor = req.usuario.nombre;
-        console.log(`📚 GET /api/materias → profesor: "${profesor}"`);
         const rows = db.prepare('SELECT * FROM materias WHERE profesor_nombre = ?').all(profesor);
-        console.log(`   → ${rows.length} materias encontradas`);
         res.json(rows);
     } catch (error) {
         console.error('❌ Error /api/materias:', error);
@@ -426,9 +437,33 @@ app.get('/api/materias', verificarToken, (req, res) => {
     }
 });
 
+// CREAR MATERIA (POST)
+app.post('/api/materias', verificarToken, (req, res) => {
+    const { nombre, estudiante_nombre, profesor_nombre, horario, modalidad } = req.body;
+    
+    if (!nombre || !estudiante_nombre || !profesor_nombre) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+    
+    try {
+        const result = db.prepare(`
+            INSERT INTO materias (nombre, estudiante_nombre, profesor_nombre, horario, modalidad, progreso, estado)
+            VALUES (?, ?, ?, ?, ?, 0, 'Activa')
+        `).run(nombre, estudiante_nombre, profesor_nombre, horario || '', modalidad || 'Virtual');
+        
+        res.status(201).json({ ok: true, mensaje: 'Materia creada', id: result.lastInsertRowid });
+    } catch (error) {
+        console.error('❌ Error al crear materia:', error);
+        res.status(500).json({ error: 'Error al crear materia' });
+    }
+});
+
 app.delete('/api/materias/:id', verificarToken, (req, res) => {
     try {
-        db.prepare('DELETE FROM materias WHERE id = ?').run(req.params.id);
+        const result = db.prepare('DELETE FROM materias WHERE id = ?').run(req.params.id);
+        if (result.changes === 0) {
+            return res.status(404).json({ error: 'Materia no encontrada' });
+        }
         res.json({ ok: true });
     } catch (error) {
         res.status(500).json({ error: 'Error al eliminar materia' });
@@ -447,10 +482,26 @@ app.get('/api/materias-estudiante', verificarToken, (req, res) => {
             WHERE estudiante_nombre = ?
             ORDER BY nombre ASC
         `).all(req.usuario.nombre);
-
         res.json(rows);
     } catch (error) {
         console.error('❌ Error /api/materias-estudiante:', error);
+        res.status(500).json({ error: 'Error al obtener materias del estudiante' });
+    }
+});
+
+// MATERIAS - RUTA POR NOMBRE DE ESTUDIANTE
+app.get('/api/materias/estudiante/:nombre', verificarToken, (req, res) => {
+    try {
+        const { nombre } = req.params;
+        const rows = db.prepare(`
+            SELECT id, nombre, profesor_nombre, horario, modalidad, progreso, estado
+            FROM materias
+            WHERE estudiante_nombre = ?
+            ORDER BY nombre ASC
+        `).all(nombre);
+        res.json(rows);
+    } catch (error) {
+        console.error('❌ Error /api/materias/estudiante/:nombre:', error);
         res.status(500).json({ error: 'Error al obtener materias del estudiante' });
     }
 });
@@ -459,16 +510,23 @@ app.get('/api/materias-estudiante', verificarToken, (req, res) => {
 // TAREAS — CRUD BASE
 // ==========================================
 
-// Crear tarea
+// Crear tarea (CORREGIDO - con creado_en)
 app.post('/api/tareas', verificarToken, (req, res) => {
     const { materiaId, descripcion, fecha_entrega } = req.body;
+    
+    if (!materiaId || !descripcion || !fecha_entrega) {
+        return res.status(400).json({ error: 'Faltan campos obligatorios' });
+    }
+    
     try {
+        const ahora = new Date().toISOString().slice(0, 19).replace('T', ' ');
         const result = db.prepare(`
-            INSERT INTO tareas (materia_id, descripcion, fecha_entrega)
-            VALUES (?, ?, ?)
-        `).run(materiaId, descripcion, fecha_entrega);
-        console.log(`✅ Tarea creada: id=${result.lastInsertRowid}, materia=${materiaId}`);
-        res.json({ ok: true, mensaje: 'Tarea creada', id: result.lastInsertRowid });
+            INSERT INTO tareas (materia_id, descripcion, fecha_entrega, creado_en, estado)
+            VALUES (?, ?, ?, ?, 'pendiente')
+        `).run(materiaId, descripcion, fecha_entrega, ahora);
+        
+        console.log(`✅ Tarea creada: id=${result.lastInsertRowid}`);
+        res.status(201).json({ ok: true, mensaje: 'Tarea creada', id: result.lastInsertRowid });
     } catch (error) {
         console.error('❌ Error al crear tarea:', error);
         res.status(500).json({ error: 'Error al crear tarea' });
@@ -482,6 +540,18 @@ app.get('/api/tareas/:materiaId', verificarToken, (req, res) => {
             SELECT * FROM tareas
             WHERE materia_id = ?
             ORDER BY fecha_entrega ASC
+        `).all(req.params.materiaId);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener tareas' });
+    }
+});
+
+// Tareas por materia (alias)
+app.get('/api/tareas/materia/:materiaId', verificarToken, (req, res) => {
+    try {
+        const rows = db.prepare(`
+            SELECT * FROM tareas WHERE materia_id = ? ORDER BY fecha_entrega ASC
         `).all(req.params.materiaId);
         res.json(rows);
     } catch (error) {
@@ -507,7 +577,7 @@ app.delete('/api/tareas/:id', verificarToken, (req, res) => {
 // TAREAS — ACCIONES ESTUDIANTE
 // ==========================================
 
-// Todas las tareas del estudiante (todos los estados)
+// Todas las tareas del estudiante
 app.get('/api/tareas-todas-estudiante', verificarToken, (req, res) => {
     try {
         const rows = db.prepare(`
@@ -529,7 +599,7 @@ app.patch('/api/tareas/:id/completar', verificarToken, (req, res) => {
     const { accion } = req.body;
 
     if (!['completar', 'reabrir'].includes(accion))
-        return res.status(400).json({ error: 'Acción inválida. Usa "completar" o "reabrir".' });
+        return res.status(400).json({ error: 'Acción inválida' });
 
     try {
         const tarea = db.prepare(`
@@ -540,7 +610,7 @@ app.patch('/api/tareas/:id/completar', verificarToken, (req, res) => {
 
         if (!tarea) return res.status(404).json({ error: 'Tarea no encontrada' });
         if (tarea.estudiante_nombre !== req.usuario.nombre)
-            return res.status(403).json({ error: 'No tienes permiso para modificar esta tarea' });
+            return res.status(403).json({ error: 'No tienes permiso' });
 
         const nuevoEstado = accion === 'completar' ? 'completada' : 'pendiente';
         const completada_en = accion === 'completar'
@@ -551,10 +621,10 @@ app.patch('/api/tareas/:id/completar', verificarToken, (req, res) => {
             UPDATE tareas SET estado = ?, completada_en = ? WHERE id = ?
         `).run(nuevoEstado, completada_en, id);
 
-        res.json({ ok: true, id: Number(id), estado: nuevoEstado, completada_en });
+        res.json({ ok: true, id: Number(id), estado: nuevoEstado });
     } catch (error) {
-        console.error('❌ Error PATCH /completar:', error);
-        res.status(500).json({ error: 'Error al actualizar la tarea' });
+        console.error('❌ Error:', error);
+        res.status(500).json({ error: 'Error al actualizar' });
     }
 });
 
@@ -564,7 +634,7 @@ app.patch('/api/tareas/:id/entregar', verificarToken, (req, res) => {
     const { descripcion } = req.body;
 
     if (!descripcion || !descripcion.trim())
-        return res.status(400).json({ error: 'La descripción de la entrega es obligatoria.' });
+        return res.status(400).json({ error: 'La descripción es obligatoria.' });
 
     try {
         const tarea = db.prepare(`
@@ -574,7 +644,7 @@ app.patch('/api/tareas/:id/entregar', verificarToken, (req, res) => {
         `).get(id, req.usuario.nombre);
 
         if (!tarea)
-            return res.status(404).json({ error: 'Tarea no encontrada o no tienes permiso.' });
+            return res.status(404).json({ error: 'Tarea no encontrada' });
 
         const ahora = new Date().toISOString();
 
@@ -588,13 +658,13 @@ app.patch('/api/tareas/:id/entregar', verificarToken, (req, res) => {
         `).run(descripcion.trim(), ahora, ahora, id);
 
         if (resultado.changes > 0) {
-            res.json({ ok: true, mensaje: '¡Tarea entregada con éxito!' });
+            res.json({ ok: true, mensaje: '¡Tarea entregada!' });
         } else {
-            res.status(400).json({ error: 'No se pudo actualizar la tarea.' });
+            res.status(400).json({ error: 'No se pudo actualizar' });
         }
     } catch (error) {
-        console.error('❌ Error en /entregar:', error);
-        res.status(500).json({ error: 'Error interno del servidor.' });
+        console.error('❌ Error:', error);
+        res.status(500).json({ error: 'Error interno' });
     }
 });
 
@@ -602,66 +672,53 @@ app.patch('/api/tareas/:id/entregar', verificarToken, (req, res) => {
 // TAREAS — ACCIONES PROFESOR
 // ==========================================
 
-// Todas las tareas del profesor (todas sus materias)
+// Todas las tareas del profesor
 app.get('/api/tareas-profesor/todas', verificarToken, (req, res) => {
     if (req.usuario.tipo !== 'profesor' && req.usuario.tipo !== 'admin')
         return res.status(403).json({ error: 'Sin permisos' });
 
     try {
         const rows = db.prepare(`
-            SELECT
-                t.id, t.descripcion, t.fecha_entrega, t.estado,
-                t.completada_en, t.calificacion, t.comentario_prof,
-                t.entrega_fecha, t.entrega_descripcion,
-                m.nombre AS materia_nombre,
-                m.estudiante_nombre
+            SELECT t.*, m.nombre AS materia_nombre, m.estudiante_nombre
             FROM tareas t
             JOIN materias m ON t.materia_id = m.id
             WHERE m.profesor_nombre = ?
             ORDER BY t.fecha_entrega ASC
         `).all(req.usuario.nombre);
-
         res.json(rows);
     } catch (error) {
-        console.error(error);
         res.status(500).json({ error: 'Error al obtener tareas' });
     }
 });
 
-// Tareas de una materia específica (para calificar)
+// Tareas por materia para profesor
 app.get('/api/tareas-profesor/:materiaId', verificarToken, (req, res) => {
     if (req.usuario.tipo !== 'profesor' && req.usuario.tipo !== 'admin')
-        return res.status(403).json({ error: 'Solo profesores pueden acceder a este recurso' });
+        return res.status(403).json({ error: 'Sin permisos' });
 
     try {
         const rows = db.prepare(`
-            SELECT
-                t.id, t.descripcion, t.fecha_entrega, t.estado,
-                t.completada_en, t.calificacion, t.comentario_prof,
-                t.entrega_descripcion, t.entrega_fecha,
-                m.nombre AS materia_nombre,
-                m.estudiante_nombre
+            SELECT t.*, m.nombre AS materia_nombre, m.estudiante_nombre
             FROM tareas t
             JOIN materias m ON t.materia_id = m.id
             WHERE t.materia_id = ?
-            ORDER BY t.fecha_entrega ASC, m.estudiante_nombre ASC
+            ORDER BY t.fecha_entrega ASC
         `).all(req.params.materiaId);
-
         res.json(rows);
     } catch (error) {
-        res.status(500).json({ error: 'Error al obtener tareas del profesor' });
+        res.status(500).json({ error: 'Error al obtener tareas' });
     }
 });
 
 // Calificar tarea
 app.patch('/api/tareas/:id/calificar', verificarToken, (req, res) => {
     if (req.usuario.tipo !== 'profesor' && req.usuario.tipo !== 'admin')
-        return res.status(403).json({ error: 'No tienes permisos de profesor.' });
+        return res.status(403).json({ error: 'Sin permisos' });
 
     const { calificacion, comentario } = req.body;
 
     if (calificacion === undefined)
-        return res.status(400).json({ error: 'La calificación es obligatoria.' });
+        return res.status(400).json({ error: 'La calificación es obligatoria' });
 
     try {
         const result = db.prepare(`
@@ -686,42 +743,50 @@ app.get('/api/mis-calificaciones', verificarToken, (req, res) => {
         const estudiante = req.usuario.nombre;
 
         const notas = db.prepare(`
-            SELECT
-                t.id,
-                t.descripcion,
-                t.fecha_entrega,
-                t.calificacion,
-                t.comentario_prof,
-                t.entrega_descripcion,
-                t.entrega_fecha,
-                t.estado,
-                m.nombre AS materia_nombre
+            SELECT t.*, m.nombre AS materia_nombre
             FROM tareas t
             JOIN materias m ON t.materia_id = m.id
             WHERE m.estudiante_nombre = ?
-            ORDER BY
-                CASE WHEN t.entrega_fecha IS NULL THEN 1 ELSE 0 END,
-                t.id DESC
+            ORDER BY t.fecha_entrega DESC
         `).all(estudiante);
 
         res.json(notas);
     } catch (err) {
-        console.error('❌ Error obteniendo notas:', err);
+        console.error('❌ Error:', err);
         res.status(500).json({ error: 'Error en la base de datos' });
     }
 });
+
+// ==========================================
+// NOTAS (alias de calificaciones)
+// ==========================================
+
+app.get('/api/notas/estudiante/:nombre', verificarToken, (req, res) => {
+    try {
+        const { nombre } = req.params;
+        const rows = db.prepare(`
+            SELECT t.id, t.descripcion, t.calificacion, t.comentario_prof, t.fecha_entrega,
+                   m.nombre as materia_nombre
+            FROM tareas t
+            JOIN materias m ON t.materia_id = m.id
+            WHERE m.estudiante_nombre = ? AND t.calificacion IS NOT NULL
+        `).all(nombre);
+        res.json(rows);
+    } catch (error) {
+        res.status(500).json({ error: 'Error al obtener notas' });
+    }
+});
+
 // ==========================================
 // PERFIL DE USUARIO
 // ==========================================
 
-// Obtener perfil del usuario autenticado
 app.get('/api/perfil', verificarToken, (req, res) => {
     try {
         const usuario = db.prepare(`
             SELECT id, nombre, email, documento, telefono, tipo, creado_en
             FROM usuarios WHERE id = ?
         `).get(req.usuario.id);
-
         if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
         res.json(usuario);
     } catch (error) {
@@ -729,54 +794,41 @@ app.get('/api/perfil', verificarToken, (req, res) => {
     }
 });
 
-// Actualizar perfil (nombre, teléfono, especialidad)
 app.patch('/api/perfil', verificarToken, (req, res) => {
     const { nombre, telefono, especialidad } = req.body;
-
     if (!nombre || !nombre.trim())
         return res.status(400).json({ error: 'El nombre es obligatorio' });
-
     try {
         db.prepare(`
-            UPDATE usuarios
-            SET nombre = ?, telefono = ?, documento = ?
-            WHERE id = ?
+            UPDATE usuarios SET nombre = ?, telefono = ?, documento = ? WHERE id = ?
         `).run(nombre.trim(), telefono || null, especialidad || null, req.usuario.id);
-
-        res.json({ ok: true, mensaje: 'Perfil actualizado correctamente' });
+        res.json({ ok: true, mensaje: 'Perfil actualizado' });
     } catch (error) {
         res.status(500).json({ error: 'Error al actualizar perfil' });
     }
 });
 
-// Cambiar contraseña
 app.patch('/api/perfil/password', verificarToken, async (req, res) => {
     const { actual, nueva, confirmar } = req.body;
-
     if (!actual || !nueva || !confirmar)
         return res.status(400).json({ error: 'Todos los campos son obligatorios' });
-
     if (nueva !== confirmar)
-        return res.status(400).json({ error: 'Las contraseñas nuevas no coinciden' });
-
+        return res.status(400).json({ error: 'Las contraseñas no coinciden' });
     if (nueva.length < 6)
-        return res.status(400).json({ error: 'La contraseña debe tener al menos 6 caracteres' });
-
+        return res.status(400).json({ error: 'Mínimo 6 caracteres' });
     try {
         const usuario = db.prepare('SELECT * FROM usuarios WHERE id = ?').get(req.usuario.id);
         if (!usuario) return res.status(404).json({ error: 'Usuario no encontrado' });
-
         const ok = await bcrypt.compare(actual, usuario.password);
-        if (!ok) return res.status(401).json({ error: 'La contraseña actual es incorrecta' });
-
+        if (!ok) return res.status(401).json({ error: 'Contraseña actual incorrecta' });
         const hash = await bcrypt.hash(nueva, 10);
         db.prepare('UPDATE usuarios SET password = ? WHERE id = ?').run(hash, req.usuario.id);
-
-        res.json({ ok: true, mensaje: 'Contraseña actualizada correctamente' });
+        res.json({ ok: true, mensaje: 'Contraseña actualizada' });
     } catch (error) {
         res.status(500).json({ error: 'Error al cambiar contraseña' });
     }
 });
+
 // ==========================================
 // RUTAS HTML
 // ==========================================
@@ -806,10 +858,13 @@ app.use((req, res) => {
 // SERVIDOR
 // ==========================================
 
+if (require.main === module) {
+    const PORT = process.env.PORT || 3000;
+    app.listen(PORT, () => {
+        console.log(`\n🚀 Servidor EduAgenda corriendo en http://localhost:${PORT}\n`);
+        console.log(`👑 Admin: ${ADMIN_EMAIL}`);
+        console.log(`🔍 Debug BD: http://localhost:${PORT}/api/debug\n`);
+    });
+}
 
-
-app.listen(PORT, () => {
-    console.log(`\n🚀 Servidor EduAgenda corriendo en http://localhost:${PORT}\n`);
-    console.log(`👑 Admin: ${ADMIN_EMAIL}`);
-    console.log(`🔍 Debug BD: http://localhost:${PORT}/api/debug\n`);
-});
+module.exports = app;
