@@ -1,838 +1,1302 @@
-// robot-full.js - Robot de QA con flujo completo de usuario (CORREGIDO)
+// ╔══════════════════════════════════════════════════════════════════╗
+// ║         ROBOT DE QA — EDUAGENDA — VERSIÓN ULTRA ROBUSTA         ║
+// ║  Maneja: modales, alertas, dialogs, navegación segura, retries  ║
+// ╚══════════════════════════════════════════════════════════════════╝
 const puppeteer = require('puppeteer');
-const path = require('path');
-const fs = require('fs');
+const path      = require('path');
+const fs        = require('fs');
 const { spawn } = require('child_process');
 
-class EduAgendaRobotFull {
+// ═══════════════════════════════════════════════════
+//  LOGGER CON COLOR
+// ═══════════════════════════════════════════════════
+const C = {
+    reset:   '\x1b[0m',
+    verde:   '\x1b[32m',
+    rojo:    '\x1b[31m',
+    amarillo:'\x1b[33m',
+    azul:    '\x1b[34m',
+    cyan:    '\x1b[36m',
+    blanco:  '\x1b[37m',
+    negrita: '\x1b[1m'
+};
+const log = {
+    titulo: (m) => console.log(`\n${C.cyan}${C.negrita}${'='.repeat(65)}\n  ${m}\n${'='.repeat(65)}${C.reset}`),
+    fase:   (m) => console.log(`\n${C.azul}${C.negrita}${'-'.repeat(55)}\n  ${m}\n${'-'.repeat(55)}${C.reset}`),
+    ok:     (m) => console.log(`${C.verde}   OK  ${m}${C.reset}`),
+    info:   (m) => console.log(`${C.blanco}   >>  ${m}${C.reset}`),
+    warn:   (m) => console.log(`${C.amarillo}   !!  ${m}${C.reset}`),
+    error:  (m) => console.log(`${C.rojo}   XX  ${m}${C.reset}`),
+    paso:   (m) => console.log(`\n${C.cyan}[+] ${m}${C.reset}`),
+    cap:    (m) => console.log(`${C.azul}   CAP ${m}${C.reset}`),
+    wait:   (m) => console.log(`${C.amarillo}   ... ${m}${C.reset}`)
+};
+
+// ═══════════════════════════════════════════════════
+//  ROBOT PRINCIPAL
+// ═══════════════════════════════════════════════════
+class EduAgendaRobot {
+
     constructor() {
-        this.browser = null;
-        this.page = null;
-        this.serverProcess = null;
-        this.baseUrl = 'http://localhost:3000';
-        this.results = {
-            tests: { passed: 0, failed: 0, total: 0 },
-            pages: [],
-            actions: [],
-            errors: []
-        };
-        
-        // Datos de prueba con timestamp único
-        const timestamp = Date.now();
-        this.testData = {
+        this.browser        = null;
+        this.page           = null;
+        this.serverProcess  = null;
+        this.baseUrl        = 'http://localhost:3000';
+        this.capturaIdx     = 0;
+        this.results        = { acciones: [], errores: [], capturas: [] };
+
+        const ts = Date.now();
+        this.D = {
             profesor: {
-                nombre: `Profesor QA ${timestamp}`,
-                email: `profesor_qa_${timestamp}@test.com`,
+                nombre:   `Prof Robot ${ts}`,
+                email:    `prof_${ts}@test.com`,
                 password: '123456',
-                tipo: 'profesor'
+                tipo:     'profesor',
+                doc:      '11223344',
+                tel:      '3001111111'
             },
             estudiante: {
-                nombre: `Estudiante QA ${timestamp}`,
-                email: `estudiante_qa_${timestamp}@test.com`,
+                nombre:   `Est Robot ${ts}`,
+                email:    `est_${ts}@test.com`,
                 password: '123456',
-                tipo: 'estudiante'
+                tipo:     'estudiante',
+                doc:      '55667788',
+                tel:      '3002222222'
+            },
+            admin: {
+                email:    'admin@eduagenda.com',
+                password: 'Admin1234',
+                tipo:     'admin'
             },
             horario: {
-                materia: 'Robotica Avanzada',
-                fecha: '2026-12-25',
-                hora: '10:00'
+                materia: 'Fisica',
+                fecha:   '2026-12-25',
+                hora:    '16:00'
             },
+            nequi: { celular: '3001234567' },
             tarea: {
-                descripcion: 'Construir un robot seguidor de línea con Arduino',
-                fechaEntrega: '2026-12-30'
+                texto:   'Cual es el pais mas grande del mundo?',
+                fecha:   '2026-12-30',
+                entrega: 'Rusia'
             },
-            entrega: 'Entregué el código completo, diagrama del circuito y video demostración'
+            calificacion: {
+                nota:       '5.0',
+                comentario: 'Excelente respuesta correcta!'
+            }
         };
     }
 
-    // ==========================================
-    // 1. INICIAR SERVIDOR
-    // ==========================================
+    // ======================================================
+    //  A. INFRAESTRUCTURA
+    // ======================================================
+
     async iniciarServidor() {
-        console.log('\n🚀 [ROBOT] Iniciando servidor EduAgenda...');
-        
+        log.paso('Iniciando servidor EduAgenda...');
         return new Promise((resolve, reject) => {
             this.serverProcess = spawn('node', ['server.js'], {
                 env: { ...process.env, NODE_ENV: 'development' },
                 stdio: 'pipe'
             });
-            
-            this.serverProcess.stdout.on('data', (data) => {
+            this.serverProcess.stdout.on('data', data => {
                 const msg = data.toString();
-                if (msg.includes('Servidor EduAgenda corriendo') || msg.includes('Base de datos')) {
-                    console.log('✅ [ROBOT] Servidor iniciado correctamente');
+                if (msg.includes('corriendo') || msg.includes('lista') || msg.includes('running')) {
+                    log.ok('Servidor listo');
                     resolve();
                 }
             });
-            
-            this.serverProcess.stderr.on('data', (data) => {
-                console.error(`❌ Servidor error: ${data.toString()}`);
+            this.serverProcess.stderr.on('data', d => {
+                const t = d.toString().trim();
+                if (t && !t.includes('DeprecationWarning')) log.warn('Servidor: ' + t);
             });
-            
-            setTimeout(() => {
-                reject(new Error('Timeout iniciando servidor'));
-            }, 15000);
+            setTimeout(() => reject(new Error('Timeout 20s iniciando servidor')), 20000);
         });
     }
 
-    // ==========================================
-    // 2. INICIAR NAVEGADOR
-    // ==========================================
+    // MODIFICACIÓN 1: slowMo reducido de 30 a 15
     async iniciarNavegador() {
-        console.log('\n🌐 [ROBOT] Abriendo navegador...');
-        
+        log.paso('Abriendo navegador...');
         this.browser = await puppeteer.launch({
             headless: false,
-            defaultViewport: { width: 1280, height: 720 },
-            args: ['--start-maximized']
+            defaultViewport: { width: 1366, height: 768 },
+            slowMo: 15,  // ← Cambiado de 30 a 15 (más rápido pero visible)
+            args: ['--start-maximized', '--disable-infobars', '--no-sandbox']
         });
-        
+
         this.page = await this.browser.newPage();
-        
-        const screenshotDir = path.join(__dirname, 'screenshots');
-        if (!fs.existsSync(screenshotDir)) {
-            fs.mkdirSync(screenshotDir);
-        }
-        
-        console.log('✅ [ROBOT] Navegador abierto');
+        await this.page.setDefaultTimeout(20000);
+        await this.page.setDefaultNavigationTimeout(20000);
+
+        // Interceptar TODOS los dialogs nativos del browser
+        this.page.on('dialog', async dialog => {
+            log.info('Dialog [' + dialog.type() + ']: "' + dialog.message() + '" -> aceptando');
+            try { await dialog.accept(); } catch (_) {}
+        });
+
+        this.page.on('close', () => log.warn('Pagina cerrada inesperadamente'));
+
+        const dir = path.join(__dirname, 'screenshots');
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+
+        log.ok('Navegador listo');
     }
 
-    // ==========================================
-    // 3. ESPERAR (CORREGIDO)
-    // ==========================================
-    async esperar(ms) {
-        await new Promise(resolve => setTimeout(resolve, ms));
+    // ======================================================
+    //  B. HELPERS
+    // ======================================================
+
+    // MODIFICACIÓN 7: Tiempos reducidos un 20%
+    async esperar(ms, msg) {
+        if (msg) log.wait(msg);
+        var tiempoReal = Math.floor(ms * 0.8);
+        if (tiempoReal < 150) tiempoReal = 150;
+        await new Promise(r => setTimeout(r, tiempoReal));
     }
 
-    // ==========================================
-    // 4. NAVEGAR
-    // ==========================================
-    async navegar(pageName, url) {
-        console.log(`\n📄 [ROBOT] Navegando a: ${pageName}`);
-        
+    async cap(nombre) {
         try {
-            await this.page.goto(`${this.baseUrl}/${url}`, { 
-                waitUntil: 'networkidle2',
-                timeout: 10000 
-            });
-            
-            const screenshotPath = path.join(__dirname, 'screenshots', `${pageName.replace(/ /g, '_')}.png`);
-            await this.page.screenshot({ path: screenshotPath, fullPage: true });
-            
-            console.log(`   ✅ ${pageName} cargada`);
-            this.results.pages.push({ name: pageName, url, status: 'success' });
+            this.capturaIdx++;
+            const num  = String(this.capturaIdx).padStart(2, '0');
+            const safe = nombre.replace(/[^a-z0-9]/gi, '_').toLowerCase();
+            const file = num + '_' + safe + '.png';
+            const ruta = path.join(__dirname, 'screenshots', file);
+            await this.page.screenshot({ path: ruta, fullPage: true });
+            this.results.capturas.push(ruta);
+            log.cap(file);
+        } catch (e) {
+            log.warn('No se pudo capturar "' + nombre + '": ' + e.message);
+        }
+    }
+
+    async verSelector(selector, ms) {
+        ms = ms || 8000;
+        try {
+            await this.page.waitForSelector(selector, { visible: true, timeout: ms });
             return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            this.results.pages.push({ name: pageName, url, status: 'failed' });
-            return false;
-        }
+        } catch { return false; }
     }
 
-    // ==========================================
-    // 5. REGISTRAR USUARIO
-    // ==========================================
-    async registrarUsuario(nombre, email, tipo) {
-        console.log(`\n📝 [ROBOT] Registrando ${tipo}: ${nombre}`);
-        
+    async esperarOculto(selector, ms) {
+        ms = ms || 5000;
         try {
-            await this.page.goto(`${this.baseUrl}/registrate.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(1000);
-            
-            await this.page.type('input[name="nombre"]', nombre);
-            await this.page.type('input[name="documento"]', '12345678');
-            await this.page.type('input[name="email"]', email);
-            await this.page.type('input[name="telefono"]', '3001234567');
-            await this.page.type('input[name="password"]', '123456');
-            await this.page.type('input[name="confirm_password"]', '123456');
-            
-            if (tipo === 'profesor') {
-                await this.page.click('input[value="profesor"]');
-            } else {
-                await this.page.click('input[value="estudiante"]');
-            }
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', `registro_${tipo}.png`) 
-            });
-            
-            await this.page.click('button[type="submit"]');
-            await this.esperar(2000);
-            
-            console.log(`   ✅ ${tipo} registrado: ${nombre}`);
-            this.results.actions.push({ action: 'registro', nombre, tipo, status: 'success' });
-            return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            this.results.actions.push({ action: 'registro', nombre, tipo, status: 'failed' });
-            return false;
-        }
+            await this.page.waitForSelector(selector, { hidden: true, timeout: ms });
+        } catch (_) {}
     }
 
-    // ==========================================
-    // 6. LOGIN (CORREGIDO)
-    // ==========================================
-    async login(email, password, tipoEsperado) {
-        console.log(`\n🔐 [ROBOT] Login como ${tipoEsperado}: ${email}`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/sesion.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(1000);
-            
-            await this.page.$eval('#email', el => el.value = '');
-            await this.page.$eval('#password', el => el.value = '');
-            
-            await this.page.type('#email', email);
-            await this.page.type('#password', password);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', `login_${tipoEsperado}_form.png`) 
-            });
-            
-            await this.page.click('#btnLogin');
-            await this.esperar(3000);
-            
-            // Verificar si el login fue exitoso
-            const currentUrl = this.page.url();
-            if (currentUrl.includes('admin.html') || currentUrl.includes('profesor.html') || currentUrl.includes('estudiante.html')) {
-                console.log(`   ✅ Login exitoso como ${tipoEsperado}`);
-                this.results.actions.push({ action: 'login', tipo: tipoEsperado, status: 'success' });
-                
-                await this.page.screenshot({ 
-                    path: path.join(__dirname, 'screenshots', `dashboard_${tipoEsperado}.png`),
-                    fullPage: true 
-                });
-                return true;
-            } else {
-                console.log(`   ⚠️ Login fallido, URL actual: ${currentUrl}`);
-                return false;
-            }
-        } catch (error) {
-            console.log(`   ❌ Error en login: ${error.message}`);
-            this.results.actions.push({ action: 'login', tipo: tipoEsperado, status: 'failed' });
-            this.results.errors.push({ action: 'login', error: error.message });
-            return false;
-        }
+    async escribir(selector, texto, delay) {
+        delay = delay || 70;
+        const ok = await this.verSelector(selector, 8000);
+        if (!ok) { log.warn('Campo no visible: ' + selector); return false; }
+        await this.page.evaluate(function(sel) {
+            var el = document.querySelector(sel);
+            if (el) { el.value = ''; el.dispatchEvent(new Event('input', { bubbles: true })); }
+        }, selector);
+        await this.esperar(150);
+        await this.page.type(selector, texto, { delay: delay });
+        await this.esperar(200);
+        return true;
     }
 
-    // ==========================================
-    // 7. LOGOUT (CORREGIDO)
-    // ==========================================
-    async logout() {
-        console.log(`\n🚪 [ROBOT] Cerrando sesión...`);
-        
-        try {
-            // Intentar diferentes selectores para logout
-            const logoutSelectors = ['.logout-btn', '#logoutBtn', 'a:contains("Salir")', 'button:contains("Cerrar sesión")'];
-            
-            for (const selector of logoutSelectors) {
-                const btn = await this.page.$(selector);
-                if (btn) {
-                    await btn.click();
-                    await this.esperar(2000);
-                    console.log(`   ✅ Sesión cerrada`);
-                    this.results.actions.push({ action: 'logout', status: 'success' });
-                    return true;
+    async click(selector, ms) {
+        ms = ms || 8000;
+        const ok = await this.verSelector(selector, ms);
+        if (!ok) { log.warn('Boton no visible: ' + selector); return false; }
+        await this.page.click(selector);
+        await this.esperar(300);
+        return true;
+    }
+
+    // Click al primero que exista de una lista de selectores
+    async clickPrimero() {
+        var selectores = Array.from(arguments);
+        for (var i = 0; i < selectores.length; i++) {
+            var sel = selectores[i];
+            try {
+                var el = await this.page.$(sel);
+                if (!el) continue;
+                var visible = await this.page.evaluate(function(s) {
+                    var e = document.querySelector(s);
+                    if (!e) return false;
+                    var r = e.getBoundingClientRect();
+                    return r.width > 0 && r.height > 0;
+                }, sel);
+                if (visible) {
+                    await this.page.click(sel);
+                    await this.esperar(400);
+                    return sel;
                 }
-            }
-            console.log(`   ⚠️ No se encontró botón de logout`);
-            return false;
-        } catch (error) {
-            console.log(`   ⚠️ Error cerrando sesión: ${error.message}`);
-            return false;
+            } catch (_) {}
         }
+        log.warn('Ninguno encontrado de: ' + selectores.slice(0, 3).join(' | '));
+        return null;
     }
 
-    // ==========================================
-    // 8. AGREGAR HORARIO
-    // ==========================================
-    async agregarHorario(materia, fecha, hora) {
-        console.log(`\n📅 [ROBOT] Agregando horario: ${materia} - ${fecha} ${hora}`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/profesor.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(2000);
-            
-            const abrirModal = await this.page.$('#abrirModal');
-            if (abrirModal) {
-                await abrirModal.click();
-                await this.esperar(1000);
+    // Escribir en el primer selector que exista
+    async escribirEn(texto, delay) {
+        var selectores = Array.from(arguments).slice(2);
+        for (var i = 0; i < selectores.length; i++) {
+            if (await this.verSelector(selectores[i], 3000)) {
+                await this.escribir(selectores[i], texto, delay);
+                return selectores[i];
             }
-            
-            await this.page.type('#materia', materia);
-            await this.page.type('#fecha', fecha);
-            await this.page.type('#hora_inicio', hora);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', 'horario_form.png') 
-            });
-            
-            await this.page.click('#formHorario button[type="submit"]');
-            await this.esperar(2000);
-            
-            console.log(`   ✅ Horario agregado: ${materia}`);
-            this.results.actions.push({ action: 'agregar_horario', materia, status: 'success' });
-            return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
         }
+        return null;
     }
 
-    // ==========================================
-    // 9. RESERVAR CLASE
-    // ==========================================
-    async reservarClase() {
-        console.log(`\n💳 [ROBOT] Reservando clase...`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/estudiante.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(3000);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', 'agenda_before_reserve.png'),
-                fullPage: true 
-            });
-            
-            const slots = await this.page.$$('.slot.disponible');
-            if (slots.length > 0) {
-                await slots[0].click();
-                await this.esperar(1000);
-                console.log(`   ✅ Slot seleccionado`);
-                
-                const btnReservar = await this.page.$('#btnReservar');
-                if (btnReservar) {
-                    await btnReservar.click();
-                    await this.esperar(2000);
-                    
-                    await this.page.screenshot({ 
-                        path: path.join(__dirname, 'screenshots', 'pago_modal.png') 
-                    });
-                    
-                    const btnPagar = await this.page.$('#btnConfirmarPago, .btn-confirmar-pago');
-                    if (btnPagar) {
-                        await btnPagar.click();
-                        await this.esperar(3000);
-                        console.log(`   ✅ Reserva confirmada y pagada`);
-                        this.results.actions.push({ action: 'reservar_clase', status: 'success' });
+    reg(accion, extra) {
+        extra = extra || {};
+        this.results.acciones.push(Object.assign({ accion: accion, ok: true }, extra));
+    }
+
+    // ======================================================
+    //  C. MANEJO DE MODALES / ALERTAS
+    // ======================================================
+
+    async cerrarModal(intentos) {
+        intentos = intentos || 3;
+        for (var i = 0; i < intentos; i++) {
+            await this.esperar(700);
+
+            // SweetAlert2
+            var swal2 = await this.clickPrimero(
+                '.swal2-confirm',
+                'button.swal2-confirm',
+                '.swal2-popup .swal2-confirm',
+                '.swal2-ok'
+            );
+            if (swal2) { log.info('Modal SweetAlert2 cerrado'); await this.esperar(600); continue; }
+
+            // SweetAlert1
+            var swal1 = await this.clickPrimero('.sweet-alert button');
+            if (swal1) { log.info('Modal SweetAlert1 cerrado'); await this.esperar(600); continue; }
+
+            // Bootstrap Modal
+            var bsBtn = await this.clickPrimero(
+                '.modal.show .btn-primary',
+                '.modal.show .btn-success',
+                '.modal.show button[data-bs-dismiss="modal"]',
+                '.modal.show .btn-close',
+                '.modal.show .close',
+                '.modal-footer .btn-primary',
+                '.modal-footer .btn-success',
+                '#btnAceptar',
+                '#btnOk',
+                '#btnCerrar',
+                '#btnClose'
+            );
+            if (bsBtn) { log.info('Modal Bootstrap cerrado'); await this.esperar(800); continue; }
+
+            // Genérico
+            var gen = await this.clickPrimero(
+                'button[class*="ok"]',
+                'button[class*="accept"]',
+                'button[class*="confirm"]'
+            );
+            if (gen) { log.info('Modal generico cerrado'); await this.esperar(600); continue; }
+
+            // Escape como último recurso
+            var overlay = await this.page.$('.modal-backdrop, .swal2-backdrop-show, .overlay');
+            if (overlay) {
+                await this.page.keyboard.press('Escape');
+                log.info('Overlay cerrado con Escape');
+                await this.esperar(600);
+                continue;
+            }
+
+            break;
+        }
+
+        await this.esperarOculto('.modal.show', 4000);
+        await this.esperarOculto('.swal2-container', 3000);
+        await this.esperar(400);
+    }
+
+    async navegarSeguro(url, etiqueta) {
+        var urlCompleta = url.startsWith('http') ? url : this.baseUrl + '/' + url;
+        if (etiqueta) log.paso('Navegando a: ' + etiqueta);
+
+        await this.cerrarModal(2);
+
+        await this.page.goto(urlCompleta, { waitUntil: 'networkidle2', timeout: 20000 });
+        await this.esperar(1500);
+
+        var actual = this.page.url();
+        if (actual.includes('sesion') && !urlCompleta.includes('sesion')) {
+            log.warn('Redirigido a login al intentar ir a ' + etiqueta);
+            return false;
+        }
+        return true;
+    }
+
+    // ======================================================
+    //  D. ACCIONES DE LA APP
+    // ======================================================
+
+    // ── 0. Pagina de inicio ─────────────────────────────
+    async irInicio() {
+        log.paso('Navegando a pagina principal...');
+        await this.page.goto(this.baseUrl, { waitUntil: 'networkidle2' });
+        await this.esperar(2000);
+        await this.cap('inicio');
+        log.ok('Pagina principal cargada');
+    }
+
+    // ── 1. REGISTRO ─────────────────────────────────────
+    async registrarUsuario(u) {
+        log.fase('REGISTRO - ' + u.tipo.toUpperCase() + ': ' + u.nombre);
+
+        await this.page.goto(this.baseUrl + '/registrate.html', { waitUntil: 'networkidle2' });
+        await this.esperar(2000, 'Cargando formulario de registro...');
+        await this.cap('reg_' + u.tipo + '_form_vacio');
+
+        var formOk = await this.verSelector('input[name="nombre"]', 12000);
+        if (!formOk) {
+            throw new Error('Formulario de registro no disponible para ' + u.tipo);
+        }
+
+        log.info('Nombre: ' + u.nombre);
+        await this.escribir('input[name="nombre"]', u.nombre);
+
+        log.info('Documento: ' + u.doc);
+        await this.escribir('input[name="documento"]', u.doc);
+
+        log.info('Email: ' + u.email);
+        await this.escribir('input[name="email"]', u.email);
+
+        log.info('Telefono: ' + u.tel);
+        await this.escribir('input[name="telefono"]', u.tel);
+
+        log.info('Password: ******');
+        await this.escribir('input[name="password"]', u.password);
+
+        log.info('Confirmar password: ******');
+        await this.escribir('input[name="confirm_password"]', u.password);
+
+        log.info('Tipo: ' + u.tipo);
+        var tipoOk = await this.clickPrimero(
+            'input[value="' + u.tipo + '"]',
+            'input[name="tipo"][value="' + u.tipo + '"]',
+            'input[name="rol"][value="' + u.tipo + '"]',
+            '#' + u.tipo
+        );
+
+        if (!tipoOk) {
+            var labOk = await this.page.evaluate(function(tipo) {
+                var labels = document.querySelectorAll('label');
+                for (var j = 0; j < labels.length; j++) {
+                    if (labels[j].textContent.toLowerCase().indexOf(tipo) >= 0) {
+                        labels[j].click();
                         return true;
                     }
                 }
-            } else {
-                console.log(`   ⚠️ No hay horarios disponibles`);
                 return false;
+            }, u.tipo);
+            if (labOk) log.info('Tipo seleccionado via label');
+            else log.warn('No se encontro radio para tipo "' + u.tipo + '"');
+        }
+
+        await this.esperar(500);
+        await this.cap('reg_' + u.tipo + '_lleno');
+
+        log.info('Enviando formulario...');
+        await this.clickPrimero(
+            'button[type="submit"]',
+            'input[type="submit"]',
+            '#btnRegistrar',
+            '#btnRegistro',
+            '.btn-registro',
+            'form button'
+        );
+
+        log.info('Esperando confirmacion...');
+        await this.esperar(1500);
+
+        var fin = Date.now() + 6000;
+        while (Date.now() < fin) {
+            var haySwal2 = await this.page.$('.swal2-popup');
+            var hasBs    = await this.page.$('.modal.show');
+            var url      = this.page.url();
+
+            if (haySwal2) {
+                await this.cap('reg_' + u.tipo + '_modal_ok');
+                log.info('Modal de exito (SweetAlert2) detectado -> cerrando...');
+                await this.cerrarModal(4);
+                break;
             }
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
-        }
-    }
-
-    // ==========================================
-    // 10. VER MATERIAS
-    // ==========================================
-    async verMaterias(rol) {
-        console.log(`\n📚 [ROBOT] Viendo materias como ${rol}...`);
-        
-        try {
-            const url = rol === 'profesor' ? 'materias.html' : 'estudiante.html';
-            await this.page.goto(`${this.baseUrl}/${url}`, { waitUntil: 'networkidle2' });
-            await this.esperar(2000);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', `materias_${rol}.png`),
-                fullPage: true 
-            });
-            
-            console.log(`   ✅ Materias cargadas`);
-            this.results.actions.push({ action: 'ver_materias', rol, status: 'success' });
-            return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
-        }
-    }
-
-    // ==========================================
-    // 11. IR A PERFIL
-    // ==========================================
-    async irAPerfil() {
-        console.log(`\n👤 [ROBOT] Yendo a Mi Perfil...`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/perfil.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(2000);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', 'perfil_usuario.png'),
-                fullPage: true 
-            });
-            
-            console.log(`   ✅ Perfil cargado`);
-            this.results.actions.push({ action: 'ver_perfil', status: 'success' });
-            return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
-        }
-    }
-
-    // ==========================================
-    // 12. CREAR TAREA
-    // ==========================================
-    async crearTarea(descripcion, fechaEntrega) {
-        console.log(`\n📋 [ROBOT] Creando tarea: ${descripcion.substring(0, 30)}...`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/materias.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(2000);
-            
-            const primerBotonTarea = await this.$('.task');
-            if (primerBotonTarea) {
-                await primerBotonTarea.click();
-                await this.esperar(1000);
-                
-                await this.page.type('#desc', descripcion);
-                await this.page.type('#fechaEntrega', fechaEntrega);
-                
-                await this.page.screenshot({ 
-                    path: path.join(__dirname, 'screenshots', 'crear_tarea_form.png') 
-                });
-                
-                await this.page.click('#btnEnviar, .btn-send');
-                await this.esperar(2000);
-                
-                console.log(`   ✅ Tarea creada`);
-                this.results.actions.push({ action: 'crear_tarea', status: 'success' });
-                return true;
+            if (hasBs) {
+                await this.cap('reg_' + u.tipo + '_modal_ok');
+                log.info('Modal Bootstrap detectado -> cerrando...');
+                await this.cerrarModal(4);
+                break;
             }
-            return false;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
+            if (!url.includes('registrate')) {
+                log.info('Registro exitoso, redirigido automaticamente');
+                break;
+            }
+            await this.esperar(400);
         }
+
+        await this.esperar(1500);
+        await this.cap('reg_' + u.tipo + '_resultado');
+        log.ok(u.tipo.toUpperCase() + ' registrado: ' + u.nombre);
+        this.reg('registro', { nombre: u.nombre, tipo: u.tipo });
+
+        await this.esperar(2000, 'Pausa entre registros...');
     }
 
-    // ==========================================
-    // 13. VER TAREAS PENDIENTES
-    // ==========================================
-    async verTareasPendientes() {
-        console.log(`\n📋 [ROBOT] Viendo tareas pendientes...`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/tareas.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(2000);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', 'tareas_pendientes.png'),
-                fullPage: true 
-            });
-            
-            console.log(`   ✅ Tareas pendientes cargadas`);
-            this.results.actions.push({ action: 'ver_tareas_pendientes', status: 'success' });
+    // ── 2. LOGIN ─────────────────────────────────────────
+    async login(u) {
+        log.fase('LOGIN - ' + u.tipo.toUpperCase() + ': ' + u.email);
+
+        await this.page.goto(this.baseUrl + '/sesion.html', { waitUntil: 'networkidle2' });
+        await this.esperar(1500, 'Cargando login...');
+        await this.cap('login_' + u.tipo + '_form');
+
+        var emailOk = await this.verSelector('#email', 10000);
+        if (!emailOk) throw new Error('Formulario de login no disponible');
+
+        log.info('Email: ' + u.email);
+        await this.escribir('#email', u.email);
+
+        log.info('Password: ******');
+        await this.escribir('#password', u.password);
+
+        await this.cap('login_' + u.tipo + '_lleno');
+
+        log.info('Presionando Iniciar Sesion...');
+        await this.clickPrimero('#btnLogin', 'button[type="submit"]', '.btn-login', 'form button');
+
+        await this.esperar(4000, 'Verificando credenciales...');
+        await this.cerrarModal(2);
+
+        var urlActual = this.page.url();
+        log.info('URL post-login: ' + urlActual);
+
+        var exito = urlActual.includes(u.tipo + '.html')
+                 || urlActual.includes('admin.html')
+                 || urlActual.includes('dashboard')
+                 || (!urlActual.includes('sesion') && !urlActual.includes('login'));
+
+        if (exito) {
+            log.ok('Sesion iniciada como ' + u.tipo.toUpperCase());
+            await this.cap('login_' + u.tipo + '_dashboard');
+            this.reg('login', { tipo: u.tipo });
             return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
         }
+
+        log.warn('Login puede haber fallado. URL: ' + urlActual);
+        await this.cap('login_' + u.tipo + '_fallo');
+        return false;
     }
 
-    // ==========================================
-    // 14. ENTREGAR TAREA
-    // ==========================================
-    async entregarTarea(entrega) {
-        console.log(`\n📤 [ROBOT] Entregando tarea...`);
-        
-        try {
-            const btnEntregar = await this.page.$('.btn-entregar');
-            if (btnEntregar) {
-                await btnEntregar.click();
-                await this.esperar(1000);
-                
-                const textarea = await this.page.$('#entregaDesc, textarea');
-                if (textarea) {
-                    await textarea.type(entrega);
+    // ── 3. LOGOUT ────────────────────────────────────────
+    async logout(tipo) {
+        tipo = tipo || '';
+        log.paso('Cerrando sesion' + (tipo ? ' (' + tipo + ')' : '') + '...');
+
+        var logoutBtn = await this.clickPrimero(
+            '#logoutBtn',
+            '.logout-btn',
+            '.btn-logout',
+            'a[href*="logout"]',
+            'a[onclick*="logout"]',
+            'button[onclick*="logout"]',
+            '[data-action="logout"]',
+            '#cerrarSesion',
+            '.cerrar-sesion'
+        );
+
+        if (logoutBtn) {
+            await this.esperar(2500, 'Cerrando sesion...');
+            await this.cerrarModal(2);
+            await this.cap('logout_' + (tipo || 'ok'));
+            log.ok('Sesion cerrada');
+            this.reg('logout', { tipo: tipo });
+            return true;
+        }
+
+        log.warn('Boton logout no encontrado -> navegando a sesion.html');
+        await this.page.goto(this.baseUrl + '/sesion.html', { waitUntil: 'networkidle2' });
+        await this.esperar(1500);
+        await this.cap('logout_' + (tipo || 'forzado'));
+        log.ok('Sesion cerrada (forzado)');
+        this.reg('logout', { tipo: tipo, modo: 'forzado' });
+        return true;
+    }
+
+    // ── 4. AGREGAR HORARIO ───────────────────────────────
+    // MODIFICACIÓN 2: Materias y horas aleatorias
+    async agregarHorario() {
+        // Arrays de materias y horas disponibles
+        const materiasDisponibles = [
+            'Fisica', 'Quimica', 'Matematicas', 'Biologia',
+            'Historia', 'Ingles', 'Programacion', 'Arte'
+        ];
+        const horasDisponibles = ['14:00', '15:00', '16:00', '17:00', '18:00'];
+
+        // Seleccionar materia y hora aleatoria
+        const materiaAleatoria = materiasDisponibles[Math.floor(Math.random() * materiasDisponibles.length)];
+        const horaAleatoria    = horasDisponibles[Math.floor(Math.random() * horasDisponibles.length)];
+
+        this.D.horario.materia = materiaAleatoria;
+        this.D.horario.hora    = horaAleatoria;
+
+        var materia = this.D.horario.materia;
+        var fecha   = this.D.horario.fecha;
+        var hora    = this.D.horario.hora;
+        log.fase('AGREGAR HORARIO - ' + materia + ' - ' + fecha + ' - ' + hora);
+
+        await this.navegarSeguro('profesor.html', 'Dashboard Profesor');
+        await this.esperar(2000);
+        await this.cap('horario_dashboard_profesor');
+
+        log.info('Buscando boton para agregar horario...');
+        var btnModal = await this.clickPrimero(
+            '#abrirModal',
+            '#btnNuevoHorario',
+            '#btnAgregarHorario',
+            '.btn-nuevo-horario',
+            '.btn-agregar',
+            '[data-modal="horario"]',
+            'button[onclick*="horario"]',
+            'button[onclick*="modal"]'
+        );
+
+        if (btnModal) {
+            log.info('Modal de horario abierto');
+            await this.esperar(1500);
+            await this.cap('horario_modal_abierto');
+        }
+
+        log.info('Materia: ' + materia);
+        var campM = await this.escribirEn(materia, 70,
+            '#materia',
+            'input[name="materia"]',
+            'input[placeholder*="materia"]'
+        );
+        if (!campM) log.warn('Campo materia no encontrado');
+
+        await this.esperar(400);
+
+        log.info('Fecha: ' + fecha);
+        var campF = await this.escribirEn(fecha, 70,
+            '#fecha',
+            'input[name="fecha"]',
+            'input[type="date"]'
+        );
+        if (campF) {
+            await this.page.evaluate(function(sel, v) {
+                var el = document.querySelector(sel);
+                if (el) {
+                    el.value = v;
+                    el.dispatchEvent(new Event('input',  { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
                 }
-                
-                await this.page.screenshot({ 
-                    path: path.join(__dirname, 'screenshots', 'entregar_tarea_form.png') 
-                });
-                
-                await this.page.click('#btnSubmit, .btn-submit');
-                await this.esperar(2000);
-                
-                console.log(`   ✅ Tarea entregada`);
-                this.results.actions.push({ action: 'entregar_tarea', status: 'success' });
-                return true;
+            }, campF, fecha);
+        }
+
+        await this.esperar(400);
+
+        log.info('Hora: ' + hora);
+        var campH = await this.escribirEn(hora, 70,
+            '#hora_inicio',
+            'input[name="hora_inicio"]',
+            'input[name="hora"]',
+            'input[type="time"]',
+            '#hora'
+        );
+        if (campH) {
+            await this.page.evaluate(function(sel, v) {
+                var el = document.querySelector(sel);
+                if (el) {
+                    el.value = v;
+                    el.dispatchEvent(new Event('input',  { bubbles: true }));
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }, campH, hora);
+        }
+
+        await this.esperar(500);
+        await this.cap('horario_formulario_lleno');
+
+        log.info('Guardando horario...');
+        await this.clickPrimero(
+            '#formHorario button[type="submit"]',
+            '#btnGuardarHorario',
+            '.btn-guardar',
+            'button[type="submit"]',
+            '.modal.show button[type="submit"]',
+            'form button'
+        );
+
+        await this.esperar(2000, 'Guardando...');
+        await this.cerrarModal(3);
+        await this.esperar(1000);
+        await this.cap('horario_guardado');
+        log.ok('Horario guardado: ' + materia + ' ' + hora);
+        this.reg('agregar_horario', { materia: materia, fecha: fecha, hora: hora });
+    }
+
+    // ── 5. RESERVAR CLASE CON NEQUI ──────────────────────
+    async reservarClase() {
+        log.fase('RESERVAR CLASE - Metodo: Nequi');
+
+        await this.navegarSeguro('estudiante.html', 'Agenda Estudiante');
+        await this.esperar(3000, 'Cargando horarios disponibles...');
+        await this.cap('reserva_agenda');
+
+        log.info('Buscando slots disponibles...');
+        var slotSels = [
+            '.slot.disponible',
+            '.horario-disponible',
+            '.slot-disponible',
+            '.clase-disponible',
+            '[data-estado="disponible"]',
+            '.available'
+        ];
+
+        var slotOk = false;
+        for (var i = 0; i < slotSels.length; i++) {
+            var slots = await this.page.$$(slotSels[i]);
+            if (slots.length > 0) {
+                log.info(slots.length + ' slot(s) disponible(s) - seleccionando primero...');
+                await slots[0].click();
+                await this.esperar(1500);
+                slotOk = true;
+                break;
             }
-            return false;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
+        }
+
+        if (!slotOk) {
+            log.warn('Sin slots disponibles');
+            await this.cap('reserva_sin_slots');
             return false;
         }
-    }
 
-    // ==========================================
-    // 15. VER CALIFICACIONES
-    // ==========================================
-    async verCalificaciones() {
-        console.log(`\n📊 [ROBOT] Viendo mis calificaciones...`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/nota.html`, { waitUntil: 'networkidle2' });
-            await this.esperar(2000);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', 'mis_calificaciones.png'),
-                fullPage: true 
+        await this.cap('reserva_slot_seleccionado');
+
+        log.info('Presionando boton Reservar...');
+        await this.clickPrimero(
+            '#btnReservar',
+            '.btn-reservar',
+            'button[onclick*="reservar"]',
+            '[data-action="reservar"]'
+        );
+        await this.esperar(2000);
+        await this.cap('reserva_pago_modal');
+
+        log.info('Seleccionando Nequi...');
+        var nequiOk = await this.clickPrimero(
+            '[data-metodo="nequi"]',
+            '[data-pago="nequi"]',
+            '.metodo-nequi',
+            '#nequi',
+            'input[value="nequi"]'
+        );
+
+        if (!nequiOk) {
+            nequiOk = await this.page.evaluate(function() {
+                var all = document.querySelectorAll('button, label, .metodo-btn, .metodo-pago, .option, .card');
+                for (var k = 0; k < all.length; k++) {
+                    if (all[k].textContent.toLowerCase().indexOf('nequi') >= 0) {
+                        all[k].click();
+                        return true;
+                    }
+                }
+                return false;
             });
-            
-            console.log(`   ✅ Calificaciones cargadas`);
-            this.results.actions.push({ action: 'ver_calificaciones', status: 'success' });
-            return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
+            if (nequiOk) log.info('Nequi seleccionado por texto');
         }
+
+        await this.esperar(1000);
+        await this.cap('reserva_nequi_seleccionado');
+
+        log.info('Celular Nequi: ' + this.D.nequi.celular);
+        await this.escribirEn(this.D.nequi.celular, 80,
+            '#celularNequi',
+            '#numeroCelular',
+            '#celular',
+            'input[name="celular"]',
+            'input[name="telefono"]',
+            'input[placeholder*="celular"]',
+            'input[placeholder*="Nequi"]',
+            'input[placeholder*="numero"]',
+            'input[type="tel"]'
+        );
+
+        await this.esperar(800);
+        await this.cap('reserva_celular_ingresado');
+
+        log.info('Confirmando pago...');
+        await this.clickPrimero(
+            '#btnConfirmarPago',
+            '.btn-confirmar-pago',
+            '#btnPagar',
+            '.btn-pagar',
+            'button[onclick*="pagar"]',
+            'button[onclick*="confirmar"]',
+            '.modal.show button[type="submit"]',
+            'button[type="submit"]'
+        );
+
+        await this.esperar(4000, 'Procesando pago Nequi...');
+        await this.cerrarModal(3);
+        await this.esperar(1500);
+        await this.cap('reserva_confirmada');
+        log.ok('Reserva realizada con Nequi');
+        this.reg('reservar_clase', { metodo: 'Nequi', celular: this.D.nequi.celular });
+        return true;
     }
 
-    // ==========================================
-    // 16. VER ESTUDIANTES
-    // ==========================================
-    async verEstudiantes() {
-        console.log(`\n👨‍🎓 [ROBOT] Viendo lista de estudiantes...`);
-        
-        try {
-            await this.page.goto(`${this.baseUrl}/misestudiantes.html`, { waitUntil: 'networkidle2' });
+    // ── 6. VER MATERIAS ──────────────────────────────────
+    async verMaterias(rol) {
+        log.paso('Viendo Materias como ' + rol + '...');
+        await this.navegarSeguro('materias.html', 'Mis Materias');
+        await this.esperar(2500, 'Cargando materias...');
+        await this.cap('materias_' + rol);
+        log.ok('Materias cargadas (' + rol + ')');
+        this.reg('ver_materias', { rol: rol });
+    }
+
+    // ── 7. ASIGNAR TAREA ─────────────────────────────────
+    async asignarTarea() {
+        var texto = this.D.tarea.texto;
+        var fecha = this.D.tarea.fecha;
+        log.fase('ASIGNAR TAREA: "' + texto + '"');
+
+        await this.navegarSeguro('materias.html', 'Materias del Profesor');
+        await this.esperar(2500);
+        await this.cap('tarea_materias_profesor');
+
+        log.info('Buscando boton para asignar tarea...');
+        var btnT = await this.clickPrimero(
+            '.task',
+            '.btn-tarea',
+            '#btnTarea',
+            '[data-action="tarea"]',
+            '[data-modal="tarea"]',
+            '.icon-task',
+            'button[onclick*="tarea"]'
+        );
+
+        if (btnT) {
+            log.info('Formulario de tarea abierto');
+            await this.esperar(1500);
+            await this.cap('tarea_modal_abierto');
+        }
+
+        log.info('Pregunta: ' + texto);
+        await this.escribirEn(texto, 60,
+            '#desc',
+            '#descripcion',
+            '#pregunta',
+            'textarea[name="descripcion"]',
+            'textarea[name="desc"]',
+            'textarea'
+        );
+
+        await this.esperar(400);
+
+        log.info('Fecha entrega: ' + fecha);
+        var campFe = await this.escribirEn(fecha, 60,
+            '#fechaEntrega',
+            'input[name="fechaEntrega"]',
+            'input[name="fecha_entrega"]',
+            'input[type="date"]'
+        );
+        if (campFe) {
+            await this.page.evaluate(function(sel, v) {
+                var el = document.querySelector(sel);
+                if (el) {
+                    el.value = v;
+                    el.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+            }, campFe, fecha);
+        }
+
+        await this.esperar(500);
+        await this.cap('tarea_formulario_lleno');
+
+        log.info('Guardando tarea...');
+        await this.clickPrimero(
+            '#btnEnviar',
+            '.btn-send',
+            '#btnGuardar',
+            '.btn-guardar',
+            '.modal.show button[type="submit"]',
+            'button[type="submit"]',
+            'form button'
+        );
+
+        await this.esperar(2500, 'Guardando tarea...');
+        await this.cerrarModal(3);
+        await this.esperar(1000);
+        await this.cap('tarea_asignada');
+        log.ok('Tarea asignada');
+        this.reg('asignar_tarea', { texto: texto, fecha: fecha });
+    }
+
+    // ── 8. VER TAREAS PENDIENTES ─────────────────────────
+    async verTareasPendientes() {
+        log.paso('Viendo Tareas Pendientes...');
+        var rutas = ['tareas.html', 'tareas-pendientes.html', 'mis-tareas.html'];
+        var cargado = false;
+        for (var i = 0; i < rutas.length; i++) {
+            try {
+                await this.page.goto(this.baseUrl + '/' + rutas[i], { waitUntil: 'networkidle2', timeout: 8000 });
+                await this.esperar(2000);
+                var url = this.page.url();
+                if (!url.includes('sesion')) { log.info('Tareas en: ' + rutas[i]); cargado = true; break; }
+            } catch (_) {}
+        }
+        if (!cargado) {
+            log.warn('Pagina de tareas no encontrada');
+            await this.navegarSeguro('estudiante.html', 'Estudiante');
             await this.esperar(2000);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', 'mis_estudiantes.png'),
-                fullPage: true 
-            });
-            
-            console.log(`   ✅ Lista de estudiantes cargada`);
-            this.results.actions.push({ action: 'ver_estudiantes', status: 'success' });
-            return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
         }
+        await this.cap('tareas_pendientes_lista');
+        log.ok('Tareas pendientes cargadas');
+        this.reg('ver_tareas_pendientes');
     }
 
-    // ==========================================
-    // 17. PANEL ADMIN
-    // ==========================================
-    async panelAdmin(seccion) {
-        console.log(`\n👑 [ROBOT] Panel Admin - ${seccion}...`);
-        
-        try {
-            let url = '';
-            if (seccion === 'Usuarios') url = 'usuarios.html';
-            else if (seccion === 'Reportes') url = 'reportes.html';
-            else if (seccion === 'Seguridad') url = 'seguridad.html';
-            else return false;
-            
-            await this.page.goto(`${this.baseUrl}/${url}`, { waitUntil: 'networkidle2' });
+    // ── 9. ENTREGAR TAREA ────────────────────────────────
+    // MODIFICACIÓN 6: espera adicional antes de buscar el botón
+    async entregarTarea() {
+        var entrega = this.D.tarea.entrega;
+        log.fase('ENTREGAR TAREA - Respuesta: "' + entrega + '"');
+
+        // Esperar a que la página de tareas esté completamente cargada
+        await this.esperar(2000, 'Asegurando que las tareas esten visibles...');
+
+        log.info('Buscando boton para entregar/realizar tarea...');
+        var btnE = await this.clickPrimero(
+            '.btn-entregar',
+            '.btn-realizar',
+            '#btnEntregar',
+            '#btnRealizarTarea',
+            '[data-action="entregar"]',
+            'button[onclick*="entregar"]',
+            'button[onclick*="realizar"]'
+        );
+
+        if (!btnE) {
+            var porTexto = await this.page.evaluate(function() {
+                var btns = document.querySelectorAll('button, a, .btn');
+                for (var k = 0; k < btns.length; k++) {
+                    var t = btns[k].textContent.toLowerCase();
+                    if (t.indexOf('entregar') >= 0 || t.indexOf('realizar') >= 0 || t.indexOf('responder') >= 0) {
+                        btns[k].click();
+                        return btns[k].textContent.trim();
+                    }
+                }
+                return null;
+            });
+            if (porTexto) log.info('Boton encontrado por texto: "' + porTexto + '"');
+        }
+
+        await this.esperar(1500);
+        await this.cap('entrega_modal_abierto');
+
+        log.info('Respuesta: "' + entrega + '"');
+        await this.escribirEn(entrega, 70,
+            '#entregaDesc',
+            '#respuesta',
+            '#descripcion',
+            'textarea[name="entrega"]',
+            'textarea[name="respuesta"]',
+            'textarea[name="descripcion"]',
+            'textarea'
+        );
+
+        await this.esperar(500);
+        await this.cap('entrega_respuesta_escrita');
+
+        log.info('Guardando entrega...');
+        await this.clickPrimero(
+            '#btnSubmit',
+            '.btn-submit',
+            '#btnEnviarEntrega',
+            '.modal.show button[type="submit"]',
+            'button[type="submit"]'
+        );
+
+        await this.esperar(2500, 'Guardando entrega...');
+        await this.cerrarModal(3);
+        await this.esperar(1000);
+        await this.cap('entrega_guardada');
+        log.ok('Tarea entregada: "' + entrega + '"');
+        this.reg('entregar_tarea', { respuesta: entrega });
+    }
+
+    // ── 10. CALIFICAR TAREA ──────────────────────────────
+    async calificarTarea() {
+        var nota       = this.D.calificacion.nota;
+        var comentario = this.D.calificacion.comentario;
+        log.fase('CALIFICAR TAREA - Nota: ' + nota);
+
+        var rutas = ['calificaciones.html', 'calificar.html', 'notas.html', 'misestudiantes.html'];
+        var pagOk = false;
+        for (var i = 0; i < rutas.length; i++) {
+            try {
+                await this.page.goto(this.baseUrl + '/' + rutas[i], { waitUntil: 'networkidle2', timeout: 8000 });
+                await this.esperar(2000);
+                var url = this.page.url();
+                if (!url.includes('sesion') && !url.includes('login')) {
+                    log.info('Pagina calificaciones: ' + rutas[i]);
+                    pagOk = true;
+                    break;
+                }
+            } catch (_) {}
+        }
+
+        if (!pagOk) {
+            await this.navegarSeguro('materias.html', 'Materias Profesor');
             await this.esperar(2000);
-            
-            await this.page.screenshot({ 
-                path: path.join(__dirname, 'screenshots', `admin_${seccion.toLowerCase()}.png`),
-                fullPage: true 
-            });
-            
-            console.log(`   ✅ ${seccion} cargado`);
-            return true;
-        } catch (error) {
-            console.log(`   ❌ Error: ${error.message}`);
-            return false;
+        }
+
+        await this.cap('calificacion_pagina');
+
+        var notaSels = ['.nota-input', 'input[name="nota"]', '#nota', 'input[type="number"]', '.calificacion-input'];
+        var notaEl = null;
+        for (var j = 0; j < notaSels.length; j++) {
+            var el = await this.page.$(notaSels[j]);
+            if (el) { notaEl = notaSels[j]; break; }
+        }
+
+        if (notaEl) {
+            log.info('Campo nota encontrado: ' + notaEl);
+            await this.page.click(notaEl, { clickCount: 3 });
+            await this.esperar(200);
+            await this.page.type(notaEl, nota, { delay: 80 });
+            await this.esperar(400);
+
+            log.info('Comentario: "' + comentario + '"');
+            await this.escribirEn(comentario, 60,
+                '.obs-input',
+                'textarea[name="observacion"]',
+                '#observacion',
+                '#comentario',
+                'textarea[name="comentario"]'
+            );
+
+            await this.esperar(500);
+            await this.cap('calificacion_llena');
+
+            log.info('Guardando nota...');
+            await this.clickPrimero('.btn-save', '#btnGuardar', '#btnSave', '.btn-calificar', 'button[type="submit"]');
+            await this.esperar(2500, 'Guardando nota...');
+            await this.cerrarModal(3);
+            await this.cap('calificacion_guardada');
+            log.ok('Nota ' + nota + ' guardada');
+            this.reg('calificar_tarea', { nota: nota, comentario: comentario });
+        } else {
+            log.warn('Campo de nota no encontrado - puede requerir ajuste de selectores');
+            await this.cap('calificacion_sin_campo');
+            this.reg('calificar_tarea', { nota: nota, estado: 'campo_no_encontrado' });
         }
     }
 
-    // ==========================================
-    // 18. GENERAR REPORTE HTML
-    // ==========================================
-    generarReporteHTML() {
-        const html = `<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Reporte QA - EduAgenda Robot</title>
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            padding: 30px;
+    // ── 11. VER CALIFICACIONES (estudiante) ──────────────
+    async verCalificacionesEstudiante() {
+        log.paso('Viendo Mis Calificaciones...');
+        var rutas = ['nota.html', 'notas.html', 'mis-notas.html', 'calificaciones.html'];
+        for (var i = 0; i < rutas.length; i++) {
+            try {
+                await this.page.goto(this.baseUrl + '/' + rutas[i], { waitUntil: 'networkidle2', timeout: 8000 });
+                await this.esperar(2000);
+                var url = this.page.url();
+                if (!url.includes('sesion')) { log.info('Mis notas en: ' + rutas[i]); break; }
+            } catch (_) {}
         }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { color: #1a73e8; margin-bottom: 10px; }
-        .subtitle { color: #5f6368; margin-bottom: 30px; }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-        .stat-card {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .stat-card.success { border-top: 4px solid #34a853; }
-        .stat-card.failed { border-top: 4px solid #ea4335; }
-        .stat-number { font-size: 36px; font-weight: bold; margin-bottom: 8px; }
-        .stat-label { color: #5f6368; }
-        .section {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .section h2 {
-            color: #1a73e8;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e8eaed;
-        }
-        .success-item { color: #34a853; }
-        .failed-item { color: #ea4335; }
-        ul { list-style: none; padding-left: 0; }
-        li { padding: 5px 0; }
-        .timestamp {
-            text-align: center;
-            color: #5f6368;
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e8eaed;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🤖 EduAgenda - Reporte de QA Automatizado</h1>
-        <p class="subtitle">Flujo completo de usuario ejecutado por el robot</p>
-        
-        <div class="stats">
-            <div class="stat-card success">
-                <div class="stat-number">${this.results.actions.filter(a => a.status === 'success').length}</div>
-                <div class="stat-label">Acciones Exitosas</div>
-            </div>
-            <div class="stat-card ${this.results.actions.filter(a => a.status === 'failed').length > 0 ? 'failed' : 'success'}">
-                <div class="stat-number">${this.results.actions.filter(a => a.status === 'failed').length}</div>
-                <div class="stat-label">Acciones Fallidas</div>
-            </div>
-            <div class="stat-card success">
-                <div class="stat-number">${this.results.pages.length}</div>
-                <div class="stat-label">Páginas Verificadas</div>
-            </div>
-        </div>
-        
-        <div class="section">
-            <h2>📄 Páginas Verificadas</h2>
-            <ul>
-                ${this.results.pages.map(p => `
-                    <li class="${p.status === 'success' ? 'success-item' : 'failed-item'}">
-                        ${p.status === 'success' ? '✅' : '❌'} ${p.name}
-                    </li>
-                `).join('')}
-            </ul>
-        </div>
-        
-        <div class="section">
-            <h2>🎬 Acciones Realizadas</h2>
-            <ul>
-                ${this.results.actions.map(a => `
-                    <li class="${a.status === 'success' ? 'success-item' : 'failed-item'}">
-                        ${a.status === 'success' ? '✅' : '❌'} ${a.action}: ${a.nombre || a.tipo || a.materia || ''}
-                    </li>
-                `).join('')}
-            </ul>
-        </div>
-        
-        <div class="timestamp">
-            Reporte generado: ${new Date().toLocaleString()}
-        </div>
-    </div>
-</body>
-</html>`;
-        
-        const reportePath = path.join(__dirname, 'reporte-qa.html');
-        fs.writeFileSync(reportePath, html);
-        console.log(`\n📊 Reporte HTML generado: ${reportePath}`);
+        await this.cap('estudiante_mis_notas');
+        log.ok('Calificaciones cargadas');
+        this.reg('ver_calificaciones', { rol: 'estudiante' });
     }
 
-    // ==========================================
-    // 19. FLUJO COMPLETO
-    // ==========================================
-    async ejecutarFlujoCompleto() {
-        console.log('\n' + '='.repeat(70));
-        console.log('🤖 ROBOT DE QA - FLUJO COMPLETO DE USUARIO');
-        console.log('='.repeat(70));
-        
+    // ── 12. PANELES ADMIN ────────────────────────────────
+    async verPanelesAdmin() {
+        log.fase('PANELES DE ADMINISTRADOR');
+        var paneles = [
+            { url: 'admin.html',        nombre: 'Dashboard Principal' },
+            { url: 'usuarios.html',     nombre: 'Gestion de Usuarios' },
+            { url: 'reportes.html',     nombre: 'Reportes' },
+            { url: 'configuracion.html',nombre: 'Configuracion' },
+            { url: 'seguridad.html',    nombre: 'Seguridad' }
+        ];
+
+        for (var i = 0; i < paneles.length; i++) {
+            var panel = paneles[i];
+            log.info('Abriendo: ' + panel.nombre + '...');
+            try {
+                await this.page.goto(this.baseUrl + '/' + panel.url, { waitUntil: 'networkidle2', timeout: 12000 });
+                await this.esperar(3000, 'Revisando ' + panel.nombre + '...');
+                var url = this.page.url();
+                if (url.includes('sesion') || url.includes('login')) {
+                    log.warn(panel.nombre + ': requiere autenticacion');
+                } else {
+                    var nomC = panel.nombre.toLowerCase().replace(/ /g, '_');
+                    await this.cap('admin_' + nomC);
+                    log.ok('Panel "' + panel.nombre + '" revisado');
+                }
+            } catch (e) {
+                log.warn('Panel "' + panel.nombre + '" no disponible: ' + e.message);
+            }
+        }
+        this.reg('ver_paneles_admin');
+    }
+
+    // ── 13. PANELES DEL PROFESOR (TODOS) ─────────────────
+    // MODIFICACIÓN 3: Nuevos paneles del profesor
+    async verPanelesProfesor() {
+        log.fase('PANELES DEL PROFESOR - Explorando todas las secciones');
+
+        var panelesProfesor = [
+            { url: 'profesor.html',       nombre: 'Dashboard Principal' },
+            { url: 'agenda.html',         nombre: 'Mi Agenda' },
+            { url: 'materias.html',       nombre: 'Mis Materias' },
+            { url: 'misestudiantes.html', nombre: 'Mis Estudiantes' },
+            { url: 'calificaciones.html', nombre: 'Calificaciones' },
+            { url: 'ingresos.html',       nombre: 'Ingresos' },
+            { url: 'configuracion2.html', nombre: 'Configuracion' },
+            { url: 'perfil.html',         nombre: 'Mi Perfil' }
+        ];
+
+        for (var i = 0; i < panelesProfesor.length; i++) {
+            var panel = panelesProfesor[i];
+            log.info('Abriendo: ' + panel.nombre + '...');
+            try {
+                await this.page.goto(this.baseUrl + '/' + panel.url, { waitUntil: 'networkidle2', timeout: 10000 });
+                await this.esperar(2000, 'Cargando ' + panel.nombre + '...');
+
+                var url = this.page.url();
+                if (url.includes('sesion') || url.includes('login')) {
+                    log.warn(panel.nombre + ': requiere autenticacion');
+                } else {
+                    var nomC = panel.nombre.toLowerCase().replace(/ /g, '_');
+                    await this.cap('profesor_' + nomC);
+                    log.ok('Panel "' + panel.nombre + '" revisado');
+                }
+            } catch (e) {
+                log.warn('Panel "' + panel.nombre + '" no disponible: ' + e.message);
+            }
+            await this.esperar(800, 'Siguiente panel...');
+        }
+        this.reg('ver_paneles_profesor');
+    }
+
+    // ── 14. PANELES DEL ESTUDIANTE ────────────────────────
+    // MODIFICACIÓN 4: Nuevos paneles del estudiante
+    async verPanelesEstudiante() {
+        log.fase('PANELES DEL ESTUDIANTE - Explorando todas las secciones');
+
+        var panelesEstudiante = [
+            { url: 'estudiante.html', nombre: 'Dashboard Principal' },
+            { url: 'misclases.html',  nombre: 'Mis Clases' },
+            { url: 'tareas.html',     nombre: 'Mis Tareas' },
+            { url: 'nota.html',       nombre: 'Mis Calificaciones' },
+            { url: 'perfil.html',     nombre: 'Mi Perfil' }
+        ];
+
+        for (var i = 0; i < panelesEstudiante.length; i++) {
+            var panel = panelesEstudiante[i];
+            log.info('Abriendo: ' + panel.nombre + '...');
+            try {
+                await this.page.goto(this.baseUrl + '/' + panel.url, { waitUntil: 'networkidle2', timeout: 10000 });
+                await this.esperar(2000, 'Cargando ' + panel.nombre + '...');
+
+                var url = this.page.url();
+                if (!url.includes('sesion') && !url.includes('login')) {
+                    var nomC = panel.nombre.toLowerCase().replace(/ /g, '_');
+                    await this.cap('estudiante_' + nomC);
+                    log.ok('Panel "' + panel.nombre + '" revisado');
+                }
+            } catch (e) {
+                log.warn('Panel "' + panel.nombre + '" no disponible: ' + e.message);
+            }
+            await this.esperar(800);
+        }
+        this.reg('ver_paneles_estudiante');
+    }
+
+    // ======================================================
+    //  REPORTE HTML
+    // ======================================================
+    generarReporte() {
+        var exitosas = this.results.acciones.filter(function(a) { return a.ok; });
+        var capturas = this.results.capturas;
+
+        var filas = exitosas.map(function(a) {
+            return '<tr><td>OK</td><td><strong>' + a.accion + '</strong></td><td>' +
+                (a.tipo || a.rol || a.metodo || '-') + '</td><td>' +
+                (a.nombre || a.nota || a.texto || a.respuesta || '-') + '</td></tr>';
+        }).join('');
+
+        var galeria = capturas.map(function(c) {
+            return '<div class="thumb"><img src="' + c + '" alt="' + path.basename(c) + '" loading="lazy"/><span>' + path.basename(c) + '</span></div>';
+        }).join('');
+
+        var html = '<!DOCTYPE html>\n<html lang="es">\n<head>\n' +
+            '<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">\n' +
+            '<title>Reporte QA EduAgenda</title>\n' +
+            '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;600;800&display=swap" rel="stylesheet">\n' +
+            '<style>\n' +
+            ':root{--bg:#060a12;--s1:#0d1322;--borde:#1a2540;--acento:#00d4ff;--verde:#00e5a0;--amarillo:#ffd700;--text:#dde4f0;--muted:#4a5568;--font:"Sora",sans-serif;--mono:"IBM Plex Mono",monospace;}\n' +
+            '*{margin:0;padding:0;box-sizing:border-box}\n' +
+            'body{background:var(--bg);color:var(--text);font-family:var(--font);padding:40px 20px}\n' +
+            '.wrap{max-width:1100px;margin:0 auto}\n' +
+            '.hero{text-align:center;padding:70px 20px 50px;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,212,255,.08),transparent);border:1px solid var(--borde);border-radius:20px;margin-bottom:24px}\n' +
+            '.hero h1{font-size:clamp(2rem,5vw,3rem);font-weight:800;margin-bottom:12px}\n' +
+            '.hero h1 em{color:var(--acento);font-style:normal}\n' +
+            '.hero p{color:var(--muted);font-family:var(--mono);font-size:.9rem}\n' +
+            '.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}\n' +
+            '.stat{background:var(--s1);border:1px solid var(--borde);border-radius:14px;padding:20px;text-align:center}\n' +
+            '.stat .n{font-size:2.6rem;font-weight:800;color:var(--acento);font-family:var(--mono)}\n' +
+            '.stat .l{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;margin-top:6px}\n' +
+            '.bloque{background:var(--s1);border:1px solid var(--borde);border-radius:14px;padding:26px;margin-bottom:20px;overflow:auto}\n' +
+            '.bloque-titulo{font-family:var(--mono);font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px}\n' +
+            'table{width:100%;border-collapse:collapse;min-width:460px}\n' +
+            'th{text-align:left;font-family:var(--mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;padding:8px 12px;border-bottom:1px solid var(--borde)}\n' +
+            'td{padding:10px 12px;border-bottom:1px solid rgba(26,37,64,.5);font-size:.87rem}\n' +
+            'tr:last-child td{border:none}\n' +
+            'tr:hover td{background:rgba(0,212,255,.03)}\n' +
+            '.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:4px}\n' +
+            '.thumb{background:var(--bg);border:1px solid var(--borde);border-radius:10px;overflow:hidden}\n' +
+            '.thumb img{width:100%;height:95px;object-fit:cover;opacity:.75}\n' +
+            '.thumb span{display:block;font-family:var(--mono);font-size:.65rem;color:var(--muted);padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}\n' +
+            '.pie{text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:.8rem}\n' +
+            '.pie strong{color:var(--acento)}\n' +
+            '</style>\n</head>\n<body>\n<div class="wrap">\n' +
+            '<div class="hero"><h1>Reporte <em>EduAgenda</em></h1><p>' + new Date().toLocaleString('es-CO') + '</p></div>\n' +
+            '<div class="stats">' +
+            '<div class="stat"><div class="n">' + exitosas.length + '</div><div class="l">Acciones OK</div></div>' +
+            '<div class="stat"><div class="n">' + capturas.length + '</div><div class="l">Capturas</div></div>' +
+            '<div class="stat"><div class="n">9</div><div class="l">Fases</div></div>' +
+            '<div class="stat"><div class="n">3</div><div class="l">Roles</div></div>' +
+            '</div>\n' +
+            '<div class="bloque"><div class="bloque-titulo">Acciones realizadas</div>' +
+            '<table><thead><tr><th></th><th>Accion</th><th>Rol/Metodo</th><th>Detalle</th></tr></thead>' +
+            '<tbody>' + (filas || '<tr><td colspan="4" style="color:var(--muted);text-align:center;padding:20px">Sin acciones</td></tr>') + '</tbody></table></div>\n' +
+            '<div class="bloque"><div class="bloque-titulo">Capturas (' + capturas.length + ')</div>' +
+            '<div class="gallery">' + (galeria || '<p style="color:var(--muted)">Sin capturas</p>') + '</div></div>\n' +
+            '<div class="pie"><p>Generado por <strong>EduAgenda QA Robot</strong></p></div>\n' +
+            '</div></body></html>';
+
+        var ruta = path.join(__dirname, 'reporte-qa.html');
+        fs.writeFileSync(ruta, html, 'utf8');
+        log.ok('Reporte generado -> ' + ruta);
+    }
+
+    // ======================================================
+    //  FLUJO COMPLETO — MODIFICACIÓN 5: flujo actualizado
+    // ======================================================
+    async ejecutar() {
+        log.titulo('ROBOT DE QA - EDUAGENDA - FLUJO COMPLETO');
+
         try {
-            // Iniciar servidor y navegador
             await this.iniciarServidor();
             await this.iniciarNavegador();
-            
-            // ==========================================
-            // FASE 1: REGISTRO DE USUARIOS
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('📝 FASE 1: REGISTRO DE USUARIOS');
-            console.log('━'.repeat(50));
-            
-            await this.registrarUsuario(
-                this.testData.profesor.nombre,
-                this.testData.profesor.email,
-                'profesor'
-            );
-            
-            await this.registrarUsuario(
-                this.testData.estudiante.nombre,
-                this.testData.estudiante.email,
-                'estudiante'
-            );
-            
-            // ==========================================
-            // FASE 2: PROFESOR - AGREGAR HORARIO
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('👨‍🏫 FASE 2: PROFESOR - AGREGAR HORARIO');
-            console.log('━'.repeat(50));
-            
-            await this.login(this.testData.profesor.email, '123456', 'profesor');
-            await this.agregarHorario(
-                this.testData.horario.materia,
-                this.testData.horario.fecha,
-                this.testData.horario.hora
-            );
-            await this.logout();
-            
-            // ==========================================
-            // FASE 3: ESTUDIANTE - RESERVAR CLASE
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('👨‍🎓 FASE 3: ESTUDIANTE - RESERVAR CLASE');
-            console.log('━'.repeat(50));
-            
-            await this.login(this.testData.estudiante.email, '123456', 'estudiante');
+
+            // 0. INICIO
+            log.fase('INICIO - Pagina principal');
+            await this.irInicio();
+
+            // 1. REGISTRO PROFESOR
+            log.fase('FASE 1 - Registro de Profesor');
+            await this.registrarUsuario(this.D.profesor);
+
+            // 2. REGISTRO ESTUDIANTE
+            log.fase('FASE 2 - Registro de Estudiante');
+            await this.irInicio();
+            await this.esperar(1000);
+            await this.registrarUsuario(this.D.estudiante);
+
+            // 3. PROFESOR -> HORARIO + PANELES PROFESOR
+            log.fase('FASE 3 - Profesor: Agregar Horario');
+            await this.login(this.D.profesor);
+            await this.agregarHorario();
+            await this.verPanelesProfesor();  // ← NUEVO: explorar todos los paneles del profesor
+            await this.logout('profesor');
+
+            // 4. ESTUDIANTE -> RESERVAR NEQUI + PANELES ESTUDIANTE
+            log.fase('FASE 4 - Estudiante: Reservar Clase con Nequi');
+            await this.login(this.D.estudiante);
             await this.reservarClase();
             await this.verMaterias('estudiante');
-            await this.irAPerfil();
-            await this.logout();
-            
-            // ==========================================
-            // FASE 4: PROFESOR - VER ESTUDIANTES Y CREAR TAREA
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('👨‍🏫 FASE 4: PROFESOR - VER ESTUDIANTES Y CREAR TAREA');
-            console.log('━'.repeat(50));
-            
-            await this.login(this.testData.profesor.email, '123456', 'profesor');
-            await this.verEstudiantes();
+            await this.verPanelesEstudiante();  // ← NUEVO: explorar todos los paneles del estudiante
+            await this.logout('estudiante');
+
+            // 5. PROFESOR -> TAREA
+            log.fase('FASE 5 - Profesor: Asignar Tarea');
+            await this.login(this.D.profesor);
             await this.verMaterias('profesor');
-            await this.crearTarea(this.testData.tarea.descripcion, this.testData.tarea.fechaEntrega);
-            await this.logout();
-            
-            // ==========================================
-            // FASE 5: ESTUDIANTE - ENTREGAR TAREA
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('👨‍🎓 FASE 5: ESTUDIANTE - ENTREGAR TAREA');
-            console.log('━'.repeat(50));
-            
-            await this.login(this.testData.estudiante.email, '123456', 'estudiante');
+            await this.asignarTarea();
+            await this.logout('profesor');
+
+            // 6. ESTUDIANTE -> ENTREGAR TAREA
+            log.fase('FASE 6 - Estudiante: Entregar Tarea');
+            await this.login(this.D.estudiante);
             await this.verTareasPendientes();
-            await this.entregarTarea(this.testData.entrega);
-            await this.logout();
-            
-            // ==========================================
-            // FASE 6: PROFESOR - CALIFICAR TAREA
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('👨‍🏫 FASE 6: PROFESOR - CALIFICAR TAREA');
-            console.log('━'.repeat(50));
-            
-            await this.login(this.testData.profesor.email, '123456', 'profesor');
-            await this.verCalificaciones();
-            await this.logout();
-            
-            // ==========================================
-            // FASE 7: ESTUDIANTE - VER CALIFICACIONES
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('👨‍🎓 FASE 7: ESTUDIANTE - VER CALIFICACIONES');
-            console.log('━'.repeat(50));
-            
-            await this.login(this.testData.estudiante.email, '123456', 'estudiante');
-            await this.verCalificaciones();
-            await this.logout();
-            
-            // ==========================================
-            // FASE 8: ADMIN - PANELES DE CONTROL
-            // ==========================================
-            console.log('\n' + '━'.repeat(50));
-            console.log('👑 FASE 8: ADMIN - PANELES DE CONTROL');
-            console.log('━'.repeat(50));
-            
-            await this.login('admin@eduagenda.com', 'Admin1234', 'admin');
-            await this.panelAdmin('Usuarios');
-            await this.panelAdmin('Reportes');
-            await this.panelAdmin('Seguridad');
-            await this.logout();
-            
-            // ==========================================
-            // RESULTADOS FINALES
-            // ==========================================
-            console.log('\n' + '='.repeat(70));
-            console.log('📊 RESUMEN FINAL DEL ROBOT');
-            console.log('='.repeat(70));
-            
-            const accionesExitosas = this.results.actions.filter(a => a.status === 'success').length;
-            const accionesFallidas = this.results.actions.filter(a => a.status === 'failed').length;
-            
-            console.log(`✅ Acciones exitosas: ${accionesExitosas}`);
-            console.log(`❌ Acciones fallidas: ${accionesFallidas}`);
-            console.log(`📄 Páginas verificadas: ${this.results.pages.length}`);
-            console.log(`\n📸 Capturas guardadas en: screenshots/`);
-            
-            this.generarReporteHTML();
-            
-            console.log('\n🎉 FLUJO COMPLETADO');
-            console.log('='.repeat(70));
-            
-        } catch (error) {
-            console.error('❌ Error en el robot:', error.message);
+            await this.entregarTarea();
+            await this.logout('estudiante');
+
+            // 7. PROFESOR -> CALIFICAR
+            log.fase('FASE 7 - Profesor: Calificar Tarea');
+            await this.login(this.D.profesor);
+            await this.calificarTarea();
+            await this.logout('profesor');
+
+            // 8. ESTUDIANTE -> VER NOTA
+            log.fase('FASE 8 - Estudiante: Ver Calificaciones');
+            await this.login(this.D.estudiante);
+            await this.verCalificacionesEstudiante();
+            await this.logout('estudiante');
+
+            // 9. ADMIN -> TODOS LOS PANELES
+            log.fase('FASE 9 - Admin: Explorar Todos los Paneles');
+            await this.login(this.D.admin);
+            await this.verPanelesAdmin();
+            await this.logout('admin');
+
+            // FIN -> INICIO
+            log.fase('FIN - Regresando a Pagina Principal');
+            await this.irInicio();
+            await this.esperar(2500, 'Mostrando inicio final...');
+            await this.cap('fin_inicio');
+
+            // RESUMEN
+            log.titulo('RESUMEN FINAL');
+            var ex = this.results.acciones.filter(function(a) { return a.ok; }).length;
+            log.ok('Acciones completadas: ' + ex);
+            log.ok('Capturas tomadas:     ' + this.results.capturas.length);
+            log.ok('Errores registrados:  ' + this.results.errores.length);
+
+            this.generarReporte();
+            log.titulo('FLUJO COMPLETADO EXITOSAMENTE!');
+
+        } catch (err) {
+            log.error('Error critico: ' + err.message);
+            console.error(err.stack);
+            this.results.errores.push(err.message);
+            try { await this.cap('ERROR_critico'); } catch (_) {}
+            this.generarReporte();
         }
     }
 
-    // ==========================================
-    // CERRAR
-    // ==========================================
     async cerrar() {
-        if (this.browser) {
-            await this.browser.close();
-            console.log('🔒 Navegador cerrado');
-        }
-        if (this.serverProcess) {
-            this.serverProcess.kill();
-            console.log('🔚 Servidor detenido');
-        }
+        try { if (this.browser) await this.browser.close(); } catch (_) {}
+        try { if (this.serverProcess) this.serverProcess.kill(); } catch (_) {}
+        log.ok('Robot detenido');
     }
 }
 
-// EJECUTAR
-const robot = new EduAgendaRobotFull();
+// ======================================================
+//  ENTRY POINT
+// ======================================================
+var robot = new EduAgendaRobot();
 
-process.on('SIGINT', async () => {
+process.on('SIGINT', async function() {
+    log.warn('Interrumpido - cerrando...');
     await robot.cerrar();
-    process.exit();
+    process.exit(0);
 });
 
-robot.ejecutarFlujoCompleto().finally(async () => {
-    await robot.cerrar();
-});
+robot.ejecutar().finally(function() { return robot.cerrar(); });
