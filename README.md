@@ -167,3 +167,6 @@ Desarrollo Full Stack (Frontend + Backend)
 ✔ Base de datos conectada  
 ✔ Módulos implementados  
 
+## 🎥 Demo de EduAgenda
+
+[Ver video en YouTube](https://youtu.be/yBLIcArUiJ4)
