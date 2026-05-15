@@ -2,72 +2,485 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Reporte QA EduAgenda</title>
+<title>Reporte QA EduAgenda v4</title>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Sora:wght@400;600;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#060a12;--s1:#0d1322;--borde:#1a2540;--acento:#00d4ff;--verde:#00e5a0;--amarillo:#ffd700;--rojo:#ff4d6d;--text:#dde4f0;--muted:#4a5568;--font:"Sora",sans-serif;--mono:"IBM Plex Mono",monospace;}
+:root{--bg:#060a12;--s1:#0d1322;--borde:#1a2540;--acento:#00d4ff;--verde:#00e5a0;--amarillo:#ffd700;--rojo:#ff4d6d;--text:#dde4f0;--muted:#4a5568;--font:"Sora",sans-serif;--mono:"IBM Plex Mono",monospace}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--text);font-family:var(--font);padding:40px 20px}
-.wrap{max-width:1100px;margin:0 auto}
+.wrap{max-width:1150px;margin:0 auto}
 .hero{text-align:center;padding:70px 20px 50px;background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(0,212,255,.08),transparent);border:1px solid var(--borde);border-radius:20px;margin-bottom:24px}
 .hero h1{font-size:clamp(2rem,5vw,3rem);font-weight:800;margin-bottom:12px}
 .hero h1 em{color:var(--acento);font-style:normal}
+.hero .badge{display:inline-block;background:rgba(0,212,255,.12);border:1px solid var(--acento);color:var(--acento);font-family:var(--mono);font-size:.75rem;padding:4px 12px;border-radius:20px;margin-bottom:12px}
 .hero p{color:var(--muted);font-family:var(--mono);font-size:.9rem}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
 .stat{background:var(--s1);border:1px solid var(--borde);border-radius:14px;padding:20px;text-align:center}
-.stat .n{font-size:2.6rem;font-weight:800;color:var(--acento);font-family:var(--mono)}
-.stat .l{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.07em;margin-top:6px}
+.stat .n{font-size:2.5rem;font-weight:800;font-family:var(--mono)}
+.stat.ok .n{color:var(--verde)}
+.stat.info .n{color:var(--acento)}
+.stat.warn .n{color:var(--amarillo)}
+.stat.err .n{color:var(--rojo)}
+.stat .l{color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;margin-top:6px}
 .bloque{background:var(--s1);border:1px solid var(--borde);border-radius:14px;padding:26px;margin-bottom:20px;overflow:auto}
-.bloque-titulo{font-family:var(--mono);font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px}
+.bloque-titulo{font-family:var(--mono);font-size:.72rem;color:var(--acento);text-transform:uppercase;letter-spacing:.1em;margin-bottom:16px;border-bottom:1px solid var(--borde);padding-bottom:8px}
 table{width:100%;border-collapse:collapse;min-width:460px}
-th{text-align:left;font-family:var(--mono);font-size:.7rem;color:var(--muted);text-transform:uppercase;padding:8px 12px;border-bottom:1px solid var(--borde)}
-td{padding:10px 12px;border-bottom:1px solid rgba(26,37,64,.5);font-size:.87rem}
+th{text-align:left;font-family:var(--mono);font-size:.68rem;color:var(--muted);text-transform:uppercase;padding:8px 12px;border-bottom:1px solid var(--borde)}
+td{padding:9px 12px;border-bottom:1px solid rgba(26,37,64,.5);font-size:.86rem}
 tr:last-child td{border:none}
 tr:hover td{background:rgba(0,212,255,.03)}
-.ok-cell{color:var(--verde);font-weight:800}
-.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-top:4px}
-.thumb{background:var(--bg);border:1px solid var(--borde);border-radius:10px;overflow:hidden}
-.thumb img{width:100%;height:95px;object-fit:cover;opacity:.75;transition:opacity .2s}
-.thumb img:hover{opacity:1}
-.thumb span{display:block;font-family:var(--mono);font-size:.65rem;color:var(--muted);padding:6px 8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pie{text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:.8rem}
+.ok-cell{color:var(--verde);font-weight:800;font-size:1rem}
+.err-cell{color:var(--rojo);font-weight:800}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;margin-top:4px}
+.thumb{background:var(--bg);border:1px solid var(--borde);border-radius:10px;overflow:hidden;transition:border-color .2s}
+.thumb:hover{border-color:var(--acento)}
+.thumb img{width:100%;height:90px;object-fit:cover;opacity:.7;transition:opacity .2s;display:block}
+.thumb:hover img{opacity:1}
+.thumb span{display:block;font-family:var(--mono);font-size:.62rem;color:var(--muted);padding:5px 7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pie{text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:.78rem}
 .pie strong{color:var(--acento)}
 .flujo{background:var(--s1);border:1px solid var(--borde);border-radius:14px;padding:26px;margin-bottom:20px}
 .flujo ol{counter-reset:item;padding:0;margin:0}
-.flujo li{counter-increment:item;padding:8px 12px 8px 36px;position:relative;border-bottom:1px solid rgba(26,37,64,.4);font-size:.88rem}
-.flujo li::before{content:counter(item);position:absolute;left:8px;top:9px;font-family:var(--mono);font-size:.7rem;color:var(--acento);font-weight:600}
+.flujo li{counter-increment:item;padding:9px 12px 9px 40px;position:relative;border-bottom:1px solid rgba(26,37,64,.4);font-size:.87rem;color:var(--text)}
+.flujo li::before{content:counter(item);position:absolute;left:10px;top:10px;width:20px;height:20px;background:rgba(0,212,255,.1);border:1px solid var(--acento);border-radius:50%;text-align:center;line-height:20px;font-family:var(--mono);font-size:.65rem;color:var(--acento);font-weight:600}
 .flujo li:last-child{border:none}
+.tag{display:inline-block;background:rgba(0,229,160,.1);border:1px solid var(--verde);color:var(--verde);font-family:var(--mono);font-size:.65rem;padding:2px 8px;border-radius:10px;margin-left:6px;vertical-align:middle}
 </style>
 </head>
 <body>
 <div class="wrap">
-<div class="hero"><h1>Reporte <em>EduAgenda</em></h1><p>15/5/2026, 12:41:48 a. m.</p></div>
-<div class="stats">
-  <div class="stat"><div class="n">27</div><div class="l">Acciones OK</div></div>
-  <div class="stat"><div class="n">81</div><div class="l">Capturas</div></div>
-  <div class="stat"><div class="n">9</div><div class="l">Fases</div></div>
-  <div class="stat"><div class="n">3</div><div class="l">Roles</div></div>
+
+<div class="hero">
+  <div class="badge">v4 — Respeta horarios existentes</div>
+  <h1>Reporte <em>EduAgenda</em> QA</h1>
+  <p>viernes, 15 de mayo de 2026, 1:59:16 a. m.</p>
 </div>
+
+<div class="stats">
+  <div class="stat ok"><div class="n">27</div><div class="l">Acciones OK</div></div>
+  <div class="stat info"><div class="n">80</div><div class="l">Capturas</div></div>
+  <div class="stat info"><div class="n">9</div><div class="l">Fases</div></div>
+  <div class="stat info"><div class="n">3</div><div class="l">Roles</div></div>
+  <div class="stat ok">
+    <div class="n">0</div><div class="l">Errores</div>
+  </div>
+</div>
+
 <div class="flujo">
-  <div class="bloque-titulo">Flujo ejecutado</div>
+  <div class="bloque-titulo">Flujo ejecutado (9 fases)</div>
   <ol>
-    <li>Registro Profesor</li>
-    <li>Registro Estudiante</li>
-    <li>Login Profesor → Ver todos los paneles → Agregar horario → Logout</li>
-    <li>Login Estudiante → Reservar clase con Nequi → Logout</li>
-    <li>Login Profesor → Materias → Asignar tarea → Logout</li>
-    <li>Login Estudiante → Tareas pendientes → Entregar tarea → Logout</li>
-    <li>Login Profesor → Calificaciones → Calificar tarea → Ver todos los paneles → Logout</li>
-    <li>Login Estudiante → Calificaciones → Perfil → Logout</li>
-    <li>Login Admin → Ver todos los paneles → Logout</li>
+    <li>Registro Profesor <span class="tag">registro</span></li>
+    <li>Registro Estudiante <span class="tag">registro</span></li>
+    <li>Login Profesor → Ver paneles (sin perfil) → Agregar horario → Logout <span class="tag">profesor</span></li>
+    <li>Login Estudiante → Reservar clase con Nequi → Logout <span class="tag">estudiante</span></li>
+    <li>Login Profesor → Materias → Asignar tarea → Logout <span class="tag">profesor</span></li>
+    <li>Login Estudiante → Tareas pendientes → Entregar tarea → Logout <span class="tag">estudiante</span></li>
+    <li>Login Profesor → Calificar tarea → Ver paneles actualizados → Logout <span class="tag">profesor</span></li>
+    <li>Login Estudiante → Calificaciones → Perfil → Logout <span class="tag">estudiante</span></li>
+    <li>Login Admin → Ver todos los paneles → Logout <span class="tag">admin</span></li>
   </ol>
 </div>
-<div class="bloque"><div class="bloque-titulo">Acciones realizadas</div>
-  <table><thead><tr><th></th><th>Accion</th><th>Rol/Metodo</th><th>Detalle</th></tr></thead>
-  <tbody><tr><td class="ok-cell">✓</td><td><strong>registro</strong></td><td>profesor</td><td>Prof Robot 1778823232835</td></tr><tr><td class="ok-cell">✓</td><td><strong>registro</strong></td><td>estudiante</td><td>Est Robot 1778823232835</td></tr><tr><td class="ok-cell">✓</td><td><strong>login</strong></td><td>profesor</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>ver_paneles_profesor</strong></td><td>-</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>agregar_horario</strong></td><td>-</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>logout</strong></td><td>profesor</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>login</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>reservar_clase</strong></td><td>Nequi</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>logout</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>login</strong></td><td>profesor</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>asignar_tarea</strong></td><td>-</td><td>Cual es el pais mas grande del mundo?</td></tr><tr><td class="ok-cell">✓</td><td><strong>logout</strong></td><td>profesor</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>login</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>ver_tareas_pendientes</strong></td><td>-</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>entregar_tarea</strong></td><td>-</td><td>Rusia</td></tr><tr><td class="ok-cell">✓</td><td><strong>logout</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>login</strong></td><td>profesor</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>calificar_tarea</strong></td><td>-</td><td>5.0</td></tr><tr><td class="ok-cell">✓</td><td><strong>ver_paneles_profesor</strong></td><td>-</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>logout</strong></td><td>profesor</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>login</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>ver_calificaciones</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>ver_perfil</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>logout</strong></td><td>estudiante</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>login</strong></td><td>admin</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>ver_paneles_admin</strong></td><td>-</td><td>-</td></tr><tr><td class="ok-cell">✓</td><td><strong>logout</strong></td><td>admin</td><td>-</td></tr></tbody></table>
+
+<div class="bloque">
+  <div class="bloque-titulo">Acciones realizadas (27)</div>
+  <table>
+    <thead><tr><th></th><th>Accion</th><th>Rol / Metodo</th><th>Detalle</th></tr></thead>
+    <tbody><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>registro</strong></td>
+               <td>profesor</td>
+               <td>Prof Robot 1778827934074</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>registro</strong></td>
+               <td>estudiante</td>
+               <td>Est Robot 1778827934074</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>login</strong></td>
+               <td>profesor</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>ver_paneles_profesor</strong></td>
+               <td>-</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>agregar_horario</strong></td>
+               <td>-</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>logout</strong></td>
+               <td>profesor</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>login</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>reservar_clase</strong></td>
+               <td>Nequi</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>logout</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>login</strong></td>
+               <td>profesor</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>asignar_tarea</strong></td>
+               <td>-</td>
+               <td>Cual es el pais mas grande del mundo?</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>logout</strong></td>
+               <td>profesor</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>login</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>ver_tareas_pendientes</strong></td>
+               <td>-</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>entregar_tarea</strong></td>
+               <td>-</td>
+               <td>Rusia</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>logout</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>login</strong></td>
+               <td>profesor</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>calificar_tarea</strong></td>
+               <td>-</td>
+               <td>5.0</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>ver_paneles_profesor</strong></td>
+               <td>-</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>logout</strong></td>
+               <td>profesor</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>login</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>ver_calificaciones</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>ver_perfil</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>logout</strong></td>
+               <td>estudiante</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>login</strong></td>
+               <td>admin</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>ver_paneles_admin</strong></td>
+               <td>-</td>
+               <td>-</td>
+             </tr><tr>
+               <td class="ok-cell">✓</td>
+               <td><strong>logout</strong></td>
+               <td>admin</td>
+               <td>-</td>
+             </tr></tbody>
+  </table>
 </div>
-<div class="bloque"><div class="bloque-titulo">Capturas (81)</div>
-  <div class="gallery"><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\01_inicio.png" alt="01_inicio.png" loading="lazy"/><span>01_inicio.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\02_reg_profesor_form_vacio.png" alt="02_reg_profesor_form_vacio.png" loading="lazy"/><span>02_reg_profesor_form_vacio.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\03_reg_profesor_lleno.png" alt="03_reg_profesor_lleno.png" loading="lazy"/><span>03_reg_profesor_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\04_reg_profesor_resultado.png" alt="04_reg_profesor_resultado.png" loading="lazy"/><span>04_reg_profesor_resultado.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\05_reg_estudiante_form_vacio.png" alt="05_reg_estudiante_form_vacio.png" loading="lazy"/><span>05_reg_estudiante_form_vacio.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\06_reg_estudiante_lleno.png" alt="06_reg_estudiante_lleno.png" loading="lazy"/><span>06_reg_estudiante_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\07_reg_estudiante_resultado.png" alt="07_reg_estudiante_resultado.png" loading="lazy"/><span>07_reg_estudiante_resultado.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\08_login_profesor_form.png" alt="08_login_profesor_form.png" loading="lazy"/><span>08_login_profesor_form.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\09_login_profesor_lleno.png" alt="09_login_profesor_lleno.png" loading="lazy"/><span>09_login_profesor_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\10_login_profesor_dashboard.png" alt="10_login_profesor_dashboard.png" loading="lazy"/><span>10_login_profesor_dashboard.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\11_prof_panel_dashboard_principal.png" alt="11_prof_panel_dashboard_principal.png" loading="lazy"/><span>11_prof_panel_dashboard_principal.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\12_prof_panel_mi_agenda.png" alt="12_prof_panel_mi_agenda.png" loading="lazy"/><span>12_prof_panel_mi_agenda.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\13_prof_panel_mis_materias.png" alt="13_prof_panel_mis_materias.png" loading="lazy"/><span>13_prof_panel_mis_materias.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\14_prof_panel_mis_estudiantes.png" alt="14_prof_panel_mis_estudiantes.png" loading="lazy"/><span>14_prof_panel_mis_estudiantes.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\15_prof_panel_calificaciones.png" alt="15_prof_panel_calificaciones.png" loading="lazy"/><span>15_prof_panel_calificaciones.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\16_prof_panel_ingresos.png" alt="16_prof_panel_ingresos.png" loading="lazy"/><span>16_prof_panel_ingresos.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\17_prof_panel_configuracion.png" alt="17_prof_panel_configuracion.png" loading="lazy"/><span>17_prof_panel_configuracion.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\18_prof_panel_mi_perfil.png" alt="18_prof_panel_mi_perfil.png" loading="lazy"/><span>18_prof_panel_mi_perfil.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\19_horario_dashboard_profesor.png" alt="19_horario_dashboard_profesor.png" loading="lazy"/><span>19_horario_dashboard_profesor.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\20_horario_modal_abierto.png" alt="20_horario_modal_abierto.png" loading="lazy"/><span>20_horario_modal_abierto.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\21_horario_formulario_lleno.png" alt="21_horario_formulario_lleno.png" loading="lazy"/><span>21_horario_formulario_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\22_horario_guardado.png" alt="22_horario_guardado.png" loading="lazy"/><span>22_horario_guardado.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\23_logout_profesor.png" alt="23_logout_profesor.png" loading="lazy"/><span>23_logout_profesor.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\24_login_estudiante_form.png" alt="24_login_estudiante_form.png" loading="lazy"/><span>24_login_estudiante_form.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\25_login_estudiante_lleno.png" alt="25_login_estudiante_lleno.png" loading="lazy"/><span>25_login_estudiante_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\26_login_estudiante_dashboard.png" alt="26_login_estudiante_dashboard.png" loading="lazy"/><span>26_login_estudiante_dashboard.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\27_reserva_agenda.png" alt="27_reserva_agenda.png" loading="lazy"/><span>27_reserva_agenda.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\28_reserva_slot_seleccionado.png" alt="28_reserva_slot_seleccionado.png" loading="lazy"/><span>28_reserva_slot_seleccionado.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\29_reserva_pago_modal.png" alt="29_reserva_pago_modal.png" loading="lazy"/><span>29_reserva_pago_modal.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\30_reserva_nequi_seleccionado.png" alt="30_reserva_nequi_seleccionado.png" loading="lazy"/><span>30_reserva_nequi_seleccionado.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\31_reserva_celular_ingresado.png" alt="31_reserva_celular_ingresado.png" loading="lazy"/><span>31_reserva_celular_ingresado.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\32_reserva_confirmada.png" alt="32_reserva_confirmada.png" loading="lazy"/><span>32_reserva_confirmada.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\33_logout_estudiante.png" alt="33_logout_estudiante.png" loading="lazy"/><span>33_logout_estudiante.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\34_login_profesor_form.png" alt="34_login_profesor_form.png" loading="lazy"/><span>34_login_profesor_form.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\35_login_profesor_lleno.png" alt="35_login_profesor_lleno.png" loading="lazy"/><span>35_login_profesor_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\36_login_profesor_dashboard.png" alt="36_login_profesor_dashboard.png" loading="lazy"/><span>36_login_profesor_dashboard.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\37_tarea_materias_profesor.png" alt="37_tarea_materias_profesor.png" loading="lazy"/><span>37_tarea_materias_profesor.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\38_tarea_modal_abierto.png" alt="38_tarea_modal_abierto.png" loading="lazy"/><span>38_tarea_modal_abierto.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\39_tarea_formulario_lleno.png" alt="39_tarea_formulario_lleno.png" loading="lazy"/><span>39_tarea_formulario_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\40_tarea_asignada.png" alt="40_tarea_asignada.png" loading="lazy"/><span>40_tarea_asignada.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\41_logout_profesor.png" alt="41_logout_profesor.png" loading="lazy"/><span>41_logout_profesor.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\42_login_estudiante_form.png" alt="42_login_estudiante_form.png" loading="lazy"/><span>42_login_estudiante_form.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\43_login_estudiante_lleno.png" alt="43_login_estudiante_lleno.png" loading="lazy"/><span>43_login_estudiante_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\44_login_estudiante_dashboard.png" alt="44_login_estudiante_dashboard.png" loading="lazy"/><span>44_login_estudiante_dashboard.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\45_tareas_pendientes_lista.png" alt="45_tareas_pendientes_lista.png" loading="lazy"/><span>45_tareas_pendientes_lista.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\46_entrega_modal_abierto.png" alt="46_entrega_modal_abierto.png" loading="lazy"/><span>46_entrega_modal_abierto.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\47_entrega_respuesta_escrita.png" alt="47_entrega_respuesta_escrita.png" loading="lazy"/><span>47_entrega_respuesta_escrita.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\48_entrega_guardada.png" alt="48_entrega_guardada.png" loading="lazy"/><span>48_entrega_guardada.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\49_logout_estudiante.png" alt="49_logout_estudiante.png" loading="lazy"/><span>49_logout_estudiante.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\50_login_profesor_form.png" alt="50_login_profesor_form.png" loading="lazy"/><span>50_login_profesor_form.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\51_login_profesor_lleno.png" alt="51_login_profesor_lleno.png" loading="lazy"/><span>51_login_profesor_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\52_login_profesor_dashboard.png" alt="52_login_profesor_dashboard.png" loading="lazy"/><span>52_login_profesor_dashboard.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\53_calificacion_pagina.png" alt="53_calificacion_pagina.png" loading="lazy"/><span>53_calificacion_pagina.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\54_calificacion_llena.png" alt="54_calificacion_llena.png" loading="lazy"/><span>54_calificacion_llena.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\55_calificacion_guardada.png" alt="55_calificacion_guardada.png" loading="lazy"/><span>55_calificacion_guardada.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\56_prof_panel_dashboard_principal.png" alt="56_prof_panel_dashboard_principal.png" loading="lazy"/><span>56_prof_panel_dashboard_principal.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\57_prof_panel_mi_agenda.png" alt="57_prof_panel_mi_agenda.png" loading="lazy"/><span>57_prof_panel_mi_agenda.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\58_prof_panel_mis_materias.png" alt="58_prof_panel_mis_materias.png" loading="lazy"/><span>58_prof_panel_mis_materias.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\59_prof_panel_mis_estudiantes.png" alt="59_prof_panel_mis_estudiantes.png" loading="lazy"/><span>59_prof_panel_mis_estudiantes.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\60_prof_panel_calificaciones.png" alt="60_prof_panel_calificaciones.png" loading="lazy"/><span>60_prof_panel_calificaciones.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\61_prof_panel_ingresos.png" alt="61_prof_panel_ingresos.png" loading="lazy"/><span>61_prof_panel_ingresos.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\62_prof_panel_configuracion.png" alt="62_prof_panel_configuracion.png" loading="lazy"/><span>62_prof_panel_configuracion.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\63_prof_panel_mi_perfil.png" alt="63_prof_panel_mi_perfil.png" loading="lazy"/><span>63_prof_panel_mi_perfil.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\64_logout_profesor.png" alt="64_logout_profesor.png" loading="lazy"/><span>64_logout_profesor.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\65_login_estudiante_form.png" alt="65_login_estudiante_form.png" loading="lazy"/><span>65_login_estudiante_form.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\66_login_estudiante_lleno.png" alt="66_login_estudiante_lleno.png" loading="lazy"/><span>66_login_estudiante_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\67_login_estudiante_dashboard.png" alt="67_login_estudiante_dashboard.png" loading="lazy"/><span>67_login_estudiante_dashboard.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\68_est_mis_calificaciones.png" alt="68_est_mis_calificaciones.png" loading="lazy"/><span>68_est_mis_calificaciones.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\69_est_perfil.png" alt="69_est_perfil.png" loading="lazy"/><span>69_est_perfil.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\70_logout_estudiante.png" alt="70_logout_estudiante.png" loading="lazy"/><span>70_logout_estudiante.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\71_login_admin_form.png" alt="71_login_admin_form.png" loading="lazy"/><span>71_login_admin_form.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\72_login_admin_lleno.png" alt="72_login_admin_lleno.png" loading="lazy"/><span>72_login_admin_lleno.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\73_login_admin_dashboard.png" alt="73_login_admin_dashboard.png" loading="lazy"/><span>73_login_admin_dashboard.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\74_admin_dashboard_principal.png" alt="74_admin_dashboard_principal.png" loading="lazy"/><span>74_admin_dashboard_principal.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\75_admin_gestion_de_usuarios.png" alt="75_admin_gestion_de_usuarios.png" loading="lazy"/><span>75_admin_gestion_de_usuarios.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\76_admin_reportes.png" alt="76_admin_reportes.png" loading="lazy"/><span>76_admin_reportes.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\77_admin_configuracion.png" alt="77_admin_configuracion.png" loading="lazy"/><span>77_admin_configuracion.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\78_admin_seguridad.png" alt="78_admin_seguridad.png" loading="lazy"/><span>78_admin_seguridad.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\79_logout_admin.png" alt="79_logout_admin.png" loading="lazy"/><span>79_logout_admin.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\80_inicio.png" alt="80_inicio.png" loading="lazy"/><span>80_inicio.png</span></div><div class="thumb"><img src="C:\eduagenda\Edu\screenshots\81_fin_inicio.png" alt="81_fin_inicio.png" loading="lazy"/><span>81_fin_inicio.png</span></div></div>
+
+<div class="bloque">
+  <div class="bloque-titulo">Errores (0)</div>
+  <table>
+    <thead><tr><th></th><th colspan="3">Descripcion</th></tr></thead>
+    <tbody><tr><td colspan="4" style="color:var(--verde);text-align:center">Sin errores</td></tr></tbody>
+  </table>
 </div>
-<div class="pie"><p>Generado por <strong>EduAgenda QA Robot</strong></p></div>
-</div></body></html>
+
+<div class="bloque">
+  <div class="bloque-titulo">Capturas de pantalla (80)</div>
+  <div class="gallery"><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\01_inicio.png" alt="01_inicio.png" loading="lazy"/>
+               <span>01_inicio.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\02_reg_profesor_form_vacio.png" alt="02_reg_profesor_form_vacio.png" loading="lazy"/>
+               <span>02_reg_profesor_form_vacio.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\03_reg_profesor_lleno.png" alt="03_reg_profesor_lleno.png" loading="lazy"/>
+               <span>03_reg_profesor_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\04_reg_profesor_resultado.png" alt="04_reg_profesor_resultado.png" loading="lazy"/>
+               <span>04_reg_profesor_resultado.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\05_reg_estudiante_form_vacio.png" alt="05_reg_estudiante_form_vacio.png" loading="lazy"/>
+               <span>05_reg_estudiante_form_vacio.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\06_reg_estudiante_lleno.png" alt="06_reg_estudiante_lleno.png" loading="lazy"/>
+               <span>06_reg_estudiante_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\07_reg_estudiante_resultado.png" alt="07_reg_estudiante_resultado.png" loading="lazy"/>
+               <span>07_reg_estudiante_resultado.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\08_login_profesor_form.png" alt="08_login_profesor_form.png" loading="lazy"/>
+               <span>08_login_profesor_form.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\09_login_profesor_lleno.png" alt="09_login_profesor_lleno.png" loading="lazy"/>
+               <span>09_login_profesor_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\10_login_profesor_dashboard.png" alt="10_login_profesor_dashboard.png" loading="lazy"/>
+               <span>10_login_profesor_dashboard.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\11_prof_panel_dashboard_principal.png" alt="11_prof_panel_dashboard_principal.png" loading="lazy"/>
+               <span>11_prof_panel_dashboard_principal.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\12_prof_panel_mi_agenda.png" alt="12_prof_panel_mi_agenda.png" loading="lazy"/>
+               <span>12_prof_panel_mi_agenda.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\13_prof_panel_mis_materias.png" alt="13_prof_panel_mis_materias.png" loading="lazy"/>
+               <span>13_prof_panel_mis_materias.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\14_prof_panel_mis_estudiantes.png" alt="14_prof_panel_mis_estudiantes.png" loading="lazy"/>
+               <span>14_prof_panel_mis_estudiantes.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\15_prof_panel_calificaciones.png" alt="15_prof_panel_calificaciones.png" loading="lazy"/>
+               <span>15_prof_panel_calificaciones.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\16_prof_panel_ingresos.png" alt="16_prof_panel_ingresos.png" loading="lazy"/>
+               <span>16_prof_panel_ingresos.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\17_prof_panel_configuracion.png" alt="17_prof_panel_configuracion.png" loading="lazy"/>
+               <span>17_prof_panel_configuracion.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\18_horario_dashboard_profesor.png" alt="18_horario_dashboard_profesor.png" loading="lazy"/>
+               <span>18_horario_dashboard_profesor.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\19_horario_modal_abierto.png" alt="19_horario_modal_abierto.png" loading="lazy"/>
+               <span>19_horario_modal_abierto.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\20_horario_formulario_lleno.png" alt="20_horario_formulario_lleno.png" loading="lazy"/>
+               <span>20_horario_formulario_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\21_horario_guardado.png" alt="21_horario_guardado.png" loading="lazy"/>
+               <span>21_horario_guardado.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\22_logout_profesor.png" alt="22_logout_profesor.png" loading="lazy"/>
+               <span>22_logout_profesor.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\23_login_estudiante_form.png" alt="23_login_estudiante_form.png" loading="lazy"/>
+               <span>23_login_estudiante_form.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\24_login_estudiante_lleno.png" alt="24_login_estudiante_lleno.png" loading="lazy"/>
+               <span>24_login_estudiante_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\25_login_estudiante_dashboard.png" alt="25_login_estudiante_dashboard.png" loading="lazy"/>
+               <span>25_login_estudiante_dashboard.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\26_reserva_agenda.png" alt="26_reserva_agenda.png" loading="lazy"/>
+               <span>26_reserva_agenda.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\27_reserva_slot_seleccionado.png" alt="27_reserva_slot_seleccionado.png" loading="lazy"/>
+               <span>27_reserva_slot_seleccionado.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\28_reserva_pago_modal.png" alt="28_reserva_pago_modal.png" loading="lazy"/>
+               <span>28_reserva_pago_modal.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\29_reserva_nequi_seleccionado.png" alt="29_reserva_nequi_seleccionado.png" loading="lazy"/>
+               <span>29_reserva_nequi_seleccionado.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\30_reserva_celular_ingresado.png" alt="30_reserva_celular_ingresado.png" loading="lazy"/>
+               <span>30_reserva_celular_ingresado.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\31_reserva_confirmada.png" alt="31_reserva_confirmada.png" loading="lazy"/>
+               <span>31_reserva_confirmada.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\32_logout_estudiante.png" alt="32_logout_estudiante.png" loading="lazy"/>
+               <span>32_logout_estudiante.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\33_login_profesor_form.png" alt="33_login_profesor_form.png" loading="lazy"/>
+               <span>33_login_profesor_form.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\34_login_profesor_lleno.png" alt="34_login_profesor_lleno.png" loading="lazy"/>
+               <span>34_login_profesor_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\35_login_profesor_dashboard.png" alt="35_login_profesor_dashboard.png" loading="lazy"/>
+               <span>35_login_profesor_dashboard.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\36_tarea_materias_profesor.png" alt="36_tarea_materias_profesor.png" loading="lazy"/>
+               <span>36_tarea_materias_profesor.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\37_tarea_materias_vista.png" alt="37_tarea_materias_vista.png" loading="lazy"/>
+               <span>37_tarea_materias_vista.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\38_tarea_modal_abierto.png" alt="38_tarea_modal_abierto.png" loading="lazy"/>
+               <span>38_tarea_modal_abierto.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\39_tarea_formulario_lleno.png" alt="39_tarea_formulario_lleno.png" loading="lazy"/>
+               <span>39_tarea_formulario_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\40_tarea_asignada.png" alt="40_tarea_asignada.png" loading="lazy"/>
+               <span>40_tarea_asignada.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\41_logout_profesor.png" alt="41_logout_profesor.png" loading="lazy"/>
+               <span>41_logout_profesor.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\42_login_estudiante_form.png" alt="42_login_estudiante_form.png" loading="lazy"/>
+               <span>42_login_estudiante_form.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\43_login_estudiante_lleno.png" alt="43_login_estudiante_lleno.png" loading="lazy"/>
+               <span>43_login_estudiante_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\44_login_estudiante_dashboard.png" alt="44_login_estudiante_dashboard.png" loading="lazy"/>
+               <span>44_login_estudiante_dashboard.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\45_tareas_pendientes_lista.png" alt="45_tareas_pendientes_lista.png" loading="lazy"/>
+               <span>45_tareas_pendientes_lista.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\46_entrega_modal_abierto.png" alt="46_entrega_modal_abierto.png" loading="lazy"/>
+               <span>46_entrega_modal_abierto.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\47_entrega_respuesta_escrita.png" alt="47_entrega_respuesta_escrita.png" loading="lazy"/>
+               <span>47_entrega_respuesta_escrita.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\48_entrega_guardada.png" alt="48_entrega_guardada.png" loading="lazy"/>
+               <span>48_entrega_guardada.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\49_logout_estudiante.png" alt="49_logout_estudiante.png" loading="lazy"/>
+               <span>49_logout_estudiante.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\50_login_profesor_form.png" alt="50_login_profesor_form.png" loading="lazy"/>
+               <span>50_login_profesor_form.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\51_login_profesor_lleno.png" alt="51_login_profesor_lleno.png" loading="lazy"/>
+               <span>51_login_profesor_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\52_login_profesor_dashboard.png" alt="52_login_profesor_dashboard.png" loading="lazy"/>
+               <span>52_login_profesor_dashboard.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\53_calificacion_pagina.png" alt="53_calificacion_pagina.png" loading="lazy"/>
+               <span>53_calificacion_pagina.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\54_calificacion_llena.png" alt="54_calificacion_llena.png" loading="lazy"/>
+               <span>54_calificacion_llena.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\55_calificacion_guardada.png" alt="55_calificacion_guardada.png" loading="lazy"/>
+               <span>55_calificacion_guardada.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\56_prof_panel_dashboard_principal.png" alt="56_prof_panel_dashboard_principal.png" loading="lazy"/>
+               <span>56_prof_panel_dashboard_principal.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\57_prof_panel_mi_agenda.png" alt="57_prof_panel_mi_agenda.png" loading="lazy"/>
+               <span>57_prof_panel_mi_agenda.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\58_prof_panel_mis_materias.png" alt="58_prof_panel_mis_materias.png" loading="lazy"/>
+               <span>58_prof_panel_mis_materias.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\59_prof_panel_mis_estudiantes.png" alt="59_prof_panel_mis_estudiantes.png" loading="lazy"/>
+               <span>59_prof_panel_mis_estudiantes.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\60_prof_panel_calificaciones.png" alt="60_prof_panel_calificaciones.png" loading="lazy"/>
+               <span>60_prof_panel_calificaciones.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\61_prof_panel_ingresos.png" alt="61_prof_panel_ingresos.png" loading="lazy"/>
+               <span>61_prof_panel_ingresos.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\62_prof_panel_configuracion.png" alt="62_prof_panel_configuracion.png" loading="lazy"/>
+               <span>62_prof_panel_configuracion.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\63_logout_profesor.png" alt="63_logout_profesor.png" loading="lazy"/>
+               <span>63_logout_profesor.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\64_login_estudiante_form.png" alt="64_login_estudiante_form.png" loading="lazy"/>
+               <span>64_login_estudiante_form.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\65_login_estudiante_lleno.png" alt="65_login_estudiante_lleno.png" loading="lazy"/>
+               <span>65_login_estudiante_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\66_login_estudiante_dashboard.png" alt="66_login_estudiante_dashboard.png" loading="lazy"/>
+               <span>66_login_estudiante_dashboard.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\67_est_mis_calificaciones.png" alt="67_est_mis_calificaciones.png" loading="lazy"/>
+               <span>67_est_mis_calificaciones.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\68_est_perfil.png" alt="68_est_perfil.png" loading="lazy"/>
+               <span>68_est_perfil.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\69_logout_estudiante.png" alt="69_logout_estudiante.png" loading="lazy"/>
+               <span>69_logout_estudiante.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\70_login_admin_form.png" alt="70_login_admin_form.png" loading="lazy"/>
+               <span>70_login_admin_form.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\71_login_admin_lleno.png" alt="71_login_admin_lleno.png" loading="lazy"/>
+               <span>71_login_admin_lleno.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\72_login_admin_dashboard.png" alt="72_login_admin_dashboard.png" loading="lazy"/>
+               <span>72_login_admin_dashboard.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\73_admin_dashboard_principal.png" alt="73_admin_dashboard_principal.png" loading="lazy"/>
+               <span>73_admin_dashboard_principal.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\74_admin_gestion_de_usuarios.png" alt="74_admin_gestion_de_usuarios.png" loading="lazy"/>
+               <span>74_admin_gestion_de_usuarios.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\75_admin_reportes.png" alt="75_admin_reportes.png" loading="lazy"/>
+               <span>75_admin_reportes.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\76_admin_configuracion.png" alt="76_admin_configuracion.png" loading="lazy"/>
+               <span>76_admin_configuracion.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\77_admin_seguridad.png" alt="77_admin_seguridad.png" loading="lazy"/>
+               <span>77_admin_seguridad.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\78_logout_admin.png" alt="78_logout_admin.png" loading="lazy"/>
+               <span>78_logout_admin.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\79_inicio.png" alt="79_inicio.png" loading="lazy"/>
+               <span>79_inicio.png</span>
+             </div><div class="thumb">
+               <img src="C:\eduagenda\Edu\screenshots\80_fin_inicio.png" alt="80_fin_inicio.png" loading="lazy"/>
+               <span>80_fin_inicio.png</span>
+             </div></div>
+</div>
+
+<div class="pie">
+  <p>Generado por <strong>EduAgenda QA Robot v4</strong> &nbsp;·&nbsp; 15/5/2026, 1:59:17 a. m.</p>
+</div>
+
+</div>
+</body>
+</html>
